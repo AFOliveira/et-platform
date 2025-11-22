@@ -27,13 +27,9 @@ namespace bemu {
 #define EMU_NEIGH_PER_SHIRE     4
 #define EMU_MINIONS_PER_SHIRE   (EMU_MINIONS_PER_NEIGH * EMU_NEIGH_PER_SHIRE)
 #define EMU_THREADS_PER_SHIRE   (EMU_THREADS_PER_NEIGH * EMU_NEIGH_PER_SHIRE)
-#define EMU_TBOXES_PER_SHIRE    2
-#define EMU_RBOXES_PER_SHIRE    1
 #define EMU_NUM_NEIGHS          ((EMU_NUM_MINION_SHIRES * EMU_NEIGH_PER_SHIRE) + 1)
 #define EMU_NUM_MINIONS         ((EMU_NUM_MINION_SHIRES * EMU_MINIONS_PER_SHIRE) + 1)
 #define EMU_NUM_THREADS         ((EMU_NUM_MINION_SHIRES * EMU_THREADS_PER_SHIRE) + 1)
-#define EMU_NUM_TBOXES          (EMU_NUM_COMPUTE_SHIRES * EMU_TBOXES_PER_SHIRE)
-#define EMU_NUM_RBOXES          (EMU_NUM_COMPUTE_SHIRES * EMU_RBOXES_PER_SHIRE)
 #define EMU_IO_SHIRE_SP_THREAD  (EMU_NUM_THREADS - 1)
 #define EMU_IO_SHIRE_SP_NEIGH   (EMU_NUM_NEIGHS - 1)
 #define IO_SHIRE_ID             254
@@ -232,9 +228,6 @@ enum : freg {
     f30 = 30,
     f31 = 31,
 };
-
-/* Obsolete texsnd/texrcv instuctions use the low 128b of the fregs for data transfers */
-#define VL_TBOX 4
 
 // ET DV environment commands
 #define ET_DIAG_NOP             (0x0)
