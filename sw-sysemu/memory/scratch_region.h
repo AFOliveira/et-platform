@@ -100,7 +100,7 @@ protected:
 
     size_type slice(size_type pos) const {
         size_type num = (pos >> 23) & 255;
-        return (num == IO_SHIRE_ID) ? EMU_IO_SHIRE_SP : num;
+        return shireindex(num);
     }
 
     bool out_of_range(const System* chip, size_type bucket, size_type offset, size_type n) const {

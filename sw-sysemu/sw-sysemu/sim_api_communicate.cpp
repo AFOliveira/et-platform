@@ -243,11 +243,10 @@ bool sim_api_communicate::SysEmuWrapper::raise_device_interrupt(simulator_api::D
 
 void sim_api_communicate::SysEmuWrapper::shire_threads_set_pc(unsigned shire_id, uint64_t pc)
 {
-    if (shire_id == IO_SHIRE_ID)
-        shire_id = EMU_IO_SHIRE_SP;
+    shire_id = shireindex(shire_id);
 
     unsigned thread0 = EMU_THREADS_PER_SHIRE * shire_id;
-    unsigned shire_thread_count = (shire_id == EMU_IO_SHIRE_SP ? 1 : EMU_THREADS_PER_SHIRE);
+    unsigned shire_thread_count = shireindex_harts(shire_id);
 
     for (unsigned t = 0; t < shire_thread_count; ++t)
         sys_emu::thread_set_pc(thread0 + t, pc);

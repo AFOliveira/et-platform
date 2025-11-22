@@ -305,6 +305,8 @@ enum : freg {
 #define PMU_MINION_EVENT_TREDUCE_INST     27
 #define PMU_MINION_EVENT_TQUANT_INST      28
 
+#include "emu_util.h"
+
 } // namespace bemu
 
 #endif // BEMU_DEFINES_H

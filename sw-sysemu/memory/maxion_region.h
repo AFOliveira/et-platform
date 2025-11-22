@@ -30,7 +30,7 @@ struct MaxionRegion : public MemoryRegion {
     void read(const Agent& agent, size_type pos, size_type n, pointer result) override {
         try {
             const Hart& cpu = dynamic_cast<const Hart&>(agent);
-            if (cpu.mhartid != IO_SHIRE_SP_HARTID)
+            if (!hartid_is_svcproc(cpu.mhartid))
                 throw memory_error(first() + pos);
         }
         catch (const std::bad_cast&) {
@@ -42,7 +42,7 @@ struct MaxionRegion : public MemoryRegion {
     void write(const Agent& agent, size_type pos, size_type, const_pointer) override {
         try {
             const Hart& cpu = dynamic_cast<const Hart&>(agent);
-            if (cpu.mhartid != IO_SHIRE_SP_HARTID)
+            if (!hartid_is_svcproc(cpu.mhartid))
                 throw memory_error(first() + pos);
         }
         catch (const std::bad_cast&) {

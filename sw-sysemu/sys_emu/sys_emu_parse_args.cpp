@@ -284,11 +284,10 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
                 unsigned shire = atoi(tokens[0]);
                 sscanf(tokens[1], "%" PRIx64, &threads);
 
-                if (shire == IO_SHIRE_ID)
-                    shire = EMU_IO_SHIRE_SP;
+                shire = bemu::shireindex(shire);
 
                 unsigned thread0 = EMU_THREADS_PER_SHIRE * shire;
-                unsigned shire_thread_count = (shire == EMU_IO_SHIRE_SP ? 1 : EMU_THREADS_PER_SHIRE);
+                unsigned shire_thread_count = bemu::shireindex_harts(shire);
 
                 for (unsigned t = 0; t < shire_thread_count; ++t) {
                     if (threads & (1ULL << t))
@@ -373,12 +372,11 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
             if (!strcmp(tokens[0], "sp")) {
                 thread = EMU_IO_SHIRE_SP_THREAD;
             } else {
-                thread = atoi(tokens[0]);
-                if (thread == IO_SHIRE_SP_HARTID) {
-                    thread = EMU_IO_SHIRE_SP_THREAD;
-                } else if (thread >= EMU_NUM_THREADS) {
-                    SE_ERROR("Command line option '-set_xreg': Invalid thread");
-                }
+                thread = bemu::hartindex(atoi(tokens[0]));
+            }
+
+            if (thread >= EMU_NUM_THREADS) {
+                SE_ERROR("Command line option '-set_xreg': Invalid thread");
             }
 
             xreg = atoi(tokens[1]);

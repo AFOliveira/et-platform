@@ -208,12 +208,13 @@ static inline char* strconcat(char* dst, const char* suffix)
 /* Conversion from GDB thread ID to SysEMU thread ID (thread index) */
 static inline int to_target_thread(int thread_id)
 {
-    return ((thread_id - 1) == IO_SHIRE_SP_HARTID) ? EMU_IO_SHIRE_SP_THREAD : thread_id - 1;
+    return bemu::hartindex(thread_id - 1);
 }
 
 static inline int to_gdb_thread(int thread_id)
 {
-    if ((thread_id == IO_SHIRE_SP_HARTID) || (thread_id == EMU_IO_SHIRE_SP_THREAD)) {
+    if (bemu::hartid_is_svcproc(thread_id) ||
+        bemu::hartindex_is_svcproc(thread_id)) {
         return IO_SHIRE_SP_HARTID + 1;
     }
     else {
@@ -596,16 +597,16 @@ static void gdbstub_handle_qxfer_threads(char* tokens[], int ntokens)
                                       "<threads>\n");
 
         for (unsigned shire = 0; shire < EMU_NUM_SHIRES; shire++) {
-            unsigned minion_count = (shire == EMU_IO_SHIRE_SP ? 1 : EMU_MINIONS_PER_SHIRE);
-            unsigned thread_count = (shire == EMU_IO_SHIRE_SP ? 1 : EMU_THREADS_PER_MINION);
-            unsigned shire_id     = (shire == EMU_IO_SHIRE_SP ? IO_SHIRE_ID : shire);
+            unsigned minion_count = bemu::shireindex_minions(shire);
+            unsigned thread_count = bemu::shireindex_minionharts(shire);
+            unsigned shire_id     = bemu::shireid(shire);
 
             for (unsigned minion = 0; minion < minion_count; minion++) {
                 unsigned minion_id = minion + EMU_MINIONS_PER_SHIRE * shire_id;
 
                 for (unsigned thread = 0; thread < thread_count; thread++) {
                     unsigned thread_id     = thread + minion_id * EMU_THREADS_PER_MINION;
-                    bool     is_sp         = thread_id == IO_SHIRE_SP_HARTID;
+                    bool     is_sp         = bemu::hartid_is_svcproc(thread_id);
                     unsigned gdb_thread_id = to_gdb_thread(thread_id);
 
                     if (target_thread_exists(gdb_thread_id)) {

@@ -80,7 +80,7 @@ void dcache_evict_flush_set_way(Hart& cpu, bool evict, uint64_t value)
     if ((dest == 0) || (set >= L1D_NUM_SETS))
         return;
 
-    if ((dest != 1) && (cpu.mhartid == IO_SHIRE_SP_HARTID)) {
+    if ((dest != 1) && hartid_is_svcproc(cpu.mhartid)) {
         WARN_HART(cacheops, cpu, "\t%s with DestLevel: %d has undefined behavior on the SP",
             evict ? " EvictSW" : "FlushSW", dest);
         return;
@@ -141,7 +141,7 @@ void dcache_evict_flush_vaddr(Hart& cpu, bool evict, uint64_t value)
     if (dest == 0)
         return;
 
-    if ((dest != 1) && (cpu.mhartid == IO_SHIRE_SP_HARTID)) {
+    if ((dest != 1) && hartid_is_svcproc(cpu.mhartid)) {
         WARN_HART(cacheops, cpu, "\t%s with DestLevel: %d has undefined behavior on the SP",
             evict ? " EvictVA" : "FlushVA", dest);
         return;

@@ -36,19 +36,17 @@ void System::init(Stepping ver)
         cpu[tid].core = &core[cid];
         cpu[tid].chip = this;
         // Do this here so that logging messages can show the correct hartid
-        cpu[tid].mhartid = (tid == EMU_IO_SHIRE_SP_THREAD)
-            ? IO_SHIRE_SP_HARTID
-            : tid;
+        cpu[tid].mhartid = hartid(tid);
     }
 }
 
 
 void System::debug_reset(unsigned shire)
 {
-    unsigned s = (shire == IO_SHIRE_ID) ? EMU_IO_SHIRE_SP : shire;
-    unsigned ncount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_NEIGH_PER_SHIRE;
-    unsigned hcount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
-    unsigned hneigh = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_NEIGH;
+    unsigned s = shireindex(shire);
+    unsigned ncount = shireindex_neighs(s);
+    unsigned hcount = shireindex_harts(s);
+    unsigned hneigh = shireindex_is_ioshire(s) ? 1 : EMU_THREADS_PER_NEIGH;
 
     for (unsigned n = 0; n < ncount; ++n) {
         auto& esrs = neigh_esrs[n + s * EMU_NEIGH_PER_SHIRE];
@@ -71,9 +69,9 @@ void System::debug_reset(unsigned shire)
 
 void System::begin_warm_reset(unsigned shire)
 {
-    unsigned s = (shire == IO_SHIRE_ID) ? EMU_IO_SHIRE_SP : shire;
-    unsigned ncount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_NEIGH_PER_SHIRE;
-    unsigned hcount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned s = shireindex(shire);
+    unsigned ncount = shireindex_neighs(s);
+    unsigned hcount = shireindex_harts(s);
 
     for (unsigned n = 0; n < ncount; ++n) {
         unsigned neigh = n + s * EMU_NEIGH_PER_SHIRE;
@@ -104,9 +102,9 @@ void System::end_warm_reset(unsigned shire)
 
 void System::cold_reset(unsigned shire)
 {
-    unsigned s = (shire == IO_SHIRE_ID) ? EMU_IO_SHIRE_SP : shire;
-    unsigned ncount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_NEIGH_PER_SHIRE;
-    unsigned hcount = (s == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned s = shireindex(shire);
+    unsigned ncount = shireindex_neighs(s);
+    unsigned hcount = shireindex_harts(s);
 
     for (unsigned n = 0; n < ncount; ++n) {
         neigh_esrs[n + s * EMU_NEIGH_PER_SHIRE].cold_reset();
@@ -136,25 +134,21 @@ void System::cold_reset_spdm()
     spdmctrl = 0;
 }
 
-
 void System::cold_reset_memshire()
 {
     mem_shire_esrs.cold_reset();
 }
 
-
 void System::raise_machine_timer_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
-    uint32_t mtime_target = (shire == EMU_IO_SHIRE_SP)
+    uint32_t mtime_target = shireindex_is_ioshire(shire)
         ? 1
         : shire_other_esrs[shire].mtime_local_target;
 
@@ -175,15 +169,13 @@ void System::raise_machine_timer_interrupt(unsigned shire)
 void System::clear_machine_timer_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
-    uint32_t mtime_target = (shire == EMU_IO_SHIRE_SP)
+    uint32_t mtime_target = shireindex_is_ioshire(shire)
         ? 1
         : shire_other_esrs[shire].mtime_local_target;
 
@@ -204,12 +196,10 @@ void System::clear_machine_timer_interrupt(unsigned shire)
 void System::raise_machine_external_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -226,12 +216,10 @@ void System::raise_machine_external_interrupt(unsigned shire)
 void System::clear_machine_external_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -248,12 +236,10 @@ void System::clear_machine_external_interrupt(unsigned shire)
 void System::raise_supervisor_external_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -270,12 +256,10 @@ void System::raise_supervisor_external_interrupt(unsigned shire)
 void System::clear_supervisor_external_interrupt(unsigned shire)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -292,12 +276,10 @@ void System::clear_supervisor_external_interrupt(unsigned shire)
 void System::raise_machine_software_interrupt(unsigned shire, uint64_t thread_mask)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -315,12 +297,10 @@ void System::raise_machine_software_interrupt(unsigned shire, uint64_t thread_ma
 void System::clear_machine_software_interrupt(unsigned shire, uint64_t thread_mask)
 {
 #ifdef SYS_EMU
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
+    shire = shireindex(shire);
 
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_SHIRE;
+    unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
@@ -337,7 +317,7 @@ void System::clear_machine_software_interrupt(unsigned shire, uint64_t thread_ma
 
 void System::send_ipi_redirect(unsigned shire, uint64_t thread_mask)
 {
-    if ((shire == IO_SHIRE_ID) || (shire == EMU_IO_SHIRE_SP)) {
+    if (shireid_is_ioshire(shire) || shireindex_is_ioshire(shire)) {
         throw std::runtime_error("IPI redirect to Service Processor");
     }
 
@@ -445,7 +425,7 @@ void System::notify_iatu_ctrl_2_reg_write(int pcie_id, uint32_t iatu, uint32_t v
 
 void System::write_fcc_credinc(unsigned index, uint64_t shire, uint64_t minion_mask)
 {
-    if (shire == EMU_IO_SHIRE_SP) {
+    if (shireindex_is_ioshire(shire)) {
         throw std::runtime_error("write_fcc_credinc_N for IOShire");
     }
 
@@ -483,7 +463,7 @@ void System::recalculate_thread0_enable(unsigned shire)
 {
     uint32_t value = shire_other_esrs[shire].thread0_disable;
 
-    unsigned mcount = (shire == EMU_IO_SHIRE_SP ? 1 : EMU_MINIONS_PER_SHIRE);
+    unsigned mcount = shireindex_minions(shire);
     for (unsigned m = 0; m < mcount; ++m) {
         unsigned thread = shire * EMU_THREADS_PER_SHIRE + m * EMU_THREADS_PER_MINION;
         if (!cpu[thread].is_nonexistent()) {
@@ -504,7 +484,7 @@ void System::recalculate_thread0_enable(unsigned shire)
 
 void System::recalculate_thread1_enable(unsigned shire)
 {
-    if (shire == EMU_IO_SHIRE_SP) {
+    if (shireindex_is_ioshire(shire)) {
         return;
     }
 
@@ -541,15 +521,13 @@ void System::config_simulated_harts(unsigned shire, uint32_t minionmask,
 {
     static_assert(EMU_THREADS_PER_MINION == 2, "Wrong thread-per-minion count");
 
-    if (shire == IO_SHIRE_ID) {
-        shire = EMU_IO_SHIRE_SP;
-    }
-    if (shire == EMU_IO_SHIRE_SP) {
+    shire = shireindex(shire);
+    if (shireindex_is_ioshire(shire)) {
         multithreaded = false;
     }
 
-    unsigned minion_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_MINIONS_PER_SHIRE;
-    unsigned hart_count = (shire == EMU_IO_SHIRE_SP) ? 1 : EMU_THREADS_PER_MINION;
+    unsigned minion_count = shireindex_minions(shire);
+    unsigned hart_count = shireindex_minionharts(shire);
 
     uint32_t disabled[2];
     disabled[0] = (~minionmask) & ((1ul << minion_count) - 1);

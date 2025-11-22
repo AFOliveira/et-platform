@@ -753,9 +753,7 @@ inline bool Hart::has_active_coprocessor() const
 
 inline unsigned hart_index(const Hart& cpu)
 {
-    return (cpu.mhartid == IO_SHIRE_SP_HARTID)
-        ? EMU_IO_SHIRE_SP_THREAD
-        : cpu.mhartid;
+    return hartindex(cpu.mhartid);
 }
 
 

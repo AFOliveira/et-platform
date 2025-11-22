@@ -483,7 +483,7 @@ protected:
     MemoryRegion* search(const Agent& agent, size_type pos, size_type n) const {
         try {
             const Hart& cpu = dynamic_cast<const Hart&>(agent);
-            return (cpu.mhartid == IO_SHIRE_SP_HARTID)
+            return hartid_is_svcproc(cpu.mhartid)
                 ? search(spio_regions, pos, n)
                 : search(minion_regions, pos, n);
         }
