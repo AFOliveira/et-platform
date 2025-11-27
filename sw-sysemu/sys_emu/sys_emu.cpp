@@ -231,11 +231,13 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     l1_scp_check = cmd_options.l1_scp_check;
     l1_scp_checker_ = l1_scp_checker{&chip};
     l1_scp_checker_.log_minion = cmd_options.l1_scp_checker_log_minion;
+#if EMU_HAS_L2
     l2_scp_check = cmd_options.l2_scp_check;
     new (&l2_scp_checker_) l2_scp_checker{&chip};
     l2_scp_checker_.log_shire = cmd_options.l2_scp_checker_log_shire;
     l2_scp_checker_.log_line = cmd_options.l2_scp_checker_log_line;
     l2_scp_checker_.log_minion = cmd_options.l2_scp_checker_log_minion;
+#endif
     flb_check = cmd_options.flb_check;
     flb_checker_ = flb_checker{&chip};
     flb_checker_.log_shire = cmd_options.flb_checker_log_shire;

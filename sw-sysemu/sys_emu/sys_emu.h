@@ -34,11 +34,16 @@
 // Defines
 ////////////////////////////////////////////////////////////////////////////////
 
+#if EMU_ETSOC1
 #define RESET_PC    0x8000001000ULL
 #define SP_RESET_PC 0x0040000000ULL
-#define FCC_T0_ADDR 0x01003400C0ULL
-#define FCC_T1_ADDR 0x01003400D0ULL
-#define FLB_ADDR    0x0100340100ULL
+#define DRAM_SIZE   16ull << 30;
+#elif EMU_ERBIUM
+#define RESET_PC    0x0040000000ULL // Start of bootrom
+#define DRAM_SIZE   16ull << 20;
+#else
+#error "Unknown platform"
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 /// \bried Struct holding the values of the parsed command line arguments
@@ -86,49 +91,71 @@ struct sys_emu_cmd_options {
     std::vector<dump_info> dump_at_end;
     std::unordered_multimap<uint64_t, dump_info> dump_at_pc;
     std::string dump_mem;
+
     uint64_t    reset_pc                     = RESET_PC;
+
+#if EMU_HAS_SVCPROC
     uint64_t    sp_reset_pc                  = SP_RESET_PC;
+#endif
+
     std::vector<set_xreg_info> set_xreg;
+
     bool        coherency_check              = false;
     uint64_t    max_cycles                   = 10000000;
     bool        mins_dis                     = false;
-    bool        sp_dis                       = false;
+    bool        sp_dis                       = false; // SVCPROC
     uint32_t    mem_reset                    = 0;
     uint64_t    dram_size                    = 16ull << 30;
-    std::string pu_uart0_rx_file;
-    std::string pu_uart1_rx_file;
-    std::string spio_uart0_rx_file;
-    std::string spio_uart1_rx_file;
-    std::string pu_uart0_tx_file;
-    std::string pu_uart1_tx_file;
-    std::string spio_uart0_tx_file;
-    std::string spio_uart1_tx_file;
+
     uint64_t    log_at_pc                    = ~0ull;
     uint64_t    stop_log_at_pc               = ~0ull;
     bool        display_trap_info            = false;
     bool        gdb                          = false;
     uint64_t    gdb_at_pc                    = ~0ull;
     bool        gdb_on_umode                 = false;
+
 #ifndef SDK_RELEASE
     bool        vpurf_check                  = false;
     bool        vpurf_warn                   = false;
 #endif
+
     bool        mem_check                    = false;
     uint64_t    mem_checker_log_addr         = 1;
     uint32_t    mem_checker_log_minion       = 2048;
+
     bool        l1_scp_check                 = false;
     uint32_t    l1_scp_checker_log_minion    = 2048;
+
+#if EMU_HAS_L2
     bool        l2_scp_check                 = false;
     uint32_t    l2_scp_checker_log_shire     = 64;
     uint32_t    l2_scp_checker_log_line      = 1 * 1024 * 1024;
     uint32_t    l2_scp_checker_log_minion    = 2048;
+#endif
+
     bool        flb_check                    = false;
     uint32_t    flb_checker_log_shire        = 64;
+
     bool        tstore_check                 = false;
     uint64_t    tstore_checker_log_addr      = 1;
     uint32_t    tstore_checker_log_thread    = 4096;
+
 #ifdef SYSEMU_PROFILING
     std::string dump_prof_file;
+#endif
+
+#if EMU_HAS_PU
+    std::string pu_uart0_rx_file;
+    std::string pu_uart1_rx_file;
+    std::string pu_uart0_tx_file;
+    std::string pu_uart1_tx_file;
+#endif
+
+#if EMU_HAS_SPIO
+    std::string spio_uart0_rx_file;
+    std::string spio_uart1_rx_file;
+    std::string spio_uart0_tx_file;
+    std::string spio_uart1_tx_file;
 #endif
 };
 

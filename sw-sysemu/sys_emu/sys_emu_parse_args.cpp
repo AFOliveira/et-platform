@@ -41,11 +41,15 @@ static const char * help_msg =
 "     -single_thread           Disable 2nd Minion thread\n"
 #ifndef SDK_RELEASE
 "     -mins_dis                Minions (not including SP) start disabled\n"
+#if EMU_HAS_SVCPROC
 "     -sp_dis                  SP starts disabled\n"
+#endif // EMU_HAS_SVCPROC
 "     -reset_pc <addr>         Sets boot program counter (default: 0x8000001000)\n"
+#if EMU_HAS_SVCPROC
 "     -sp_reset_pc <addr>      Sets Service Processor boot program counter (default: 0x40000000)\n"
+#endif // EMU_HAS_SVCPROC
 "     -set_xreg <t>,<r>,<val>  Sets the xregister (integer) <r> of thread <t> to value <val>. <t> can be 'sp' for the Service Processor\n"
-#endif
+#endif // SDK_RELEASE
 "     -max_cycles <cycles>     Stops execution after provided number of cycles (default: 10M)\n"
 #ifndef SDK_RELEASE
 "     -mem_reset <byte>        Reset value of main memory (default: 0)\n"
@@ -53,15 +57,19 @@ static const char * help_msg =
 #endif
 "     -dram_size <gb>          Size of installed DRAM in GB (options: 8/16/24/32; default: 16)\n"
 #ifndef SDK_RELEASE
+#if EMU_HAS_PU
 "     -pu_uart0_rx_file <path> Path to the file in which to read the contents of PU UART0 RX (default is stdin)\n"
 "     -pu_uart1_rx_file <path> Path to the file in which to read the contents of PU UART1 RX (default is stdin)\n"
-"     -spio_uart0_rx_file <path> Path to the file in which to read the contents of SPIO UART0 RX (default is stdin)\n"
-"     -spio_uart1_rx_file <path> Path to the file in which to read the contents of SPIO UART1 RX (default is stdin)\n"
 "     -pu_uart0_tx_file <path> Path to the file in which to dump the contents of PU UART0 TX (default is stdout)\n"
 "     -pu_uart1_tx_file <path> Path to the file in which to dump the contents of PU UART1 TX (default is stdout)\n"
+#endif // EMU_HAS_PU
+#if EMU_HAS_SPIO
+"     -spio_uart0_rx_file <path> Path to the file in which to read the contents of SPIO UART0 RX (default is stdin)\n"
+"     -spio_uart1_rx_file <path> Path to the file in which to read the contents of SPIO UART1 RX (default is stdin)\n"
 "     -spio_uart0_tx_file <path> Path to the file in which to dump the contents of SPIO UART0 TX (default is stdout)\n"
 "     -spio_uart1_tx_file <path> Path to the file in which to dump the contents of SPIO UART1 TX (default is stdout)\n"
-#endif
+#endif // EMU_HAS_SPIO
+#endif // SDK_RELEASE
 "     -log_at_pc <PC>          Enables logging when minion reaches a given PC\n"
 "     -stop_log_at_pc <PC>     Disables logging when minion reaches a given PC\n"
 #ifndef SDK_RELEASE
@@ -82,10 +90,12 @@ static const char * help_msg =
 "     -mem_check_addr          Enables memory coherency check prints for a specific address (default: 0x1 [none])\n"
 "     -l1_scp_check            Enables L1 SCP checks\n"
 "     -l1_scp_check_minion     Enables L1 SCP check prints for a specific minion (default: 2048 [2048 => no minion, -1 => all minions])\n"
+#if EMU_HAS_L2
 "     -l2_scp_check            Enables L2 SCP checks\n"
 "     -l2_scp_check_shire      Enables L2 SCP check prints for a specific shire (default: 64 [64 => no shire, -1 => all shires])\n"
 "     -l2_scp_check_line       Enables L2 SCP check prints for a specific minion (default: 1048576 [1048576 => no L2 scp line, -1 => all L2 scp lines])\n"
 "     -l2_scp_check_minion     Enables L2 SCP check prints for a specific minion (default: 2048 [2048 => no minion, -1 => all minions])\n"
+#endif
 "     -flb_check               Enables FLB checks\n"
 "     -flb_check_shire         Enables FLB check prints for a specific shire (default: 64 [64 => no shire, -1 => all shires])\n"
 "     -tstore_check            Enables TensorStore checks\n"
@@ -164,9 +174,13 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {"single_thread",          no_argument,       nullptr, 0},
 #ifndef SDK_RELEASE
         {"mins_dis",               no_argument,       nullptr, 0},
+#if EMU_HAS_SVCPROC
         {"sp_dis",                 no_argument,       nullptr, 0},
+#endif
         {"reset_pc",               required_argument, nullptr, 0},
+#if EMU_HAS_SVCPROC
         {"sp_reset_pc",            required_argument, nullptr, 0},
+#endif
         {"set_xreg",               required_argument, nullptr, 0},
 #endif
         {"max_cycles",             required_argument, nullptr, 0},
@@ -176,16 +190,20 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
 #endif
         {"dram_size",              required_argument, nullptr, 0},
 #ifndef SDK_RELEASE
+#if EMU_HAS_PU
         {"pu_uart0_rx_file",       required_argument, nullptr, 0},
         {"pu_uart1_rx_file",       required_argument, nullptr, 0},
-        {"spio_uart0_rx_file",     required_argument, nullptr, 0},
-        {"spio_uart1_rx_file",     required_argument, nullptr, 0},
         {"pu_uart_tx_file",        required_argument, nullptr, 0}, // same as '-pu_uart0_tx_file', kept for backwards compatibility
         {"pu_uart0_tx_file",       required_argument, nullptr, 0},
         {"pu_uart1_tx_file",       required_argument, nullptr, 0},
+#endif // EMU_HAS_PU
+#if EMU_HAS_SPIO
+        {"spio_uart0_rx_file",     required_argument, nullptr, 0},
+        {"spio_uart1_rx_file",     required_argument, nullptr, 0},
         {"spio_uart0_tx_file",     required_argument, nullptr, 0},
         {"spio_uart1_tx_file",     required_argument, nullptr, 0},
-#endif
+#endif // EMU_HAS_SPIO
+#endif // !SDK_RELEASE
         {"log_at_pc",              required_argument, nullptr, 0},
         {"stop_log_at_pc",         required_argument, nullptr, 0},
 #ifndef SDK_RELEASE
@@ -206,10 +224,12 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {"mem_check_addr",         required_argument, nullptr, 0},
         {"l1_scp_check",           no_argument,       nullptr, 0},
         {"l1_scp_check_minion",    required_argument, nullptr, 0},
+#if EMU_HAS_L2
         {"l2_scp_check",           no_argument,       nullptr, 0},
         {"l2_scp_check_shire",     required_argument, nullptr, 0},
         {"l2_scp_check_line",      required_argument, nullptr, 0},
         {"l2_scp_check_minion",    required_argument, nullptr, 0},
+#endif
         {"flb_check",              no_argument,       nullptr, 0},
         {"flb_check_shire",        required_argument, nullptr, 0},
         {"tstore_check",           no_argument,       nullptr, 0},
@@ -355,10 +375,12 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {
             sscanf(optarg, "%" PRIx64, &cmd_options.reset_pc);
         }
+#if EMU_HAS_SVCPROC
         else if (!strcmp(name, "sp_reset_pc"))
         {
             sscanf(optarg, "%" PRIx64, &cmd_options.sp_reset_pc);
         }
+#endif
         else if (!strcmp(name, "set_xreg"))
         {
             uint64_t thread, xreg, value;
@@ -414,6 +436,7 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
                 SE_ERROR("Command line option '-dram_size': Invalid size");
             }
         }
+#if EMU_HAS_PU
         else if (!strcmp(name, "pu_uart0_rx_file"))
         {
             cmd_options.pu_uart0_rx_file = optarg;
@@ -421,14 +444,6 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         else if (!strcmp(name, "pu_uart1_rx_file"))
         {
             cmd_options.pu_uart1_rx_file = optarg;
-        }
-        else if (!strcmp(name, "spio_uart0_rx_file"))
-        {
-            cmd_options.spio_uart0_rx_file = optarg;
-        }
-        else if (!strcmp(name, "spio_uart1_rx_file"))
-        {
-            cmd_options.spio_uart1_rx_file = optarg;
         }
         else if (!strcmp(name, "pu_uart0_tx_file") || !strcmp(name, "pu_uart_tx_file"))
         {
@@ -438,6 +453,16 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {
             cmd_options.pu_uart1_tx_file = optarg;
         }
+#endif
+#if EMU_HAS_SPIO
+        else if (!strcmp(name, "spio_uart0_rx_file"))
+        {
+            cmd_options.spio_uart0_rx_file = optarg;
+        }
+        else if (!strcmp(name, "spio_uart1_rx_file"))
+        {
+            cmd_options.spio_uart1_rx_file = optarg;
+        }
         else if (!strcmp(name, "spio_uart0_tx_file"))
         {
             cmd_options.spio_uart0_tx_file = optarg;
@@ -446,6 +471,7 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {
             cmd_options.spio_uart1_tx_file = optarg;
         }
+#endif // EMU_HAS_SPIO
         else if (!strcmp(name, "log_at_pc"))
         {
             sscanf(optarg, "%" PRIx64, &cmd_options.log_at_pc);
@@ -526,6 +552,7 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {
             cmd_options.l1_scp_checker_log_minion = atoi(optarg);
         }
+#if EMU_HAS_L2
         else if (!strcmp(name, "l2_scp_check"))
         {
             cmd_options.l2_scp_check = true;
@@ -542,6 +569,7 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {
             cmd_options.l2_scp_checker_log_minion = atoi(optarg);
         }
+#endif // EMU_HAS_L2
         else if (!strcmp(name, "flb_check"))
         {
             cmd_options.flb_check = true;
