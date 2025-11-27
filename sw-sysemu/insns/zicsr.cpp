@@ -67,7 +67,9 @@ void dcache_unlock_set_way(Hart&, uint64_t);
 
 // Tensor extension
 void tensor_fma_start(Hart&, uint64_t);
+#if EMU_HAS_L2
 void tensor_load_l2_start(Hart&, uint64_t);
+#endif
 void tensor_load_start(Hart&, uint64_t);
 void tensor_mask_update(Hart&);
 void tensor_quant_start(Hart&, uint64_t);
@@ -1134,10 +1136,12 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         val &= (VLENW-1);
         cpu.gsc_progress = val;
         break;
+#if EMU_HAS_L2
     case CSR_TENSOR_LOAD_L2:
         require_feature_ml();
         tensor_load_l2_start(cpu, val);
         break;
+#endif
     case CSR_TENSOR_STORE:
         require_feature_ml_on_thread0();
         tensor_store_start(cpu, val);
