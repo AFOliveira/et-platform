@@ -14,6 +14,34 @@
 namespace bemu {
 
 
+#if EMU_ERBIUM
+
+// ERBIUM ESR memory map:
+//   bit 31: always 1
+//   bits 30-24: always 0
+//   bits 23-22: PP (privilege) field
+//   bits 21-0: address within ESR space
+
+// ESR region 'pp' field in bits [23:22] - used by pma_et.cpp
+#define ESR_REGION_PROT_MASK    0x00C0'0000ull
+#define ESR_REGION_PROT_SHIFT   22
+
+// Base address and size of ESR region - used by memory/sysreg_region.h
+// Base: bit 31 = 1, all else = 0 -> 0x80000000
+// Size: 24 bits of address space (including PP) -> 0x01000000 (16MB)
+#define ESR_REGION_BASE         0x8000'0000ull
+#define ESR_REGION_SIZE         0x0100'0000ull
+
+// Hart ESR addresses used by processor.cpp for debug/program buffer
+// Base 0x80000000 + PP=2 (debug) at bits 23:22 (0x00800000) + offset
+#define ESR_AXPROGBUF0          0x8080'07A0ull
+#define ESR_AXPROGBUF1          0x8080'07A8ull
+#define ESR_NXPROGBUF0          0x8080'07B0ull
+#define ESR_NXPROGBUF1          0x8080'07B8ull
+#define ESR_ABSCMD              0x8080'07C0ull
+
+#elif EMU_ETSOC1
+
 // ESR region 'pp' field in bits [31:30] - used by pma_et.cpp
 #define ESR_REGION_PROT_MASK    0x00'C000'0000ull
 #define ESR_REGION_PROT_SHIFT   30
@@ -28,6 +56,8 @@ namespace bemu {
 #define ESR_NXPROGBUF0          0x01'8000'07B0ull
 #define ESR_NXPROGBUF1          0x01'8000'07B8ull
 #define ESR_ABSCMD              0x01'8000'07C0ull
+
+#endif
 
 
 // -----------------------------------------------------------------------------

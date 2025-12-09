@@ -3,11 +3,12 @@
 * SPDX-License-Identifier: Apache-2.0
 *-------------------------------------------------------------------------*/
 
+#include "emu_defines.h"
+
 #include <array>
 #include <cassert>
 #include <stdexcept>
 
-#include "emu_defines.h"
 #include "emu_gio.h"
 #include "esrs.h"
 #include "sysreg_error.h"
