@@ -144,7 +144,6 @@ namespace bemu {
 #define ESR_SM_DATA1                    0x00'80B5'FFD0ull
 
 
- 
 #define NEIGHID(pos)    ((pos) % EMU_NEIGH_PER_SHIRE)
 #define MINION(hart)    ((hart) / EMU_THREADS_PER_MINION)
 #define THREAD(hart)    ((hart) % EMU_THREADS_PER_MINION)
@@ -395,12 +394,303 @@ uint64_t System::esr_read(const Agent& agent, uint64_t addr)
 
 void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
 {
-    (void) agent;
-    (void) value;
+    unsigned shire = shireindex((addr & ESR_REGION_SHIRE_MASK) >> ESR_REGION_SHIRE_SHIFT);
+    if (shire >= EMU_NUM_SHIRES) {
+            WARN_AGENT(esrs, agent, "Write ESR for illegal shire S%u:0x%" PRIx64,
+                       shire, addr);
+            throw memory_error(addr);
+    }
+    
+    uint64_t sregion = addr & ESR_SREGION_MASK;
 
-    // TODO: Implement ESR write for ERBIUM
-    // For now, just warn and ignore
-    WARN_AGENT(esrs, agent, "ERBIUM ESR write not implemented: 0x%" PRIx64 " = 0x%" PRIx64, addr, value);
+    if (sregion == ESR_HART_REGION) {
+        uint64_t esr = addr & ESR_HART_ESR_MASK;
+        unsigned hart = (addr & ESR_REGION_HART_MASK) >> ESR_REGION_HART_SHIFT;
+        switch (esr) {
+        case ESR_ABSCMD:
+        case ESR_NXPROGBUF0:
+        case ESR_NXPROGBUF1:
+        case ESR_AXPROGBUF0:
+        case ESR_AXPROGBUF1: {
+            unsigned hartid = hart;
+            if (cpu[hartid].in_progbuf()) {
+                cpu[hartid].exit_progbuf(Hart::Progbuf::error);
+            } else if (cpu[hartid].is_halted()) {
+                cpu[hartid].write_progbuf(esr, value);
+                if (esr < ESR_NXPROGBUF0 || esr > ESR_NXPROGBUF1) {
+                    cpu[hartid].enter_progbuf();
+                }
+            }
+            break;
+        }
+        case ESR_NXDATA0:
+        case ESR_AXDATA0: {
+            unsigned hartid = hart;
+            cpu[hartid].ddata0 &= 0xFFFF'FFFF'0000'0000ull;
+            cpu[hartid].ddata0 |= value & 0xFFFF'FFFFull;
+            if (esr == ESR_AXDATA0) cpu[hartid].enter_progbuf();
+            LOG_AGENT(DEBUG, agent, "S%u:H%u:data0 = 0x%" PRIx32, shireid(shire), hart, uint32_t(value));
+            break;
+        }
+        case ESR_NXDATA1:
+        case ESR_AXDATA1: {
+            unsigned hartid = hart + shire * EMU_THREADS_PER_SHIRE;
+            cpu[hartid].ddata0 &= 0xFFFF'FFFFull;
+            cpu[hartid].ddata0 |= value << 32;
+            LOG_AGENT(DEBUG, agent, "S%u:H%u:data1 = 0x%" PRIx32, shireid(shire), hart, uint32_t(value));
+            if (esr == ESR_AXDATA1) cpu[hartid].enter_progbuf();
+            break;
+        }
+        default:
+            WARN_AGENT(esrs, agent, "Write unknown hart ESR S%u:M%u:T%u:0x%" PRIx64,
+                       shireid(shire), MINION(hart), THREAD(hart), esr);
+            throw memory_error(addr);
+        }
+        return;
+    }
+
+    if (sregion == ESR_NEIGH_REGION) {
+        unsigned neigh = (addr & ESR_REGION_NEIGH_MASK) >> ESR_REGION_NEIGH_SHIFT;
+        uint64_t esr = addr & ESR_NEIGH_ESR_MASK;
+        if (neigh >= EMU_NEIGH_PER_SHIRE) {
+            WARN_AGENT(esrs, agent, "Write illegal neigh ESR S%u:N%u:0x%" PRIx64, shireid(shire), neigh, esr);
+            throw memory_error(addr);
+        }
+        unsigned pos = neigh + EMU_NEIGH_PER_SHIRE * shire;
+        switch (esr) {
+        case ESR_DUMMY0:
+            neigh_esrs[pos].dummy0 = uint32_t(value & 0xFFFF'FFFF);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:dummy0 = 0x%" PRIx32,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].dummy0);
+            break;
+        case ESR_MINION_BOOT:
+            neigh_esrs[pos].minion_boot = value & 0xFFFF'FFFF'FFFFull;
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:minion_boot = 0x%" PRIx64,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].minion_boot);
+            break;
+        case ESR_MPROT:
+            neigh_esrs[pos].mprot = uint16_t(value & 0x1FF);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:mprot = 0x%" PRIx16,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].mprot);
+            break;
+        case ESR_DUMMY2:
+            neigh_esrs[pos].dummy2 = bool(value & 1);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:dummy2 = 0x%x",
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].dummy2 ? 1 : 0);
+            break;
+        case ESR_IPI_REDIRECT_PC:
+            neigh_esrs[pos].ipi_redirect_pc = value & 0xffff'ffff'ffffull;
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:ipi_redirect_pc = 0x%" PRIx64,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].ipi_redirect_pc);
+            break;
+        case ESR_PMU_CTRL:
+            neigh_esrs[pos].pmu_ctrl = bool(value & 1);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:pmu_ctrl = 0x%x",
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].pmu_ctrl ? 1 : 0);
+            break;
+        case ESR_NEIGH_CHICKEN:
+            neigh_esrs[pos].neigh_chicken = uint8_t(value & 0x7F);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:neigh_chicken = 0x%" PRIx8,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].neigh_chicken);
+            break;
+        case ESR_ICACHE_ERR_LOG_CTL:
+            neigh_esrs[pos].icache_err_log_ctl = uint8_t(value & 0x7);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:icache_err_log_ctl = 0x%" PRIx8,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].icache_err_log_ctl);
+            break;
+        case ESR_ICACHE_ERR_LOG_INFO:
+            neigh_esrs[pos].icache_err_log_info = value & ~0x8ull;
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:icache_err_log_info = 0x%" PRIx64,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].icache_err_log_info);
+            break;
+        case ESR_ICACHE_ERR_LOG_ADDRESS:
+            // TODO: implement
+            // neigh_esrs[pos].icache_err_log_address = value & 0x3'FFFF'FFFFull;
+            // LOG_AGENT(DEBUG, agent, "S%u:N%u:icache_err_log_address = 0x%" PRIx64,
+            //           shireid(shire), NEIGHID(pos), neigh_esrs[pos].icache_err_log_address);
+            break;
+        case ESR_ICACHE_SBE_DBE_COUNTS:
+            neigh_esrs[pos].icache_sbe_dbe_counts = uint16_t(value & 0x7FF);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:icache_sbe_dbe_counts = 0x%" PRIx16,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].icache_sbe_dbe_counts);
+            break;
+        case ESR_HACTRL:
+            neigh_esrs[pos].hactrl = uint32_t(value & 0xffff'ffff);
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:hactrl = 0x%" PRIx32,
+                      shireid(shire), NEIGHID(pos), uint32_t(neigh_esrs[pos].hactrl));
+            break;
+        case ESR_HASTATUS1:
+            neigh_esrs[pos].hastatus1 = value & 0xffff'ffff'0000ull;
+            LOG_AGENT(DEBUG, agent, "S%u:N%u:hastatus1 = 0x%" PRIx64,
+                      shireid(shire), NEIGHID(pos), neigh_esrs[pos].hastatus1);
+            break;
+        default:
+            WARN_AGENT(esrs, agent, "Write unknown neigh ESR S%u:N%u:0x%" PRIx64, shireid(shire), neigh, esr);
+            throw memory_error(addr);
+        }
+        return;
+    }
+
+    uint64_t sregion_extra = addr & ESR_SREGION_EXT_MASK;
+
+    if (sregion_extra == ESR_SHIRE_REGION) {
+        uint64_t esr = addr & ESR_SHIRE_ESR_MASK;
+        switch (esr) {
+        case ESR_MINION_FEATURE:
+            write_minion_feature(shire, uint8_t(value & 0x3F));
+            LOG_AGENT(DEBUG, agent, "S%u:minion_feature = 0x%" PRIx8,
+                      shireid(shire), shire_other_esrs[shire].minion_feature);
+            return;
+        case ESR_THREAD1_DISABLE:
+            write_thread1_disable(shire, uint32_t(value & 0xFF));
+            LOG_AGENT(DEBUG, agent, "S%u:thread1_disable = 0x%" PRIx32,
+                      shireid(shire), shire_other_esrs[shire].thread1_disable);
+            return;
+        case ESR_IPI_REDIRECT_TRIGGER:
+            LOG_AGENT(DEBUG, agent, "S%u:ipi_redirect_trigger = 0x%" PRIx64, shireid(shire), value);
+            send_ipi_redirect(shire, value);
+            return;
+        case ESR_IPI_REDIRECT_FILTER:
+            shire_other_esrs[shire].ipi_redirect_filter = value & 0xFFFF;
+            LOG_AGENT(DEBUG, agent, "S%u:ipi_redirect_filter = 0x%" PRIx64,
+                      shireid(shire), shire_other_esrs[shire].ipi_redirect_filter);
+            return;
+        case ESR_IPI_TRIGGER:
+            shire_other_esrs[shire].ipi_trigger = value & 0xFFFF;
+            LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger = 0x%" PRIx64,
+                      shireid(shire), shire_other_esrs[shire].ipi_trigger);
+            raise_machine_software_interrupt(shire, value & 0xFFFF);
+            return;
+        case ESR_IPI_TRIGGER_CLEAR:
+            LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger_clear = 0x%" PRIx64, shireid(shire), value & 0xffff);
+            clear_machine_software_interrupt(shire, value & 0xFFFF);
+            return;
+        case ESR_FCC_CREDINC_0:
+            LOG_AGENT(DEBUG, agent, "S%u:fcc_credinc_0 = 0x%" PRIx64, shireid(shire), value & 0xff);
+            write_fcc_credinc(0, shire, value & 0xFF);
+            return;
+        case ESR_FCC_CREDINC_1:
+            LOG_AGENT(DEBUG, agent, "S%u:fcc_credinc_1 = 0x%" PRIx64, shireid(shire), value & 0xff);
+            write_fcc_credinc(1, shire, value & 0xFF);
+            return;
+        case ESR_FCC_CREDINC_2:
+            LOG_AGENT(DEBUG, agent, "S%u:fcc_credinc_2 = 0x%" PRIx64, shireid(shire), value & 0xff);
+            write_fcc_credinc(2, shire, value & 0xFF);
+            return;
+        case ESR_FCC_CREDINC_3:
+            LOG_AGENT(DEBUG, agent, "S%u:fcc_credinc_3 = 0x%" PRIx64, shireid(shire), value & 0xff);
+            write_fcc_credinc(3, shire, value & 0xFF);
+            return;
+        case ESR_FAST_LOCAL_BARRIER0:
+        case ESR_FAST_LOCAL_BARRIER1:
+        case ESR_FAST_LOCAL_BARRIER2:
+        case ESR_FAST_LOCAL_BARRIER3:
+        case ESR_FAST_LOCAL_BARRIER4:
+        case ESR_FAST_LOCAL_BARRIER5:
+        case ESR_FAST_LOCAL_BARRIER6:
+        case ESR_FAST_LOCAL_BARRIER7:
+        case ESR_FAST_LOCAL_BARRIER8:
+        case ESR_FAST_LOCAL_BARRIER9:
+        case ESR_FAST_LOCAL_BARRIER10:
+        case ESR_FAST_LOCAL_BARRIER11:
+        case ESR_FAST_LOCAL_BARRIER12:
+        case ESR_FAST_LOCAL_BARRIER13:
+        case ESR_FAST_LOCAL_BARRIER14:
+        case ESR_FAST_LOCAL_BARRIER15:
+        case ESR_FAST_LOCAL_BARRIER16:
+        case ESR_FAST_LOCAL_BARRIER17:
+        case ESR_FAST_LOCAL_BARRIER18:
+        case ESR_FAST_LOCAL_BARRIER19:
+        case ESR_FAST_LOCAL_BARRIER20:
+        case ESR_FAST_LOCAL_BARRIER21:
+        case ESR_FAST_LOCAL_BARRIER22:
+        case ESR_FAST_LOCAL_BARRIER23:
+        case ESR_FAST_LOCAL_BARRIER24:
+        case ESR_FAST_LOCAL_BARRIER25:
+        case ESR_FAST_LOCAL_BARRIER26:
+        case ESR_FAST_LOCAL_BARRIER27:
+        case ESR_FAST_LOCAL_BARRIER28:
+        case ESR_FAST_LOCAL_BARRIER29:
+        case ESR_FAST_LOCAL_BARRIER30:
+        case ESR_FAST_LOCAL_BARRIER31:
+            shire_other_esrs[shire].fast_local_barrier[(esr - ESR_FAST_LOCAL_BARRIER0)>>3] = uint8_t(value);
+            LOG_AGENT(DEBUG, agent, "S%u:fast_local_barrier%llu = 0x%" PRIx8,
+                      shireid(shire), (esr - ESR_FAST_LOCAL_BARRIER0)>>3,
+                      shire_other_esrs[shire].fast_local_barrier[(esr - ESR_FAST_LOCAL_BARRIER0)>>3]);
+            return;
+        case ESR_MTIME:
+            // TODO: implement actual timer (restore PU)
+            return;
+        case ESR_MTIMECMP:
+            // TODO: implement actual timer (restore PU)
+            return;
+        case ESR_TIME_CONFIG:
+            // TODO: implement actual timer
+            // shire_other_esrs[shire].time_config = uint16_t(value & 0x3ff);
+            // LOG_AGENT(DEBUG, agent, "S%u:time_config = 0x%" PRIx16,
+            //           shireid(shire), shire_other_esrs[shire].time_config);
+            return;
+        case ESR_MTIME_LOCAL_TARGET:
+            shire_other_esrs[shire].mtime_local_target = uint16_t(value & 0xFFFF);
+            LOG_AGENT(DEBUG, agent, "S%u:mtime_local_target = 0x%" PRIx16,
+                      shireid(shire), shire_other_esrs[shire].mtime_local_target);
+            return;
+        case ESR_THREAD0_DISABLE:
+            write_thread0_disable(shire, uint8_t(value & 0xFF));
+            LOG_AGENT(DEBUG, agent, "S%u:thread0_disable = 0x%" PRIx8,
+                      shireid(shire), uint8_t(shire_other_esrs[shire].thread0_disable));
+            return;
+        case ESR_SHIRE_COOP_MODE:
+            LOG_AGENT(DEBUG, agent, "S%u:shire_coop_mode = 0x%x", shireid(shire), unsigned(value & 0x1));
+            write_shire_coop_mode(shire, value);
+            return;
+        case ESR_ICACHE_UPREFETCH:
+            LOG_AGENT(DEBUG, agent, "S%u:icache_uprefetch = 0x%" PRIx64, shireid(shire), uint64_t(value & 0xFFFF'FFFF'FFFFull));
+            write_icache_prefetch(Privilege::U, shire, value & 0xffff'ffff'ffffull);
+            return;
+        case ESR_ICACHE_SPREFETCH:
+            LOG_AGENT(DEBUG, agent, "S%u:icache_sprefetch = 0x%" PRIx64, shireid(shire), uint64_t(value & 0xFFFF'FFFF'FFFFull));
+            write_icache_prefetch(Privilege::S, shire, value & 0xffff'ffff'ffffull);
+            return;
+        case ESR_ICACHE_MPREFETCH:
+            LOG_AGENT(DEBUG, agent, "S%u:icache_mprefetch = 0x%" PRIx64, shireid(shire), uint64_t(value & 0xFFFF'FFFF'FFFFull));
+            write_icache_prefetch(Privilege::M, shire, value & 0xffff'ffff'ffffull);
+            return;
+        case ESR_CLK_GATE_CTRL:
+            shire_other_esrs[shire].clk_gate_ctrl = uint8_t(value & 0xDF);
+            LOG_AGENT(DEBUG, agent, "S%u:clk_gate_ctrl = 0x%" PRIx8,
+                      shireid(shire), shire_other_esrs[shire].clk_gate_ctrl);
+            return;
+        case ESR_DEBUG_CLK_GATE_CTRL:
+            // TODO: implement
+            // shire_other_esrs[shire].debug_clk_gate_ctrl = uint8_t(value & 0x2);
+            // LOG_AGENT(DEBUG, agent, "S%u:debug_clk_gate_ctrl = 0x%" PRIx8,
+            //           shireid(shire), shire_other_esrs[shire].debug_clk_gate_ctrl);
+            return;
+        case ESR_DMCTRL:
+            agent.chip->write_dmctrl(uint32_t(value & 0xF400'000F));
+            LOG_AGENT(DEBUG, agent, "S%u:dmctrl = 0x%" PRIx32,
+                      shireid(shire), uint32_t(value & 0xF400'000F));
+            return;
+        case ESR_SM_CONFIG:
+            // TODO: implement Status Monitor in debug module
+            // shire_other_esrs[shire].sm_config = uint16_t(value & 0xFFF);
+            // LOG_AGENT(DEBUG, agent, "S%u:sm_config = 0x%" PRIx16,
+            //           shireid(shire), shire_other_esrs[shire].sm_config);
+            return;
+        case ESR_SM_TRIGGER:
+            // TODO: implement Status Monitor in debug module
+            // shire_other_esrs[shire].sm_trigger = uint8_t(value & 0x1);
+            // LOG_AGENT(DEBUG, agent, "S%u:sm_trigger = 0x%" PRIx8,
+            //           shireid(shire), shire_other_esrs[shire].sm_trigger);
+            return;
+        }
+        WARN_AGENT(esrs, agent, "Write unknown shire_other ESR S%u:0x%" PRIx64, shireid(shire), esr);
+        throw memory_error(addr);
+    }
+
+    WARN_AGENT(esrs, agent, "Write illegal ESR S%u:0x%" PRIx64, shireid(shire), addr);
+    throw memory_error(addr);
 }
 
 
@@ -452,9 +742,9 @@ void System::write_icache_prefetch(Privilege /*privilege*/, unsigned shire, uint
 
 uint64_t System::read_icache_prefetch(Privilege /*privilege*/, unsigned shire) const
 {
-    (void) shire;
     assert(shire <= EMU_NUM_COMPUTE_SHIRES);
 #ifdef SYS_EMU
+    (void) shire;
     // NB: Prefetches finish instantaneously in sys_emu
     return 1;
 #else
@@ -465,10 +755,11 @@ uint64_t System::read_icache_prefetch(Privilege /*privilege*/, unsigned shire) c
 
 void System::finish_icache_prefetch(unsigned shire)
 {
-    (void) shire;
     assert(shire <= EMU_NUM_COMPUTE_SHIRES);
 #ifndef SYS_EMU
     shire_other_esrs[shire].icache_prefetch_active = 0;
+#else
+    (void) shire;
 #endif
 }
 
