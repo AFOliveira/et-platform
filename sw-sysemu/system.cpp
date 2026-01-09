@@ -147,13 +147,19 @@ void System::raise_machine_timer_interrupt(unsigned shire)
 #ifdef SYS_EMU
     shire = shireindex(shire);
 
+    // Service Processor uses a different thread index scheme
+    if (shireindex_is_ioshire(shire)) {
+        if (!cpu[EMU_IO_SHIRE_SP_THREAD].is_nonexistent()) {
+            cpu[EMU_IO_SHIRE_SP_THREAD].raise_interrupt(MACHINE_TIMER_INTERRUPT);
+        }
+        return;
+    }
+
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
     unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
-    uint32_t mtime_target = shireindex_is_ioshire(shire)
-        ? 1
-        : shire_other_esrs[shire].mtime_local_target;
+    uint32_t mtime_target = shire_other_esrs[shire].mtime_local_target;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
         if (!cpu[thread].is_nonexistent()) {
@@ -174,13 +180,19 @@ void System::clear_machine_timer_interrupt(unsigned shire)
 #ifdef SYS_EMU
     shire = shireindex(shire);
 
+    // Service Processor uses a different thread index scheme
+    if (shireindex_is_ioshire(shire)) {
+        if (!cpu[EMU_IO_SHIRE_SP_THREAD].is_nonexistent()) {
+            cpu[EMU_IO_SHIRE_SP_THREAD].clear_interrupt(MACHINE_TIMER_INTERRUPT);
+        }
+        return;
+    }
+
     unsigned begin_hart = shire * EMU_THREADS_PER_SHIRE;
     unsigned hart_count = shireindex_harts(shire);
     unsigned end_hart   = begin_hart + hart_count;
 
-    uint32_t mtime_target = shireindex_is_ioshire(shire)
-        ? 1
-        : shire_other_esrs[shire].mtime_local_target;
+    uint32_t mtime_target = shire_other_esrs[shire].mtime_local_target;
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
         if (!cpu[thread].is_nonexistent()) {
