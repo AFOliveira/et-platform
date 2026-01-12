@@ -58,7 +58,7 @@ struct Uart : public MemoryRegion {
             }
             *reinterpret_cast<uint32_t*>(result) =
                 (dr << DW_APB_UART_LSR_DR_SHIFT) |  // Data Ready in the RBR or the receiver FIFO
-                (0  << DW_APB_UART_LSR_THRE_SHIFT); // Transmit FIFO always empty
+                (1  << DW_APB_UART_LSR_THRE_SHIFT); // Transmit Holding Register Empty (ready to send)
             break;
         }
         default:
