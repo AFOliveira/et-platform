@@ -20,34 +20,51 @@ namespace bemu {
 #endif
 
 #if EMU_ERBIUM
-#define EMU_NUM_SHIRES		1
+//
+// Erbium
+//
+
+// Basic Topology
+#define EMU_NUM_SHIRES          1
 #define EMU_NUM_MINION_SHIRES   (EMU_NUM_SHIRES)
 #define EMU_NUM_COMPUTE_SHIRES  (EMU_NUM_MINION_SHIRES)
-#define EMU_THREADS_PER_MINION	2
-#define EMU_MINIONS_PER_NEIGH	8
+#define EMU_THREADS_PER_MINION  2
+#define EMU_MINIONS_PER_NEIGH   8
 #define EMU_THREADS_PER_NEIGH   (EMU_THREADS_PER_MINION * EMU_MINIONS_PER_NEIGH)
-#define EMU_NEIGH_PER_SHIRE	1
+#define EMU_NEIGH_PER_SHIRE     1
 #define EMU_MINIONS_PER_SHIRE   (EMU_MINIONS_PER_NEIGH * EMU_NEIGH_PER_SHIRE)
 #define EMU_THREADS_PER_SHIRE   (EMU_THREADS_PER_NEIGH * EMU_NEIGH_PER_SHIRE)
 #define EMU_NUM_NEIGHS          (EMU_NUM_MINION_SHIRES * EMU_NEIGH_PER_SHIRE)
 #define EMU_NUM_MINIONS         (EMU_NUM_MINION_SHIRES * EMU_MINIONS_PER_SHIRE)
 #define EMU_NUM_THREADS         (EMU_NUM_MINION_SHIRES * EMU_THREADS_PER_SHIRE)
 
+// Tensor Reduce Configuartion
+#define EMU_TREDUCE_MAX_MINION  (EMU_NUM_MINIONS - 1)
+#define EMU_TREDUCE_MAX_HEIGHT  2
+
+// System Features
 #define EMU_HAS_WDT 1
+#define EMU_HAS_RVTIMER 1
 #define EMU_HAS_L2 0
 #define EMU_HAS_SVCPROC 0
 #define EMU_HAS_MEMSHIRE 0
 #define EMU_HAS_SPIO 0
 #define EMU_HAS_PU 0
-#define EMU_HAS_PMA 0
 #define EMU_HAS_PTW 0
+#define EMU_HAS_GFX 0
+#define EMU_HAS_MSG_PORTS 0
 
 // Main memory size (16MB of MRAM)
 #define EMU_DRAM_SIZE  (16ULL*1024ULL*1024ULL)
 
-#elif EMU_ETSOC1
+#define PA_SIZE        32
 
-// Maximum number of threads
+#elif EMU_ETSOC1
+//
+// ETSOC-1
+//
+
+// Basic Topology
 #define EMU_NUM_SHIRES          35
 #define EMU_NUM_MINION_SHIRES   (EMU_NUM_SHIRES - 1)
 #define EMU_NUM_COMPUTE_SHIRES  (EMU_NUM_MINION_SHIRES - 2)
@@ -61,6 +78,10 @@ namespace bemu {
 #define EMU_NUM_NEIGHS          ((EMU_NUM_MINION_SHIRES * EMU_NEIGH_PER_SHIRE) + 1)
 #define EMU_NUM_MINIONS         ((EMU_NUM_MINION_SHIRES * EMU_MINIONS_PER_SHIRE) + 1)
 #define EMU_NUM_THREADS         ((EMU_NUM_MINION_SHIRES * EMU_THREADS_PER_SHIRE) + 1)
+
+// Tensor Reduce configuration.
+#define EMU_TREDUCE_MAX_MINION  (0x1FFF) // ET-SOC1 TENSOR_REDUCE send/recv: up to 8k minions. (!)
+#define EMU_TREDUCE_MAX_HEIGHT  0xF      // ET-SOC1 TENSOR_REDUCE bcast/reduce: up to 64k minions. (!)
 
 //
 // IO-Shire (and Service Processor) Configuration.
@@ -112,11 +133,6 @@ namespace bemu {
 #define SCP_REGION_SIZE    0x80000000ULL
 
 //
-// PMA Configuration
-//
-#define EMU_HAS_PMA 1
-
-//
 // PTW Configuration
 //
 // Note: ET-SOC-1 PTW is presumably broken, but is left
@@ -124,10 +140,22 @@ namespace bemu {
 #define EMU_HAS_PTW 1
 
 //
+// Graphics (tex_send CSR)
+//
+#define EMU_HAS_GFX 1
+
+//
+// Message ports (portctrl, porthead CSRs)
+//
+#define EMU_HAS_MSG_PORTS 1
+
+//
 // Main memory size (up to 32GiB)
 //
 #define EMU_DRAM_SIZE  (32ULL*1024ULL*1024ULL*1024ULL)
 #define EMU_HAS_HIGH_MEMORY 1
+
+#define PA_SIZE        40
 
 #else
 #error "Architecture unspecified."
@@ -154,8 +182,6 @@ namespace bemu {
 #define EMU_NUM_FCC_COUNTERS_PER_THREAD 2
 
 // VA to PA translation
-// TODO: Different for Erbium.
-#define PA_SIZE        40
 #define PA_M           ((((uint64_t)1) << PA_SIZE) - 1)
 #define VA_SIZE        48
 #define VA_M           ((((uint64_t)1) << VA_SIZE) - 1)

@@ -16,6 +16,7 @@
 #include <vector>
 #include <unistd.h>
 
+#include "emu_defines.h"
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
 #include "system.h"
@@ -31,6 +32,9 @@ struct PLIC_Interrupt_Target {
     PLIC_Target_Notify notify;
 };
 
+//
+// A generic PLIC device.
+//
 // S = #sources, T = #targets
 template <unsigned long long Base, size_t N, size_t S, size_t T>
 struct PLIC : public MemoryRegion
@@ -205,10 +209,10 @@ private:
 
         if ((pos % 0x1000) == 0) { // Threshold registers
             *result32 = threshold[name_id];
-        } else if ((pos % 0x1000) == 4) { // MaxID registers
+        } else if ((pos % 0x1000) == 4) { // Claim/Complete registers
             // Read current MaxID
             *result32 = max_id[name_id];
-            // To claim an interrupt, the target reads its MaxID register
+            // To claim an interrupt, the target reads its Claim register
             if (max_id[name_id] > 0) {
                 in_flight[max_id[name_id]] = true;
                 // Save the ID of the Target that claimed the source interrupt
@@ -277,66 +281,6 @@ private:
     std::bitset<T>                eip;      // External Interrupt Pending (per target)
     std::array<uint32_t, T>       threshold; // Interrupt Threshold (per target)
     std::array<uint32_t, T>       max_id;    // Interrupt MaxID (per target)
-};
-
-template <unsigned long long Base, size_t N>
-struct PU_PLIC : public PLIC<Base, N, 41, 12>
-{
-    static void Target_Minion_Machine_external_interrupt(System* system, bool raise) {
-        for (int i = 0; i < EMU_NUM_MINION_SHIRES; i++) {
-            if (raise) {
-                system->raise_machine_external_interrupt(i);
-            } else {
-                system->clear_machine_external_interrupt(i);
-            }
-        }
-    }
-
-    static void Target_Minion_Supervisor_external_interrupt(System* system, bool raise) {
-        for (int i = 0; i < EMU_NUM_MINION_SHIRES; i++) {
-            if (raise) {
-                system->raise_supervisor_external_interrupt(i);
-            } else {
-                system->clear_supervisor_external_interrupt(i);
-            }
-        }
-    }
-
-    const std::vector<PLIC_Interrupt_Target> &get_target_list() const {
-        static const std::vector<PLIC_Interrupt_Target> targets = {
-            {10, 0x21, Target_Minion_Machine_external_interrupt},
-            {11, 0x20, Target_Minion_Supervisor_external_interrupt},
-        };
-        return targets;
-    }
-};
-
-template <unsigned long long Base, size_t N>
-struct SP_PLIC : public PLIC<Base, N, 148, 2>
-{
-    static void Target_SP_Machine_external_interrupt(System* system, bool raise) {
-        if (raise) {
-            system->raise_machine_external_interrupt(IO_SHIRE_ID);
-        } else {
-            system->clear_machine_external_interrupt(IO_SHIRE_ID);
-        }
-    }
-
-    static void Target_SP_Supervisor_external_interrupt(System* system, bool raise) {
-        if (raise) {
-            system->raise_supervisor_external_interrupt(IO_SHIRE_ID);
-        } else {
-            system->clear_supervisor_external_interrupt(IO_SHIRE_ID);
-        }
-    }
-
-    const std::vector<PLIC_Interrupt_Target> &get_target_list() const {
-        static const std::vector<PLIC_Interrupt_Target> targets = {
-            {0, 0, Target_SP_Machine_external_interrupt},
-            {1, 1, Target_SP_Supervisor_external_interrupt},
-        };
-        return targets;
-    }
 };
 
 } // namespace bemu

@@ -30,7 +30,7 @@ namespace bemu {
 // | 0x00_0200_E000 | 0x00_0200_E7FF |  2KiB    | Scratch SRAM      |
 // | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
-// | 0x00_8100_0000 | 0x00_81FF_FFFF | 16MiB    | PLIC              | <- to be changed
+// | 0x00_C000_0000 | 0x00_C3FF_FFFF | 64MiB    | PLIC              |
 // +----------------+----------------+----------+-------------------+
 //
 
@@ -48,6 +48,7 @@ private:
         sram_idx,
         dram_idx,
         sysreg_idx,
+        plic_idx,
 
         REGION_COUNT
     };
@@ -58,6 +59,7 @@ private:
         /* sram    */ 0x00'0200'E000ull,
         /* dram    */ 0x00'4000'0000ull,  /* Actually MRAM */
         /* sysreg  */ 0x00'8000'0000ull,
+        /* plic    */ 0x00'C000'0000ull,
     };
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
@@ -66,6 +68,7 @@ private:
         /* sram    */ 2_KiB,
         /* dram    */ 16_MiB,
         /* sysreg  */ 16_MiB,
+        /* plic    */ 64_MiB,
     };
 
 public:
@@ -109,10 +112,25 @@ public:
 
     void wdt_clock_tick(const Agent& agent, uint64_t cycle);
 
+    // PLIC helpers
+    void plic_interrupt_pending_set(const Agent&, uint32_t source);
+    void plic_interrupt_pending_clear(const Agent&, uint32_t source);
+
+    // RVTimer helpers
+    bool rvtimer_is_active() const;
+    uint64_t rvtimer_read_mtime() const;
+    uint64_t rvtimer_read_mtimecmp() const;
+    void rvtimer_clock_tick(const Agent&);
+    void rvtimer_write_mtime(const Agent&, uint64_t value);
+    void rvtimer_write_mtimecmp(const Agent&, uint64_t value);
+    void rvtimer_reset();
+
 protected:
     static inline bool above(const std::unique_ptr<MemoryRegion>& lhs, addr_type rhs) {
         return lhs->last() < rhs;
     }
+
+    inline auto& rvtimer() const;
 
     MemoryRegion* search(addr_type addr, size_type n) const {
         auto lo = std::lower_bound(regions.cbegin(), regions.cend(), addr, above);

@@ -359,17 +359,12 @@ uint64_t System::esr_read(const Agent& agent, uint64_t addr)
         case ESR_FAST_LOCAL_BARRIER31:
             return shire_other_esrs[shire].fast_local_barrier[(esr - ESR_FAST_LOCAL_BARRIER0)>>3];
         case ESR_MTIME:
-            return 0;
-            // TODO: implement actual timer (restore PU)
-            //return memory.timer_read_mtime();
+            return memory.rvtimer_read_mtime();
         case ESR_MTIMECMP:
-            return 0;
-            // TODO: implement actual timer (restore PU)
-            // return memory.timer_read_mtimecmp();
+            return memory.rvtimer_read_mtimecmp();
         case ESR_TIME_CONFIG:
+            // TODO: undefined
             return 0;
-            // TODO: implement actual timer (restore PU)
-            // return memory.timer_read_mtimecmp();
         case ESR_MTIME_LOCAL_TARGET:
             return shire_other_esrs[shire].mtime_local_target;
         case ESR_THREAD0_DISABLE:
@@ -639,13 +634,13 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
                       shire_other_esrs[shire].fast_local_barrier[(esr - ESR_FAST_LOCAL_BARRIER0)>>3]);
             return;
         case ESR_MTIME:
-            // TODO: implement actual timer (restore PU)
+            memory.rvtimer_write_mtime(agent, value);
             return;
         case ESR_MTIMECMP:
-            // TODO: implement actual timer (restore PU)
+            memory.rvtimer_write_mtimecmp(agent, value);
             return;
         case ESR_TIME_CONFIG:
-            // TODO: implement actual timer
+            // TODO: undefined
             // shire_other_esrs[shire].time_config = uint16_t(value & 0x3ff);
             // LOG_AGENT(DEBUG, agent, "S%u:time_config = 0x%" PRIx16,
             //           shireid(shire), shire_other_esrs[shire].time_config);

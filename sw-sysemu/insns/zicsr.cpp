@@ -24,10 +24,17 @@
 
 
 // vendor, arch, imp, ISA values
+#if EMU_ERBIUM
+// TODO: Erbium values for mvendorid, marchid, mimpid are yet to be defined
+#define CSR_VENDOR_ID 0
+#define CSR_ARCH_ID   0
+#define CSR_IMP_ID    0
+#else
 #define CSR_VENDOR_ID ((11<<7) |        /* bank 11 */ \
                        (0xe5 & 0x7f))   /* 0xE5 (0x65 without parity) */
 #define CSR_ARCH_ID 0x8000000000000001ull
 #define CSR_IMP_ID  0x0
+#endif
 #define CSR_ISA_MAX ((1ull << 2)  | /* "C" Compressed extension */                      \
                      (1ull << 5)  | /* "F" Single-precision floating-point extension */ \
                      (1ull << 8)  | /* "I" RV32I/64I/128I base ISA */                   \
@@ -167,6 +174,9 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
     case CSR_SSTATUS:
         // Hide sxl, tsr, tw, tvm, mprv, mpp, mpie, mie
         val = cpu.mstatus & 0x80000003000DE133ULL;
+#if !EMU_HAS_PTW
+        val &= ~(1ULL << MSTATUS_SUM);  // SUM is RO(0) without PTW
+#endif
         break;
     case CSR_SIE:
         val = cpu.mie & cpu.mideleg;
@@ -193,7 +203,11 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
         val = cpu.mip & cpu.mideleg;
         break;
     case CSR_SATP:
+#if EMU_HAS_PTW
         val = cpu.core->satp;
+#else
+        val = 0;  // Hardwired to bare mode
+#endif
         break;
     case CSR_MSTATUS:
         val = cpu.mstatus;
@@ -401,7 +415,11 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
         break;
         // ----- Esperanto registers -------------------------------------
     case CSR_MATP:
+#if EMU_HAS_PTW
         val = cpu.core->matp;
+#else
+        val = 0;  // Hardwired to bare mode
+#endif
         break;
     case CSR_MINSTMASK:
         val = cpu.minstmask;
@@ -483,10 +501,12 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
     case CSR_GSC_PROGRESS:
         val = cpu.gsc_progress;
         break;
+#if EMU_HAS_L2
     case CSR_TENSOR_LOAD_L2:
         require_feature_ml();
         val = 0;
         break;
+#endif
     case CSR_TENSOR_STORE:
         require_feature_ml_on_thread0();
         val = 0;
@@ -519,16 +539,19 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
         require_feature_u_cacheops();
         val = 0;
         break;
+#if EMU_HAS_MSG_PORTS
     case CSR_PORTCTRL0:
     case CSR_PORTCTRL1:
     case CSR_PORTCTRL2:
     case CSR_PORTCTRL3:
         val = read_port_control(cpu, csr - CSR_PORTCTRL0);
         break;
+#endif
     case CSR_FCCNB:
         require_feature_ml();
         val = (uint64_t(cpu.fcc[1]) << 16) + uint64_t(cpu.fcc[0]);
         break;
+#if EMU_HAS_MSG_PORTS
     case CSR_PORTHEAD0:
     case CSR_PORTHEAD1:
     case CSR_PORTHEAD2:
@@ -541,6 +564,7 @@ static uint64_t csrget(Hart& cpu, uint16_t csr)
     case CSR_PORTHEADNB3:
         val = read_port_head(cpu, csr - CSR_PORTHEADNB0, false);
         break;
+#endif
     case CSR_HARTID:
         if (PRV != Privilege::M && (cpu.core->menable_shadows & 1) == 0) {
             throw trap_illegal_instruction(cpu.inst.bits);
@@ -590,6 +614,9 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         // Preserve sd, sxl, uxl, tsr, tw, tvm, mprv, xs, mpp, mpie, mie
         // Modify mxr, sum, fs, spp, spie, (upie=0), sie, (uie=0)
         val = (val & 0x00000000000C6122ULL) | (cpu.mstatus & 0x0000000F00739888ULL);
+#if !EMU_HAS_PTW
+        val &= ~(1ULL << MSTATUS_SUM);  // SUM is RO(0) without PTW
+#endif
         // Setting fs=1 or fs=2 will set fs=3
         if (val & 0x6000ULL) {
             val |= 0x6000ULL;
@@ -649,6 +676,7 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         val &= cpu.mideleg;
         break;
     case CSR_SATP: // Shared register
+#if EMU_HAS_PTW
         // MODE is 4 bits, ASID is 0bits, PPN is PPN_M bits
         val &= 0xF000000000000000ULL | PPN_M;
         switch (val >> 60) {
@@ -661,11 +689,17 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
             // do not write the register if attempting to set an unsupported mode
             break;
         }
+#else
+        val = 0;  // Hardwired to bare mode, writes ignored
+#endif
         break;
     case CSR_MSTATUS:
         // Preserve sd, sxl, uxl, xs
         // Write all others (except upie=0, uie=0)
         val = (val & 0x00000000007E79AAULL) | (cpu.mstatus & 0x0000000F00018000ULL);
+#if !EMU_HAS_PTW
+        val &= ~(1ULL << MSTATUS_SUM);  // SUM is RO(0) without PTW
+#endif
         // Setting fs=1 or fs=2 will set fs=3
         if (val & 0x6000ULL) {
             val |= 0x6000ULL;
@@ -919,6 +953,7 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         throw trap_illegal_instruction(cpu.inst.bits);
         // ----- Esperanto registers -------------------------------------
     case CSR_MATP: // Shared register
+#if EMU_HAS_PTW
         // do not write the register if it is locked (L==1)
         if (~cpu.core->matp & 0x800000000000000ULL) {
             // MODE is 4 bits, L is 1 bits, ASID is 0bits, PPN is PPN_M bits
@@ -934,6 +969,11 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
                 break;
             }
         }
+#else
+        // Hardwired to bare mode
+        val = 0;
+        cpu.core->matp = 0;
+#endif
         break;
     case CSR_MINSTMASK:
         val &= 0x1ffffffffULL;
@@ -1043,7 +1083,8 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         break;
     case CSR_TENSOR_COOP:
         require_feature_ml_on_thread0();
-        val &= 0xfff1f;
+        // group [4:0], minions [15:8], neighs [19:16] (width depends on EMU_NEIGH_PER_SHIRE)
+        val &= 0xff1f | (((1 << EMU_NEIGH_PER_SHIRE) - 1) << 16);
         cpu.tensor_coop = val;
         break;
     case CSR_TENSOR_MASK:
@@ -1214,6 +1255,7 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         val &= 0xC000FFFFFFFFFFCFULL;
         dcache_unlock_vaddr(cpu, val);
         break;
+#if EMU_HAS_MSG_PORTS
     case CSR_PORTCTRL0:
     case CSR_PORTCTRL1:
     case CSR_PORTCTRL2:
@@ -1221,7 +1263,9 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         val = legalize_portctrl(val);
         configure_port(cpu, csr - CSR_PORTCTRL0, val);
         break;
+#endif
     case CSR_FCCNB:
+#if EMU_HAS_MSG_PORTS
     case CSR_PORTHEAD0:
     case CSR_PORTHEAD1:
     case CSR_PORTHEAD2:
@@ -1230,6 +1274,7 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
     case CSR_PORTHEADNB1:
     case CSR_PORTHEADNB2:
     case CSR_PORTHEADNB3:
+#endif
     case CSR_HARTID:
         throw trap_illegal_instruction(cpu.inst.bits);
         // ----- All other registers -------------------------------------

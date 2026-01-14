@@ -1111,7 +1111,7 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
                 break;
             case ESR_MPROT:
                 neigh_esrs[pos].mprot = uint8_t(value & 0x7f);
-                LOG_AGENT(DEBUG, agent, "S%u:N%u:mprot = 0x%" PRIx8,
+                LOG_AGENT(DEBUG, agent, "S%u:N%u:mprot = 0x%" PRIx16,
                           shireid(shire), NEIGHID(pos), neigh_esrs[pos].mprot);
                 break;
             case ESR_DUMMY2:
