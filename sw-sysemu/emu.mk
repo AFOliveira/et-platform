@@ -59,7 +59,7 @@ emu_cpp_srcs := \
 	devices/pcie_dma.cpp \
 	devices/spio_misc_region.cpp \
 	emu_gio.cpp \
-	esrs.cpp \
+	esrs_et.cpp \
 	flb.cpp \
 	gold.cpp \
 	insns/arith.cpp \
@@ -90,5 +90,6 @@ emu_cpp_srcs := \
 	memory/main_memory.cpp \
 	mmu.cpp \
 	msgport.cpp \
+	pma_et.cpp \
 	processor.cpp \
 	system.cpp
