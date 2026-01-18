@@ -26,7 +26,9 @@ void lprintf(logLevel level, const Agent& agent, const char* fmt, ...)
     auto& logger = agent.chip->log;
     logger << level << "[" << agent.name() << "] " << lbuf << endm;
 
+#ifdef SYS_EMU
     logger.dumpTraceBufferIfFatal(agent);
+#endif
 }
 
 } // namespace bemu
