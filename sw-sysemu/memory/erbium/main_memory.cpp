@@ -46,8 +46,15 @@ uint64_t MainMemory::rvtimer_read_mtimecmp() const {
     return rvtimer().read_mtimecmp();
 }
 
-void MainMemory::rvtimer_clock_tick(const Agent& agent) {
-    rvtimer().clock_tick(agent);
+uint64_t MainMemory::rvtimer_read_time_config() const {
+    return rvtimer().read_time_config();
+}
+
+void MainMemory::rvtimer_clock_tick(const Agent& agent, uint64_t cycle) {
+    // cycle at 200MHz
+    if ((cycle % 5) == 0) {
+        rvtimer().prescaler_tick(agent);
+    }
 }
 
 void MainMemory::rvtimer_write_mtime(const Agent& agent, uint64_t value) {
@@ -56,6 +63,10 @@ void MainMemory::rvtimer_write_mtime(const Agent& agent, uint64_t value) {
 
 void MainMemory::rvtimer_write_mtimecmp(const Agent& agent, uint64_t value) {
     rvtimer().write_mtimecmp(agent, value);
+}
+
+void MainMemory::rvtimer_write_time_config(const Agent& agent, uint64_t value) {
+    rvtimer().write_time_config(agent, value);
 }
 
 void MainMemory::rvtimer_reset() {

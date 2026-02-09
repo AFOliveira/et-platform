@@ -120,9 +120,11 @@ public:
     bool rvtimer_is_active() const;
     uint64_t rvtimer_read_mtime() const;
     uint64_t rvtimer_read_mtimecmp() const;
-    void rvtimer_clock_tick(const Agent&);
+    uint64_t rvtimer_read_time_config() const;
+    void rvtimer_clock_tick(const Agent&, uint64_t cycle);
     void rvtimer_write_mtime(const Agent&, uint64_t value);
     void rvtimer_write_mtimecmp(const Agent&, uint64_t value);
+    void rvtimer_write_time_config(const Agent&, uint64_t value);
     void rvtimer_reset();
 
 protected:
