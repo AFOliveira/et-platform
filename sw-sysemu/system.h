@@ -511,6 +511,10 @@ inline void System::tick_peripherals(uint64_t cycle)
     memory.wdt_clock_tick(noagent, cycle);
 #endif
 
+#if EMU_HAS_RVTIMER
+    memory.rvtimer_clock_tick(noagent, cycle);
+#endif
+
     // cycle at 1GHz, timer clock at 10MHz
     if ((cycle % 100) == 0) {
 
@@ -519,9 +523,6 @@ inline void System::tick_peripherals(uint64_t cycle)
 #endif
 #if EMU_HAS_SPIO
         memory.spio_rvtimer_clock_tick(noagent);
-#endif
-#if EMU_HAS_RVTIMER
-        memory.rvtimer_clock_tick(noagent);
 #endif
 
 #if EMU_HAS_PU
