@@ -57,6 +57,13 @@ struct RVTimer
                     agent.chip->clear_machine_timer_interrupt(shire);
                 }
             }
+        } else if (!had_interrupt && interrupt) {
+            // raise immediately if mtimecmp is written in the past.
+            for (unsigned shire = 0; shire < EMU_NUM_SHIRES; ++shire) {
+                if ((interrupt_shire_mask >> shire) & 1) {
+                    agent.chip->raise_machine_timer_interrupt(shire);
+                }
+            }
         }
     }
 
