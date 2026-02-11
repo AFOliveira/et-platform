@@ -6,6 +6,7 @@
 #include "memory/erbium/main_memory.h"
 #include "emu_defines.h"
 #include "devices/plic_er.h"
+#include "devices/shakti_uart.h"
 #include "devices/sysregs_er.h"
 #include "system.h"
 #include "memory/sysreg_region.h"
@@ -16,6 +17,7 @@ namespace bemu {
 void MainMemory::reset()
 {
     regions[erbreg_idx].reset(new SysregsEr<region_bases[erbreg_idx]>());
+    regions[uart_idx].reset(new ShaktiUart<region_bases[uart_idx], region_sizes[uart_idx]>());
     regions[bootrom_idx].reset(new DenseRegion<region_bases[bootrom_idx], region_sizes[bootrom_idx], false>());
     regions[sram_idx].reset(new DenseRegion<region_bases[sram_idx], region_sizes[sram_idx]>());
     regions[dram_idx].reset(new DenseRegion<region_bases[dram_idx], region_sizes[dram_idx]>());
@@ -71,6 +73,26 @@ void MainMemory::rvtimer_write_time_config(const Agent& agent, uint64_t value) {
 
 void MainMemory::rvtimer_reset() {
     rvtimer().reset();
+}
+
+void MainMemory::uart_set_tx_fd(int fd) {
+    auto ptr = dynamic_cast<ShaktiUart<region_bases[uart_idx], region_sizes[uart_idx]>*>(regions[uart_idx].get());
+    ptr->tx_fd = fd;
+}
+
+void MainMemory::uart_set_rx_fd(int fd) {
+    auto ptr = dynamic_cast<ShaktiUart<region_bases[uart_idx], region_sizes[uart_idx]>*>(regions[uart_idx].get());
+    ptr->rx_fd = fd;
+}
+
+int MainMemory::uart_get_tx_fd() const {
+    auto ptr = dynamic_cast<ShaktiUart<region_bases[uart_idx], region_sizes[uart_idx]>*>(regions[uart_idx].get());
+    return ptr->tx_fd;
+}
+
+int MainMemory::uart_get_rx_fd() const {
+    auto ptr = dynamic_cast<ShaktiUart<region_bases[uart_idx], region_sizes[uart_idx]>*>(regions[uart_idx].get());
+    return ptr->rx_fd;
 }
 
 void MainMemory::plic_interrupt_pending_set(const Agent& agent, uint32_t source)

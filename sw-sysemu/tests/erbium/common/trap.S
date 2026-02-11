@@ -5,7 +5,7 @@
 
 /*
 * Default trap handler for Erbium tests
-* Located at 0x0200B000 (4K aligned, second page of bootrom)
+* Located at 0x4000B000 (4K aligned, second page of bootrom)
 * Uses mscratch CSR to hold expected exception cause
 */
 

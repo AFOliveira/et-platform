@@ -10,8 +10,8 @@
 #include "test.h"
 #include <stdint.h>
 
-/* SRAM region: 0x0200E000 - 0x0200E7FF (2KB) */
-#define SRAM_BASE 0x0200E000ull
+/* SRAM region: 0x40005000 - 0x400057FF (2KB) */
+#define SRAM_BASE 0x40005000ull
 #define TEST_PATTERN 0xCAFEFEEDDEADBEEFull
 
 int main() {

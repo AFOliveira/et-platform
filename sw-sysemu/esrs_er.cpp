@@ -166,7 +166,7 @@ void neigh_esrs_t::warm_reset()
 
 void neigh_esrs_t::cold_reset()
 {
-    minion_boot = 0x0200A000; // boot rom
+    minion_boot = 0x4000A000; // boot rom
     mprot = 0;
     dummy0 = 0;
     dummy2 = false;

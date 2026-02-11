@@ -19,16 +19,17 @@
 namespace bemu {
 
 
-// Erbium Memory Map
+// Erbium Memory Map (from PRM)
 //
 // +---------------------------------+----------+-------------------+
 // |      Address range (hex)        |          |                   |
 // |      From      |      To        |   Size   | Maps to           |
 // +----------------+----------------+----------+-------------------+
-// | 0x00_0200_0000 | 0x00_0200_0FFF |  4KiB    | SystemRegisters   |
-// | 0x00_0200_A000 | 0x00_0200_BFFF |  8KiB    | Boot ROM          |
-// | 0x00_0200_E000 | 0x00_0200_E7FF |  2KiB    | Scratch SRAM      |
-// | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
+// | 0x00_0000_0000 | 0x00_00FF_FFFF | 16MiB    | MRAM              |
+// | 0x00_4000_0000 | 0x00_4000_0FFF |  4KiB    | SystemRegisters   |
+// | 0x00_4000_4000 | 0x00_4000_4FFF |  4KiB    | UART              |
+// | 0x00_4000_5000 | 0x00_4000_57FF |  2KiB    | Scratch SRAM      |
+// | 0x00_4000_A000 | 0x00_4000_BFFF |  8KiB    | Boot ROM          |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
 // | 0x00_C000_0000 | 0x00_C3FF_FFFF | 64MiB    | PLIC              |
 // +----------------+----------------+----------+-------------------+
@@ -43,10 +44,11 @@ struct MainMemory {
 
 private:
     enum : unsigned {
-        erbreg_idx,
-        bootrom_idx,
-        sram_idx,
         dram_idx,
+        erbreg_idx,
+        uart_idx,
+        sram_idx,
+        bootrom_idx,
         sysreg_idx,
         plic_idx,
 
@@ -54,19 +56,21 @@ private:
     };
 
     constexpr static uint64_t region_bases[REGION_COUNT] = {
-        /* erbreg  */ 0x0002000000ull,
-        /* bootrom */ 0x000200A000ull,
-        /* sram    */ 0x000200E000ull,
-        /* dram    */ 0x0040000000ull,  /* Actually MRAM */
+        /* dram    */ 0x0000000000ull,  /* MRAM */
+        /* erbreg  */ 0x0040000000ull,
+        /* uart    */ 0x0040004000ull,
+        /* sram    */ 0x0040005000ull,
+        /* bootrom */ 0x004000A000ull,
         /* sysreg  */ 0x0080000000ull,
         /* plic    */ 0x00C0000000ull,
     };
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
-        /* erbreg  */ 4_KiB,
-        /* bootrom */ 8_KiB,
-        /* sram    */ 2_KiB,
         /* dram    */ 16_MiB,
+        /* erbreg  */ 4_KiB,
+        /* uart    */ 4_KiB,
+        /* sram    */ 2_KiB,
+        /* bootrom */ 8_KiB,
         /* sysreg  */ 16_MiB,
         /* plic    */ 64_MiB,
     };
@@ -111,6 +115,12 @@ public:
     }
 
     void wdt_clock_tick(const Agent& agent, uint64_t cycle);
+
+    // UART helpers
+    void uart_set_tx_fd(int fd);
+    void uart_set_rx_fd(int fd);
+    int uart_get_tx_fd() const;
+    int uart_get_rx_fd() const;
 
     // PLIC helpers
     void plic_interrupt_pending_set(const Agent&, uint32_t source);

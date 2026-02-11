@@ -14,38 +14,42 @@
 namespace bemu {
 
 //------------------------------------------------------------------------------
-// Erbium memory region address helpers
+// Erbium memory region address helpers (PRM address map)
 //
-//   0x0200_0000 - 0x0200_0FFF: System registers (4K)
-//   0x0200_1000 - 0x0200_1FFF: MRAM registers (4K)
-//   0x0200_2000 - 0x0200_2FFF: Periph registers (4K)
-//   0x0200_3000 - 0x0200_3FFF: Hyperbus registers (4K)
-//   0x0200_A000 - 0x0200_BFFF: Bootrom (8K)
-//   0x0200_E000 - 0x0200_E7FF: Scratch SRAM (2K)
-//   0x4000_0000 - 0x7FFF_FFFF: MRAM (1G, but only 16MB installed)
+//   0x0000_0000 - 0x3FFF_FFFF: MRAM (1G, but only 16MB installed)
+//   0x4000_0000 - 0x4000_0FFF: System registers (4K)
+//   0x4000_1000 - 0x4000_1FFF: MRAM registers (4K)
+//   0x4000_2000 - 0x4000_2FFF: I2C registers (4K)
+//   0x4000_3000 - 0x4000_3FFF: QSPI registers (4K)
+//   0x4000_4000 - 0x4000_4FFF: UART registers (4K)
+//   0x4000_5000 - 0x4000_57FF: Scratch SRAM (2K)
+//   0x4000_A000 - 0x4000_BFFF: Bootrom (8K)
 //   0x8000_0000 - 0xBFFF_FFFF: ESR/CPU registers (1G)
 //   0xC000_0000 - 0xC3FF_FFFF: PLIC (64M)
 
+static inline bool paddr_is_mram(uint64_t addr)
+{ return (addr < 0x40000000ull); }
+
 static inline bool paddr_is_sysreg(uint64_t addr)
-{ return (addr >= 0x02000000ull) && (addr < 0x02001000ull); }
+{ return (addr >= 0x40000000ull) && (addr < 0x40001000ull); }
 
 static inline bool paddr_is_mramreg(uint64_t addr)
-{ return (addr >= 0x02001000ull) && (addr < 0x02002000ull); }
+{ return (addr >= 0x40001000ull) && (addr < 0x40002000ull); }
 
-static inline bool paddr_is_periph(uint64_t addr)
-{ return (addr >= 0x02002000ull) && (addr < 0x02003000ull); }
+static inline bool paddr_is_i2c(uint64_t addr)
+{ return (addr >= 0x40002000ull) && (addr < 0x40003000ull); }
 
-static inline bool paddr_is_hyperbus(uint64_t addr)
-{ return (addr >= 0x02003000ull) && (addr < 0x02004000ull); }
+static inline bool paddr_is_qspi(uint64_t addr)
+{ return (addr >= 0x40003000ull) && (addr < 0x40004000ull); }
 
-static inline bool paddr_is_bootrom(uint64_t addr)
-{ return (addr >= 0x0200A000ull) && (addr < 0x0200C000ull); }
+static inline bool paddr_is_uart(uint64_t addr)
+{ return (addr >= 0x40004000ull) && (addr < 0x40005000ull); }
 
 static inline bool paddr_is_sram(uint64_t addr)
-{ return (addr >= 0x0200E000ull) && (addr < 0x0200E800ull); }
+{ return (addr >= 0x40005000ull) && (addr < 0x40005800ull); }
 
-static inline bool paddr_is_mram(uint64_t addr)
-{ return (addr >= 0x40000000ull) && (addr < 0x80000000ull); }
+static inline bool paddr_is_bootrom(uint64_t addr)
+{ return (addr >= 0x4000A000ull) && (addr < 0x4000C000ull); }
 
 static inline bool paddr_is_esr(uint64_t addr)
 { return (addr >= 0x80000000ull) && (addr < 0xC0000000ull); }
@@ -90,7 +94,7 @@ static bool data_access_is_write(mem_access_type macc)
 #define MPROT_EN              0x100
 #define MPROT_MMODE_SIZE(x)   (((x) >> 4) & 0xF)
 #define MPROT_SMODE_SIZE(x)   ((x) & 0xF)
-#define MRAM_BASE             0x40000000ull
+#define MRAM_BASE             0x00000000ull
 
 // mmode_end = MRAM_BASE + 4KB * (2^mmode_size), capped at 16MB
 static inline uint64_t mmode_region_end(uint16_t mprot)
@@ -243,8 +247,8 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         return addr;
     }
 
-    if (paddr_is_periph(addr)) {
-        // Periph registers: 32-bit aligned, 32-bit access, M/S privilege,
+    if (paddr_is_i2c(addr)) {
+        // I2C registers: 32-bit aligned, 32-bit access, M/S privilege,
         // no AMO/TensorOp/CacheOp
         Privilege mode = effective_execution_mode(cpu, macc);
         if (amo
@@ -258,8 +262,8 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         return addr;
     }
 
-    if (paddr_is_hyperbus(addr)) {
-        // Hyperbus registers: 32-bit aligned, 32-bit access, M-mode only,
+    if (paddr_is_qspi(addr)) {
+        // QSPI registers: 32-bit aligned, 32-bit access, M-mode only,
         // no AMO/TensorOp/CacheOp
         Privilege mode = effective_execution_mode(cpu, macc);
         if (amo
@@ -267,6 +271,21 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
             || (size != 4)
             || !addr_is_size_aligned(addr, 4)
             || (mode != Privilege::M))
+        {
+            throw_access_fault(vaddr, macc);
+        }
+        return addr;
+    }
+
+    if (paddr_is_uart(addr)) {
+        // UART registers: 32-bit aligned, 32-bit access, M/S privilege,
+        // no AMO/TensorOp/CacheOp
+        Privilege mode = effective_execution_mode(cpu, macc);
+        if (amo
+            || ts_tl_co
+            || (size != 4)
+            || !addr_is_size_aligned(addr, 4)
+            || (mode == Privilege::U))
         {
             throw_access_fault(vaddr, macc);
         }

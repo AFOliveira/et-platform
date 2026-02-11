@@ -14,7 +14,7 @@
 #define MPROT_MMODE_SIZE(n) ((n) << 4)  /* M-mode region: 4KB * 2^n */
 #define MPROT_SMODE_SIZE(n) ((n) << 0)  /* S-mode region: 4KB * 2^n */
 
-#define MRAM_BASE  0x40000000UL
+#define MRAM_BASE  0x00000000UL
 
 static inline void mprot_write(uint64_t value) {
     volatile uint64_t *mprot = (volatile uint64_t *)ESR_MPROT_ADDR;
