@@ -401,6 +401,12 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     }
 #endif // EMU_HAS_SPIO
 
+#if EMU_ERBIUM
+    // Setup Erbium Shakti UART
+    chip.uart_set_tx_fd(STDOUT_FILENO);
+    chip.uart_set_rx_fd(STDIN_FILENO);
+#endif // EMU_ERBIUM
+
     // Initialize Simulator API
     if (api_listener) {
         api_listener->set_system(&chip);

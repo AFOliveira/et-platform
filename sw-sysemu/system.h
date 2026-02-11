@@ -193,6 +193,14 @@ public:
     int spio_uart1_get_tx_fd() const;
 #endif // EMU_HAS_SPIO
 
+#if EMU_ERBIUM
+    // Erbium Shakti UART
+    void uart_set_tx_fd(int fd);
+    void uart_set_rx_fd(int fd);
+    int uart_get_tx_fd() const;
+    int uart_get_rx_fd() const;
+#endif // EMU_ERBIUM
+
     // System registers
     uint64_t esr_read(const Agent& agent, uint64_t addr);
     void esr_write(const Agent& agent, uint64_t addr, uint64_t value);
@@ -502,6 +510,33 @@ inline int System::spio_uart1_get_tx_fd() const
 }
 
 #endif // EMU_HAS_SPIO
+
+#if EMU_ERBIUM
+
+inline void System::uart_set_tx_fd(int fd)
+{
+    memory.uart_set_tx_fd(fd);
+}
+
+
+inline void System::uart_set_rx_fd(int fd)
+{
+    memory.uart_set_rx_fd(fd);
+}
+
+
+inline int System::uart_get_tx_fd() const
+{
+    return memory.uart_get_tx_fd();
+}
+
+
+inline int System::uart_get_rx_fd() const
+{
+    return memory.uart_get_rx_fd();
+}
+
+#endif // EMU_ERBIUM
 
 
 inline void System::tick_peripherals(uint64_t cycle)
