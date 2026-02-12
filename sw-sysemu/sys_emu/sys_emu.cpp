@@ -401,7 +401,7 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     }
 #endif // EMU_HAS_SPIO
 
-#if EMU_ERBIUM
+#if EMU_HAS_SHAKTI_UART
     // Setup Erbium Shakti UART
     if (!cmd_options.uart_rx_file.empty()) {
         int fd = open(cmd_options.uart_rx_file.c_str(), O_RDONLY | O_NONBLOCK | O_CREAT | O_TRUNC, 0666);
@@ -422,7 +422,7 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     } else {
         chip.uart_set_tx_fd(STDOUT_FILENO);
     }
-#endif // EMU_ERBIUM
+#endif // EMU_HAS_SHAKTI_UART
 
     // Initialize Simulator API
     if (api_listener) {
@@ -829,14 +829,14 @@ int sys_emu::main_internal() {
         close(chip.spio_uart1_get_tx_fd());
     }
 #endif // EMU_HAS_SPIO
-#if EMU_ERBIUM
+#if EMU_HAS_SHAKTI_UART
     if (!cmd_options.uart_rx_file.empty()) {
         close(chip.uart_get_rx_fd());
     }
     if (!cmd_options.uart_tx_file.empty()) {
         close(chip.uart_get_tx_fd());
     }
-#endif // EMU_ERBIUM
+#endif // EMU_HAS_SHAKTI_UART
 #ifdef SYSEMU_PROFILING
     if (!cmd_options.dump_prof_file.empty()) {
         profiling_flush();
