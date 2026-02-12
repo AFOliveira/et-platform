@@ -20,6 +20,7 @@ namespace bemu {
 //   0x0200_1000 - 0x0200_1FFF: MRAM registers (4K)
 //   0x0200_2000 - 0x0200_2FFF: Periph registers (4K)
 //   0x0200_3000 - 0x0200_3FFF: Hyperbus registers (4K)
+//   0x0200_4000 - 0x0200_4FFF: UART registers (4K)
 //   0x0200_A000 - 0x0200_BFFF: Bootrom (8K)
 //   0x0200_E000 - 0x0200_E7FF: Scratch SRAM (2K)
 //   0x4000_0000 - 0x7FFF_FFFF: MRAM (1G, but only 16MB installed)
@@ -37,6 +38,9 @@ static inline bool paddr_is_periph(uint64_t addr)
 
 static inline bool paddr_is_hyperbus(uint64_t addr)
 { return (addr >= 0x02003000ull) && (addr < 0x02004000ull); }
+
+static inline bool paddr_is_uart(uint64_t addr)
+{ return (addr >= 0x02004000ull) && (addr < 0x02005000ull); }
 
 static inline bool paddr_is_bootrom(uint64_t addr)
 { return (addr >= 0x0200A000ull) && (addr < 0x0200C000ull); }
@@ -267,6 +271,21 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
             || (size != 4)
             || !addr_is_size_aligned(addr, 4)
             || (mode != Privilege::M))
+        {
+            throw_access_fault(vaddr, macc);
+        }
+        return addr;
+    }
+
+    if (paddr_is_uart(addr)) {
+        // UART registers: 32-bit aligned, 32-bit access, M/S privilege,
+        // no AMO/TensorOp/CacheOp
+        Privilege mode = effective_execution_mode(cpu, macc);
+        if (amo
+            || ts_tl_co
+            || (size != 4)
+            || !addr_is_size_aligned(addr, 4)
+            || (mode == Privilege::U))
         {
             throw_access_fault(vaddr, macc);
         }
