@@ -158,7 +158,7 @@ struct sys_emu_cmd_options {
     std::string spio_uart1_tx_file;
 #endif
 
-#if EMU_ERBIUM
+#if EMU_HAS_SHAKTI_UART
     std::string uart_rx_file;
     std::string uart_tx_file;
 #endif
