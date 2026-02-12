@@ -157,6 +157,11 @@ struct sys_emu_cmd_options {
     std::string spio_uart0_tx_file;
     std::string spio_uart1_tx_file;
 #endif
+
+#if EMU_ERBIUM
+    std::string uart_rx_file;
+    std::string uart_tx_file;
+#endif
 };
 
 class api_communicate;
