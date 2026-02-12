@@ -8,8 +8,8 @@
  * Expect: RX_NOT_EMPTY set when a byte is present, RX read returns that byte,
  *         TX_EMPTY is set, TX_FULL is clear.
  *
- * Note: This test expects a single byte ('A' by default) to be provided on
- * stdin by the test runner (see Makefile UART_RX_CHAR).
+ * Note: This test expects a single byte ('A') to be provided on stdin by the
+ * test runner (see inputs/uart_shakti_poll.in).
  */
 
 #include "test.h"
