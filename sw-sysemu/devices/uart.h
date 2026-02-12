@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <system_error>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
 
@@ -107,7 +108,16 @@ private:
         if (select(fd + 1, &rfds, nullptr, nullptr, &tv) < 0) {
             return false;
         }
-        return FD_ISSET(fd, &rfds);
+        if (!FD_ISSET(fd, &rfds)) {
+            return false;
+        }
+        int available = 0;
+        // select() reports readable at EOF; FIONREAD tells if bytes are truly buffered.
+        if (ioctl(fd, FIONREAD, &available) < 0) {
+            auto error = std::error_code(errno, std::system_category());
+            throw std::system_error(error, "bemu::Uart::fd_read_data_available()");
+        }
+        return available > 0;
     }
 };
 
