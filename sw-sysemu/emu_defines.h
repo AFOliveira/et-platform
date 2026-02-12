@@ -50,6 +50,7 @@ namespace bemu {
 #define EMU_HAS_MEMSHIRE 0
 #define EMU_HAS_SPIO 0
 #define EMU_HAS_PU 0
+#define EMU_HAS_SHAKTI_UART 1
 #define EMU_HAS_PTW 0
 #define EMU_HAS_GFX 0
 #define EMU_HAS_MSG_PORTS 0
@@ -89,6 +90,7 @@ namespace bemu {
 #define EMU_HAS_SVCPROC 1
 #define EMU_HAS_SPIO 1
 #define EMU_HAS_PU 1
+#define EMU_HAS_SHAKTI_UART 0
 
 #define EMU_IO_SHIRE_SP         (EMU_NUM_SHIRES - 1)
 #define EMU_IO_SHIRE_SP_THREAD  (EMU_NUM_THREADS - 1)
