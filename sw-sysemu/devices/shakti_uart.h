@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <system_error>
 #include <unistd.h>
+#include <sys/ioctl.h>
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
 
@@ -147,16 +148,13 @@ private:
     uint32_t reg_rx_threshold = 0;
 
     static bool fd_read_data_available(int fd) {
-        fd_set rfds;
-        struct timeval tv;
-        tv.tv_sec = 0;
-        tv.tv_usec = 0;
-        FD_ZERO(&rfds);
-        FD_SET(fd, &rfds);
-        if (select(fd + 1, &rfds, nullptr, nullptr, &tv) < 0) {
-            return false;
+        int available = 0;
+        // FIONREAD returns buffered bytes; 0 means no data (or EOF).
+        if (ioctl(fd, FIONREAD, &available) < 0) {
+            auto error = std::error_code(errno, std::system_category());
+            throw std::system_error(error, "bemu::ShaktiUart::fd_read_data_available()");
         }
-        return FD_ISSET(fd, &rfds);
+        return available > 0;
     }
 };
 
