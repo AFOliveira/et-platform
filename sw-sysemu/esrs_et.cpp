@@ -1420,7 +1420,7 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
                       shireid(shire), shire_other_esrs[shire].ipi_redirect_filter);
             return;
         case ESR_IPI_TRIGGER:
-            shire_other_esrs[shire].ipi_trigger = value;
+            shire_other_esrs[shire].ipi_trigger |= value;
             LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger = 0x%" PRIx64,
                       shireid(shire), shire_other_esrs[shire].ipi_trigger);
             if (!shireindex_is_ioshire(shire)) {
@@ -1429,6 +1429,7 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
             return;
         case ESR_IPI_TRIGGER_CLEAR:
             LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger_clear = 0x%" PRIx64, shireid(shire), value);
+            shire_other_esrs[shire].ipi_trigger &= ~value;
             clear_machine_software_interrupt(shire, value);
             return;
         case ESR_FCC_CREDINC_0:
