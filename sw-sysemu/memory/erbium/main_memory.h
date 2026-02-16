@@ -27,7 +27,7 @@ namespace bemu {
 // +----------------+----------------+----------+-------------------+
 // | 0x00_0200_0000 | 0x00_0200_0FFF |  4KiB    | SystemRegisters   |
 // | 0x00_0200_A000 | 0x00_0200_BFFF |  8KiB    | Boot ROM          |
-// | 0x00_0200_E000 | 0x00_0200_E7FF |  2KiB    | Scratch SRAM      |
+// | 0x00_0200_E000 | 0x00_0200_EFFF |  4KiB    | Scratch SRAM      |
 // | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
 // | 0x00_C000_0000 | 0x00_C3FF_FFFF | 64MiB    | PLIC              |
@@ -65,7 +65,7 @@ private:
     constexpr static size_t region_sizes[REGION_COUNT] = {
         /* erbreg  */ 4_KiB,
         /* bootrom */ 8_KiB,
-        /* sram    */ 2_KiB,
+        /* sram    */ 4_KiB,
         /* dram    */ 16_MiB,
         /* sysreg  */ 16_MiB,
         /* plic    */ 64_MiB,
