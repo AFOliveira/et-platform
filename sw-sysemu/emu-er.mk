@@ -15,6 +15,7 @@ emu_hdrs := \
 	devices/plic_er.h \
 	devices/pll.h \
 	devices/rvtimer.h \
+	devices/shakti_uart.h \
 	devices/spi.h \
 	devices/sysregs_er.h \
 	devices/uart.h \
