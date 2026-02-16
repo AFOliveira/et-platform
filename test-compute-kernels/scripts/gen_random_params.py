@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # This script generates randomized input parameters for tensor instructions.
 # To invoke it and do something useful with it you need to use one of the existing scenarios
