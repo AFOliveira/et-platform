@@ -569,13 +569,14 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
                       shireid(shire), shire_other_esrs[shire].ipi_redirect_filter);
             return;
         case ESR_IPI_TRIGGER:
-            shire_other_esrs[shire].ipi_trigger = value & 0xFFFF;
+            shire_other_esrs[shire].ipi_trigger |= (value & 0xFFFF);
             LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger = 0x%" PRIx64,
                       shireid(shire), shire_other_esrs[shire].ipi_trigger);
             raise_machine_software_interrupt(shire, value & 0xFFFF);
             return;
         case ESR_IPI_TRIGGER_CLEAR:
             LOG_AGENT(DEBUG, agent, "S%u:ipi_trigger_clear = 0x%" PRIx64, shireid(shire), value & 0xffff);
+            shire_other_esrs[shire].ipi_trigger &= ~(value & 0xFFFF);
             clear_machine_software_interrupt(shire, value & 0xFFFF);
             return;
         case ESR_FCC_CREDINC_0:
