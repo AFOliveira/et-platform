@@ -69,6 +69,10 @@ static const char * help_msg =
 "     -spio_uart0_tx_file <path> Path to the file in which to dump the contents of SPIO UART0 TX (default is stdout)\n"
 "     -spio_uart1_tx_file <path> Path to the file in which to dump the contents of SPIO UART1 TX (default is stdout)\n"
 #endif // EMU_HAS_SPIO
+#if EMU_HAS_SHAKTI_UART
+"     -uart_rx_file <path>     Path to the file in which to read the contents of Erbium UART RX (default is stdin)\n"
+"     -uart_tx_file <path>     Path to the file in which to dump the contents of Erbium UART TX (default is stdout)\n"
+#endif // EMU_HAS_SHAKTI_UART
 #endif // SDK_RELEASE
 "     -log_at_pc <PC>          Enables logging when minion reaches a given PC\n"
 "     -stop_log_at_pc <PC>     Disables logging when minion reaches a given PC\n"
@@ -203,6 +207,12 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
         {"spio_uart0_tx_file",     required_argument, nullptr, 0},
         {"spio_uart1_tx_file",     required_argument, nullptr, 0},
 #endif // EMU_HAS_SPIO
+#if EMU_HAS_SHAKTI_UART
+        {"uart_rx_file",           required_argument, nullptr, 0},
+        {"uart_tx_file",           required_argument, nullptr, 0},
+        {"erbium_uart_rx_file",    required_argument, nullptr, 0},
+        {"erbium_uart_tx_file",    required_argument, nullptr, 0},
+#endif // EMU_HAS_SHAKTI_UART
 #endif // !SDK_RELEASE
         {"log_at_pc",              required_argument, nullptr, 0},
         {"stop_log_at_pc",         required_argument, nullptr, 0},
@@ -472,6 +482,16 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
             cmd_options.spio_uart1_tx_file = optarg;
         }
 #endif // EMU_HAS_SPIO
+#if EMU_HAS_SHAKTI_UART
+        else if (!strcmp(name, "uart_rx_file") || !strcmp(name, "erbium_uart_rx_file"))
+        {
+            cmd_options.uart_rx_file = optarg;
+        }
+        else if (!strcmp(name, "uart_tx_file") || !strcmp(name, "erbium_uart_tx_file"))
+        {
+            cmd_options.uart_tx_file = optarg;
+        }
+#endif // EMU_HAS_SHAKTI_UART
         else if (!strcmp(name, "log_at_pc"))
         {
             sscanf(optarg, "%" PRIx64, &cmd_options.log_at_pc);
