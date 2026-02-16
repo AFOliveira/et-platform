@@ -188,7 +188,7 @@ void shire_other_esrs_t::warm_reset()
     for (int i = 0; i < 32; ++i) {
         fast_local_barrier[i] = 0;
     }
-    ipi_redirect_filter = 0;
+    ipi_redirect_filter = 0xFFFF;
     ipi_trigger = 0;
     shire_coop_mode = false;
     icache_prefetch_active = false;
