@@ -26,6 +26,7 @@ namespace bemu {
 // |      From      |      To        |   Size   | Maps to           |
 // +----------------+----------------+----------+-------------------+
 // | 0x00_0200_0000 | 0x00_0200_0FFF |  4KiB    | SystemRegisters   |
+// | 0x00_0200_4000 | 0x00_0200_4FFF |  4KiB    | UART              |
 // | 0x00_0200_A000 | 0x00_0200_BFFF |  8KiB    | Boot ROM          |
 // | 0x00_0200_E000 | 0x00_0200_EFFF |  4KiB    | Scratch SRAM      |
 // | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
@@ -44,6 +45,7 @@ struct MainMemory {
 private:
     enum : unsigned {
         erbreg_idx,
+        uart_idx,
         bootrom_idx,
         sram_idx,
         dram_idx,
@@ -55,6 +57,7 @@ private:
 
     constexpr static uint64_t region_bases[REGION_COUNT] = {
         /* erbreg  */ 0x0002000000ull,
+        /* uart    */ 0x0002004000ull,
         /* bootrom */ 0x000200A000ull,
         /* sram    */ 0x000200E000ull,
         /* dram    */ 0x0040000000ull,  /* Actually MRAM */
@@ -64,6 +67,7 @@ private:
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
         /* erbreg  */ 4_KiB,
+        /* uart    */ 4_KiB,
         /* bootrom */ 8_KiB,
         /* sram    */ 4_KiB,
         /* dram    */ 16_MiB,
@@ -111,6 +115,12 @@ public:
     }
 
     void wdt_clock_tick(const Agent& agent, uint64_t cycle);
+
+    // UART helpers
+    void uart_set_tx_fd(int fd);
+    void uart_set_rx_fd(int fd);
+    int uart_get_tx_fd() const;
+    int uart_get_rx_fd() const;
 
     // PLIC helpers
     void plic_interrupt_pending_set(const Agent&, uint32_t source);
