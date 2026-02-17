@@ -1102,6 +1102,19 @@ void tensor_store_start(Hart& cpu, uint64_t tstorereg)
              "srcinc: %d, coop: %d", cpu.mhartid, uuid, addr, stride, regstart, rows,
              cols, srcinc, coop);
 
+    // Cooperative tensor stores require the shire to be in cooperative mode.
+    // This check must happen before notify_tensor_store since illegal instruction
+    // is a CPU-level trap, not a tensor operation error.
+    if (coop > 1) {
+        uint64_t shire = shire_index(cpu);
+        if (!cpu.chip->shire_other_esrs[shire].shire_coop_mode) {
+            throw trap_illegal_instruction(cpu.inst.bits);
+        }
+    }
+
+    // Notify tensor_store start before any validation that sets tensor_error.
+    notify_tensor_store(cpu, false, rows, cols, coop);
+
     // Check legal coop combination
     // xs[50:49]/xs[56:55]
     static const bool coop_comb[4*4] = {
@@ -1115,13 +1128,6 @@ void tensor_store_start(Hart& cpu, uint64_t tstorereg)
         update_tensor_error(cpu, 1 << 8);
         notify_tensor_store_error(cpu, 1 << 8);
         return;
-    }
- 
-    // Cooperative tensor stores require the shire to be in cooperative mode
-    if (coop > 1) {
-        uint64_t shire = shire_index(cpu);
-        if (!cpu.chip->shire_other_esrs[shire].shire_coop_mode)
-            throw trap_illegal_instruction(cpu.inst.bits);
     }
 
     cpu.core->tstore.value  = tstorereg;
@@ -1164,9 +1170,6 @@ void tensor_store_execute(Hart& cpu)
     uint64_t addr     = sext<48>(tstorereg & 0x0000FFFFFFFFFFF0ULL);     // Address where to store the results
 
     const auto stride = cpu.core->tstore.stride;
-
-    notify_tensor_store(cpu, false, rows, cols, coop);
- 
     const auto uuid = cpu.core->tstore.uuid;
     LOG_HART(DEBUG, cpu, "(TS-H%u-%" PRIu64 ") Execute TensorStore with addr: %016" PRIx64 ", "
              "stride: %016" PRIx64 ", regstart: %d, rows: %d, cols: %d, srcinc: %d, "
