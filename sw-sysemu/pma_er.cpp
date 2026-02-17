@@ -21,7 +21,7 @@ namespace bemu {
 //   0x0200_2000 - 0x0200_2FFF: Periph registers (4K)
 //   0x0200_3000 - 0x0200_3FFF: Hyperbus registers (4K)
 //   0x0200_A000 - 0x0200_BFFF: Bootrom (8K)
-//   0x0200_E000 - 0x0200_E7FF: Scratch SRAM (2K)
+//   0x0200_E000 - 0x0200_EFFF: Scratch SRAM (4K)
 //   0x4000_0000 - 0x7FFF_FFFF: MRAM (1G, but only 16MB installed)
 //   0x8000_0000 - 0xBFFF_FFFF: ESR/CPU registers (1G)
 //   0xC000_0000 - 0xC3FF_FFFF: PLIC (64M)
@@ -42,7 +42,7 @@ static inline bool paddr_is_bootrom(uint64_t addr)
 { return (addr >= 0x0200A000ull) && (addr < 0x0200C000ull); }
 
 static inline bool paddr_is_sram(uint64_t addr)
-{ return (addr >= 0x0200E000ull) && (addr < 0x0200E800ull); }
+{ return (addr >= 0x0200E000ull) && (addr < 0x0200F000ull); }
 
 static inline bool paddr_is_mram(uint64_t addr)
 { return (addr >= 0x40000000ull) && (addr < 0x80000000ull); }
