@@ -204,7 +204,15 @@ public:
     // gdbstub needs these
     bool thread_exists(unsigned thread) { return !chip.cpu[thread].is_nonexistent(); }
     bool thread_is_unavailable(unsigned thread) { return chip.cpu[thread].is_unavailable(); }
-    void thread_set_running(unsigned thread) { chip.cpu[thread].start_running(); }
+    void thread_set_running(unsigned thread) {
+        // Only resume harts that are actually halted by the debugger, not harts
+        // that are unavailable (disabled via threadX_disable ESR). Calling
+        // start_running() on unavailable harts would re-enable them by clearing
+        // pending_unlink and adding them back to the active list.
+        if (chip.cpu[thread].is_halted()) {
+            chip.cpu[thread].start_running();
+        }
+    }
     void thread_read_memory(int thread, uint64_t addr, uint64_t size, uint8_t* buffer) {
         chip.memory.read(chip.cpu[thread], addr, size, buffer);
     }

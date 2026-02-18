@@ -122,7 +122,15 @@ void System::write_dmctrl(uint32_t value)
     if (RESUMEREQ(newvalue)) {
         LOG_AGENT(DEBUG, noagent, "%s", "dmctrl: resume harts");
         // NB: This should also update HASTATUS0
-        for_each_selected(&Hart::start_running);
+        // Only resume harts that are actually halted by the debugger, not harts
+        // that are unavailable (disabled via threadX_disable ESR). Calling
+        // start_running() on unavailable harts would re-enable them by clearing
+        // pending_unlink and adding them back to the active list.
+        for_each_selected([](Hart& hart) {
+            if (hart.is_halted()) {
+                hart.start_running();
+            }
+        });
         return;
     }
 

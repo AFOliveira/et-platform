@@ -379,6 +379,8 @@ struct Hart : public Agent {
     // Next and previous hart in list of waiting/running harts
     intrusive::List_hook  links;
 
+    bool        pending_unlink = false;
+
     // Core that this hart belongs to
     Core*       core = nullptr;
 
