@@ -1550,6 +1550,7 @@ void Hart::become_unavailable()
 {
     if (is_active() || is_sleeping()) {
         LOG_HART(DEBUG, *this, "%s", "Become unavailable");
+        pending_unlink = true;
     }
     if (index_in_core(*this) == 0) {
         if (has_active_coprocessor()) {
@@ -1567,7 +1568,6 @@ void Hart::become_unavailable()
     }
     waits = Waiting::none;
     state = State::unavailable;
-    links.unlink();
 }
 
 
@@ -1591,6 +1591,7 @@ void Hart::start_running()
     if (is_active() || is_sleeping()) {
         return;
     }
+    pending_unlink = false;
     if (!is_waiting() || has_active_coprocessor()) {
         chip->awaking.push_back(*this);
         state = State::active;
@@ -1603,7 +1604,7 @@ void Hart::start_running()
 
 void Hart::enter_debug_mode(Debug_entry::Cause cause)
 {
-    if (is_halted()) {
+    if (is_halted() || is_unavailable()) {
         return;
     }
     LOG_HART(DEBUG, *this, "Halt execution: %s", debug_cause(cause));

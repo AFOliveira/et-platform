@@ -549,6 +549,11 @@ int sys_emu::main_internal() {
         auto current_hart = chip.active.begin();
         while (current_hart != chip.active.end()) {
             auto hart = current_hart++;
+
+            if (hart->pending_unlink) {
+                continue;
+            }
+
             auto thread_id = hart_index(*hart);
 
             // This should happen even if the hart is sleeping or blocked
@@ -663,6 +668,24 @@ int sys_emu::main_internal() {
                     hart->enter_debug_mode(bemu::Debug_entry::Cause::haltreq);
                     continue;
                 }
+            }
+        }
+
+        // Process deferred unlinks
+        for (auto it = chip.active.begin(); it != chip.active.end(); ) {
+            if (it->pending_unlink) {
+                it->pending_unlink = false;
+                it = chip.active.erase(it);
+            } else {
+                ++it;
+            }
+        }
+        for (auto it = chip.sleeping.begin(); it != chip.sleeping.end(); ) {
+            if (it->pending_unlink) {
+                it->pending_unlink = false;
+                it = chip.sleeping.erase(it);
+            } else {
+                ++it;
             }
         }
 
