@@ -118,6 +118,7 @@ public:
     void load_elf(std::istream&);
     void load_elf(const char* filename);
     void load_raw(const char* filename, unsigned long long addr);
+    static uint64_t canonicalize_load_address(uint64_t addr);
 
     // Reset state
     void debug_reset(unsigned shire);

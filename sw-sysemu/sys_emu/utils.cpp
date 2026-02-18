@@ -6,6 +6,8 @@
 #include "emu_gio.h"
 #include "sys_emu.h"
 
+#include <exception>
+
 
 ////////////////////////////////////////////////////////////////////////////////
 // Parses a file that defines the memory regions plus contents to be
@@ -42,6 +44,12 @@ bool sys_emu::parse_mem_file(const char* filename)
             {
                 chip.load_raw(str, base_addr);
             }
+            catch (const std::exception& e)
+            {
+                fclose(file);
+                LOG_AGENT(FTL, agent, "Error loading file \"%s\": %s", str, e.what());
+                return false;
+            }
             catch (...)
             {
                 fclose(file);
@@ -56,6 +64,12 @@ bool sys_emu::parse_mem_file(const char* filename)
             {
                 chip.load_elf(str);
             }
+            catch (const std::exception& e)
+            {
+                fclose(file);
+                LOG_AGENT(FTL, agent, "Error loading ELF \"%s\": %s", str, e.what());
+                return false;
+            }
             catch (...)
             {
                 fclose(file);
@@ -65,8 +79,18 @@ bool sys_emu::parse_mem_file(const char* filename)
         }
         else if(sscanf(buffer, "Mem write32: 40'h%" PRIX64 ", 32'h%" PRIX32 , &base_addr, &value) == 2)
         {
-            chip.memory.write(agent, base_addr, sizeof(value),
-                              reinterpret_cast<bemu::MainMemory::const_pointer>(&value));
+            try
+            {
+                auto addr = bemu::System::canonicalize_load_address(base_addr);
+                chip.memory.write(agent, addr, sizeof(value),
+                                  reinterpret_cast<bemu::MainMemory::const_pointer>(&value));
+            }
+            catch (const std::exception& e)
+            {
+                fclose(file);
+                LOG_AGENT(FTL, agent, "Error writing 32-bit value to 0x%" PRIx64 ": %s", base_addr, e.what());
+                return false;
+            }
         }
     }
     // Closes the file

@@ -7,6 +7,8 @@
 #include <cfenv>        // FIXME: remove this when we purge std::fesetround() from the code!
 #include <cstring>
 #include <fstream>
+#include <sstream>
+#include <stdexcept>
 
 #include "elfio/elfio.hpp"
 #include "emu_gio.h"
@@ -17,6 +19,25 @@
 #endif
 
 namespace bemu {
+
+uint64_t System::canonicalize_load_address(uint64_t addr)
+{
+#if EMU_HAS_HIGH_MEMORY
+    constexpr uint64_t kHighMemoryAliasBit = 1ULL << (PA_SIZE - 2);
+    if (addr >= MainMemory::dram_base) {
+        addr &= ~kHighMemoryAliasBit;
+    }
+#endif
+
+    if ((addr & ~PA_M) != 0) {
+        std::ostringstream oss;
+        oss << "Address 0x" << std::hex << addr
+            << " exceeds " << std::dec << PA_SIZE << "-bit physical address space";
+        throw std::out_of_range(oss.str());
+    }
+
+    return addr;
+}
 
 
 void System::init(Stepping ver)
@@ -596,13 +617,7 @@ void System::load_elf(std::istream& stream)
                          "\tType: 0x%" PRIx32 "\tFlags: 0x%" PRIx64,
                          idx, sec->get_name().c_str(), vma, lma, sec->get_size(),
                          sec->get_type(), sec->get_flags());
-
-#if EMU_HAS_HIGH_MEMORY
-            // TODO: remove magic constant
-            if (lma >= MainMemory::dram_base)
-                lma &= ~0x4000000000ULL;
-#endif
-
+            lma = canonicalize_load_address(lma);
             memory.init(noagent, lma, sec->get_size(), sec->get_data());
         }
     }
@@ -632,11 +647,7 @@ void System::load_raw(const char* filename, unsigned long long addr)
         std::streamsize count = file.gcount();
         if (count <= 0)
             break;
-#if EMU_HAS_HIGH_MEMORY
-        // TODO: remove magic constant
-        if (addr >= MainMemory::dram_base)
-            addr &= ~0x4000000000ULL;
-#endif
+        addr = canonicalize_load_address(addr);
         memory.init(noagent, addr, count, reinterpret_cast<MainMemory::const_pointer>(fbuf));
         addr += count;
     }

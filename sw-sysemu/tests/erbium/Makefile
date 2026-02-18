@@ -44,7 +44,7 @@ tests_elf := $(tests:%=$(BUILD_DIR)/%.elf)
 
 num_tests := $(words $(tests))
 
-.PHONY: all build clean run run-gdb list-tests
+.PHONY: all build clean run run-gdb run-loader-validation list-tests
 
 all: build
 
@@ -194,6 +194,9 @@ run-gdb/%: $(BUILD_DIR)/%.elf gdb/%.gdb
 	else \
 		echo "  UNKNOWN"; exit 1; \
 	fi
+
+run-loader-validation:
+	@./verify_loader_address_validation.sh
 
 clean:
 	rm -rf $(BUILD_DIR)

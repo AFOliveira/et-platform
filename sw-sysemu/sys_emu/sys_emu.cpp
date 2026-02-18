@@ -272,6 +272,9 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
             chip.load_elf(buf);
 #endif
         }
+        catch (const std::exception& e) {
+            LOG_AGENT(FTL, agent, "Error preloading ELF[%d]: %s", i, e.what());
+        }
         catch (...) {
             LOG_AGENT(FTL, agent, "Error preloading ELF[%d]", i);
         }
@@ -282,6 +285,9 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
         LOG_AGENT(INFO, agent, "Loading ELF: \"%s\"", elf.c_str());
         try {
             chip.load_elf(elf.c_str());
+        }
+        catch (const std::exception& e) {
+            LOG_AGENT(FTL, agent, "Error loading ELF \"%s\": %s", elf.c_str(), e.what());
         }
         catch (...) {
             LOG_AGENT(FTL, agent, "Error loading ELF \"%s\"", elf.c_str());
@@ -297,6 +303,9 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
         try {
             chip.load_raw(info.file.c_str(), info.addr);
         }
+        catch (const std::exception& e) {
+            LOG_AGENT(FTL, agent, "Error loading file \"%s\": %s", info.file.c_str(), e.what());
+        }
         catch (...) {
             LOG_AGENT(FTL, agent, "Error loading file \"%s\"", info.file.c_str());
         }
@@ -304,9 +313,18 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
 
     // Perform 32 bit writes
     for (const auto &info: cmd_options.mem_write32s) {
-        LOG_AGENT(INFO, agent, "Writing 32-bit value 0x%" PRIx32 " to 0x%" PRIx64, info.value, info.addr);
-        chip.memory.write(agent, info.addr, sizeof(info.value),
-                          reinterpret_cast<bemu::MainMemory::const_pointer>(&info.value));
+        try {
+            auto addr = bemu::System::canonicalize_load_address(info.addr);
+            LOG_AGENT(INFO, agent, "Writing 32-bit value 0x%" PRIx32 " to 0x%" PRIx64, info.value, addr);
+            chip.memory.write(agent, addr, sizeof(info.value),
+                              reinterpret_cast<bemu::MainMemory::const_pointer>(&info.value));
+        }
+        catch (const std::exception& e) {
+            LOG_AGENT(FTL, agent, "Error writing 32-bit value to 0x%" PRIx64 ": %s", info.addr, e.what());
+        }
+        catch (...) {
+            LOG_AGENT(FTL, agent, "Error writing 32-bit value to 0x%" PRIx64, info.addr);
+        }
     }
 
 #if EMU_HAS_PU
