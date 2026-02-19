@@ -202,7 +202,7 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         // Bootrom: Read-only, no AMO, no TensorOp (CacheOp allowed)
         if (amo
             || tensor
-            || data_access_is_write(macc))
+            || (data_access_is_write(macc) && !cacheop))
         {
             throw_access_fault(vaddr, macc);
         }
