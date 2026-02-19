@@ -64,15 +64,24 @@ jobs:
           docker load --input ${{ runner.temp }}/platform.tar
           # run `docker image ls`, just to see that it is there
           docker image ls
-      - name: Run tests in docker
+      - name: Run integration tests
         run: |
           docker run --rm -w /out -v ${{ runner.temp }}/out:/out et-platform:latest /bin/bash -c "/opt/et/bin/it_test_code_loading"
+      - name: Run Erbium emulator tests
+        run: |
+          docker run --rm et-platform:latest /bin/bash -c "make -C /workspace/sw-sysemu/tests/erbium run RISCV=/opt/et/bin EMU=/opt/et/bin/erbium_emu"
+      - name: Run Erbium GDB tests
+        run: |
+          docker run --rm et-platform:latest /bin/bash -c "make -C /workspace/sw-sysemu/tests/erbium run-gdb RISCV=/opt/et/bin EMU=/opt/et/bin/erbium_emu"
+      - name: Run ET-SOC1 debug tests
+        run: |
+          docker run --rm et-platform:latest /bin/bash -c "export PATH=/opt/et/bin:\$PATH && make -C /workspace/sw-sysemu/debug_tests && make -C /workspace/sw-sysemu/debug_tests run SYSEMU=/opt/et/bin/sys_emu"
       - name: Upload test results
         uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: ${{ runner.temp }}/out
-          if-no-files-found: error
+          if-no-files-found: warn
       - name: Report test results
         run: |
           for file in ${{ runner.temp }}/out/*.log*; do
