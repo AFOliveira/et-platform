@@ -42,6 +42,7 @@ jobs:
           BASE_DISTRO=${{ matrix.target.distro_name }}
           DISTRO_VERSION=${{ matrix.target.distro_version }}
           VERBOSE=1
+          GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
         outputs: type=docker,dest=${{ runner.temp }}/platform.tar
     - name: Upload build image
       uses: actions/upload-artifact@v4
