@@ -26,9 +26,9 @@ int main()
     while (amoorgw(ADDR_launched, 0) < 1)
         ;
 
-    /* The test should have halted at the kernel */
+    /* The test should have halted at the kernel (resumeack persists per spec) */
     uint64_t hastatus0 = read_hastatus0(0, 0);
-    EXPECTX(hastatus0, ==, 0x1);
+    EXPECTX(hastatus0, ==, 0x100000001);
 
     uint64_t dpc = Read_CSR(0, CSR_DPC);
     EXPECTX(dpc, ==, kernel);
@@ -40,7 +40,7 @@ int main()
     TRY_UNTIL(halted, 5)
     {
         hastatus0 = read_hastatus0(0, 0);
-        if (hastatus0 == 0x1)
+        if (hastatus0 == 0x100000001)
             break;
     }
     if (!halted)
