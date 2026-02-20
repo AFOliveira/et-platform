@@ -179,7 +179,7 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
 
         if (mprot & MPROT_ENABLE_SECURE_MEMORY) {
             if (paddr_is_dram_mcode(addr)) {
-                if (!spio && (data_access_is_write(macc)
+                if (!spio && ((data_access_is_write(macc) || (macc == Mem_Access_Prefetch))
                               || (effective_execution_mode(cpu, macc) != Privilege::M)))
                     throw_access_fault(vaddr, macc);
             }
@@ -188,7 +188,7 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
                     throw_access_fault(vaddr, macc);
             }
             else if (paddr_is_dram_scode(addr)) {
-                if (!spio && (data_access_is_write(macc)
+                if (!spio && ((data_access_is_write(macc) || (macc == Mem_Access_Prefetch))
                               ? (effective_execution_mode(cpu, macc) != Privilege::M)
                               : (effective_execution_mode(cpu, macc) == Privilege::U)))
                     throw_access_fault(vaddr, macc);
@@ -275,7 +275,11 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         if (!spio
             || amo
             || (ts_tl_co && !paddr_is_sp_cacheable(addr))
-            || (paddr_is_sp_sram_code(addr) && data_access_is_write(macc) && (mode != Privilege::M))
+            // PrefetchVA should also fail on read-only/protected regions where a store would fault.
+            || (paddr_is_sp_rom(addr) && (macc == Mem_Access_Prefetch))
+            || (paddr_is_sp_sram_code(addr)
+                && (data_access_is_write(macc) || (macc == Mem_Access_Prefetch))
+                && (mode != Privilege::M))
             || (paddr_is_sp_sram_data(addr) && (mode == Privilege::U))
             || (paddr_is_sp_misc(addr) && (mode != Privilege::M))
             || (!paddr_is_sp_cacheable(addr) && !addr_is_size_aligned(addr, size)))
