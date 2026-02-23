@@ -251,7 +251,7 @@ private:
             threshold[name_id] = *source32 & PLIC_THRESHOLD_MASK;
         } else if ((pos % 0x1000) == 4) { // MaxID registers
             // Complete an interrupt: target writes to MaxID the ID of the interrupt
-            if (in_flight[*source32] && (in_flight_by[*source32] == name_id)) {
+            if (*source32 < S && in_flight[*source32] && (in_flight_by[*source32] == name_id)) {
                 in_flight[*source32] = false;
                 update_logic(system);
             }
