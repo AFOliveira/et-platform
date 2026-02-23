@@ -225,7 +225,7 @@ private:
     // PLIC Write register subregions
     void reg_priority_source_write(size_type pos, const uint32_t *source32) {
         uint32_t index = pos / 4;
-        if (index >= S)
+        if (index == 0 || index >= S)
             return;
 
         priority[index] = *source32 & PLIC_PRIORITY_MASK;
