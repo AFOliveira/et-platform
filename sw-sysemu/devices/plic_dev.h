@@ -130,7 +130,7 @@ private:
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     // Run PLIC logic when there is a potential change
