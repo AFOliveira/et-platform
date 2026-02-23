@@ -214,6 +214,7 @@ private:
             *result32 = max_id[name_id];
             // To claim an interrupt, the target reads its Claim register
             if (max_id[name_id] > 0) {
+                ip[max_id[name_id]] = false;
                 in_flight[max_id[name_id]] = true;
                 // Save the ID of the Target that claimed the source interrupt
                 in_flight_by[max_id[name_id]] = name_id;
