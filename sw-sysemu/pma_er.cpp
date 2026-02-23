@@ -187,11 +187,13 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
     }
 
     if (paddr_is_plic(addr)) {
-        // PLIC: 32-bit aligned, 32-bit access, no AMO/TensorOp/CacheOp
+        // PLIC: 32-bit aligned, 32-bit access, M/S privilege, no AMO/TensorOp/CacheOp
+        Privilege mode = effective_execution_mode(cpu, macc);
         if (amo
             || ts_tl_co
             || (size != 4)
-            || !addr_is_size_aligned(addr, 4))
+            || !addr_is_size_aligned(addr, 4)
+            || (mode == Privilege::U))
         {
             throw_access_fault(vaddr, macc);
         }
