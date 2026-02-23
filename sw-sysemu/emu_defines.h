@@ -364,6 +364,7 @@ enum : freg {
 #define ET_DIAG_IRQ_INJ_MEI     (0)
 #define ET_DIAG_IRQ_INJ_TI      (1)
 #define ET_DIAG_IRQ_INJ_SEI     (2)
+#define ET_DIAG_IRQ_INJ_PLIC    (3)
 
 // mem reset pattern is 4 bytes (to allow for instance, 0xDEADBEEF)
 #define MEM_RESET_PATTERN_SIZE 4

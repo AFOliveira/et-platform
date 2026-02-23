@@ -166,6 +166,12 @@ public:
     void sp_plic_interrupt_pending_clear(uint32_t source_id);
 #endif
 
+#if EMU_ERBIUM && defined(SYS_EMU)
+    // Interrupts (ER PLIC)
+    void er_plic_interrupt_pending_set(uint32_t source_id);
+    void er_plic_interrupt_pending_clear(uint32_t source_id);
+#endif
+
 #if EMU_HAS_PU
     // Interrupts
     void pu_plic_interrupt_pending_set(uint32_t source_id);
@@ -459,6 +465,21 @@ inline void System::sp_plic_interrupt_pending_clear(uint32_t source_id)
 }
 
 #endif // EMU_HAS_SVCPROC && SYS_EMU
+
+#if EMU_ERBIUM && defined(SYS_EMU)
+
+inline void System::er_plic_interrupt_pending_set(uint32_t source_id)
+{
+    memory.plic_interrupt_pending_set(noagent, source_id);
+}
+
+
+inline void System::er_plic_interrupt_pending_clear(uint32_t source_id)
+{
+    memory.plic_interrupt_pending_clear(noagent, source_id);
+}
+
+#endif // EMU_ERBIUM && SYS_EMU
 
 #if EMU_HAS_SPIO
 
