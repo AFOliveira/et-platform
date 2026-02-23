@@ -185,7 +185,7 @@ private:
 
     void reg_pending_read(size_type pos, uint32_t *result32) const {
         uint32_t index = pos / 4;
-        if (index >= S)
+        if (index >= (S + 31) / 32)
             return;
 
         *result32 = bitset_read_u32(ip, 32 * index);
