@@ -121,6 +121,7 @@ public:
     void uart_set_rx_fd(int fd);
     int uart_get_tx_fd() const;
     int uart_get_rx_fd() const;
+    bool is_uart_enabled() const;
 
     // PLIC helpers
     void plic_interrupt_pending_set(const Agent&, uint32_t source);

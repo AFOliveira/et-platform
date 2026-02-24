@@ -95,6 +95,11 @@ int MainMemory::uart_get_rx_fd() const {
     return ptr->rx_fd;
 }
 
+bool MainMemory::is_uart_enabled() const {
+    auto ptr = dynamic_cast<SysregsEr<region_bases[erbreg_idx]>*>(regions[erbreg_idx].get());
+    return ptr->is_uart_enabled();
+}
+
 void MainMemory::plic_interrupt_pending_set(const Agent& agent, uint32_t source)
 {
     auto ptr = dynamic_cast<ER_PLIC<region_bases[plic_idx], region_sizes[plic_idx]>*>(regions[plic_idx].get());
