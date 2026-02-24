@@ -55,6 +55,8 @@ struct SysregsEr : public MemoryRegion {
 
     void wdt_clock_tick(const Agent& agent, uint64_t cycle);
 
+    bool is_uart_enabled() const { return system_config & SYSTEM_CONFIG_UART_ENABLE; }
+
 private:
 
     // Register Offsets
@@ -79,6 +81,7 @@ private:
     static constexpr uint32_t SYSTEM_CONFIG_SYS_INTR_EN         = 1 << 0;
     static constexpr uint32_t SYSTEM_CONFIG_MRAM_STARTUP_BYPASS = 1 << 1;
     static constexpr uint32_t SYSTEM_CONFIG_WDOG_DISABLE        = 1 << 2;
+    static constexpr uint32_t SYSTEM_CONFIG_UART_ENABLE         = 1 << 6;
 
     static constexpr uint32_t WATCHDOG_KICK                     = 1 << 7;
 
