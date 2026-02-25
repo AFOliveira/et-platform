@@ -162,7 +162,7 @@ void System::raise_machine_timer_interrupt(unsigned shire)
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
         if (!cpu[thread].is_nonexistent()) {
-            unsigned minion = thread / EMU_THREADS_PER_MINION;
+            unsigned minion = (thread - begin_hart) / EMU_THREADS_PER_MINION;
             if ((mtime_target >> minion) & 1) {
                 cpu[thread].raise_interrupt(MACHINE_TIMER_INTERRUPT);
             }
@@ -189,7 +189,7 @@ void System::clear_machine_timer_interrupt(unsigned shire)
 
     for (unsigned thread = begin_hart; thread < end_hart; ++thread) {
         if (!cpu[thread].is_nonexistent()) {
-            unsigned minion = thread / EMU_THREADS_PER_MINION;
+            unsigned minion = (thread - begin_hart) / EMU_THREADS_PER_MINION;
             if ((mtime_target >> minion) & 1) {
                 cpu[thread].clear_interrupt(MACHINE_TIMER_INTERRUPT);
             }
