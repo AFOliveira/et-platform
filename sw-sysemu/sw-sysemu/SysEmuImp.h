@@ -9,6 +9,7 @@
 #include "sys_emu.h"
 #include "system.h"
 #include "agent.h"
+#include <atomic>
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -56,8 +57,8 @@ private:
   bemu::Noagent agent_{chip_, "SysEmuImp"};
 
   std::mutex mutex_;
-  bool running_ = true;
-  bool should_pause_ = false;
+  std::atomic<bool> running_ = true;
+  std::atomic<bool> should_pause_ = false;
   uint32_t pendingInterruptsBitmask_ = 0;
   uint64_t raised_interrupt_count_ = 0;
   std::condition_variable condVar_;
