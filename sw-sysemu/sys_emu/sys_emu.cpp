@@ -19,6 +19,7 @@
 #include <sys/types.h>
 #include <tuple>
 #include <unistd.h>
+#include <vector>
 
 #include "api_communicate.h"
 #include "checkers/l2_scp_checker.h"
@@ -546,9 +547,17 @@ int sys_emu::main_internal() {
 
         chip.active.splice(chip.active.cend(), chip.awaking);
 
-        auto current_hart = chip.active.begin();
-        while (current_hart != chip.active.end()) {
-            auto hart = current_hart++;
+        std::vector<bemu::Hart*> active_snapshot;
+        active_snapshot.reserve(chip.active.size());
+        for (auto& hart : chip.active) {
+            active_snapshot.push_back(&hart);
+        }
+
+        for (auto* hart : active_snapshot) {
+            // Hart may have changed list/state earlier in this same cycle.
+            if (!hart->is_active()) {
+                continue;
+            }
 
             if (hart->pending_unlink) {
                 continue;
