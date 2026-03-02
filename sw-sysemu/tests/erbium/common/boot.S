@@ -23,7 +23,7 @@ _boot:
   csrrw x0, mip, x0
   csrwi tensor_mask, 0
 
-  /* Set mtvec to default trap handler (at 0x0200B000) */
+  /* Set mtvec to default trap handler (at 0x02009000) */
   la    t0, default_trap_handler
   csrw  mtvec, t0
 

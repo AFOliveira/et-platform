@@ -7,9 +7,9 @@ OUTPUT_ARCH("riscv")
 ENTRY(_boot)
 
 /* Erbium memory layout */
-BOOTROM_BASE = 0x000200A000;
+BOOTROM_BASE = 0x0002008000;
 BOOTROM_SIZE = 8K;
-SRAM_BASE    = 0x000200E000;
+SRAM_BASE    = 0x000200C000;
 SRAM_SIZE    = 4K;
 MRAM_BASE    = 0x0040000000;
 MRAM_SIZE    = 16M;
@@ -39,12 +39,12 @@ SECTIONS {
         __bootrom_end = .;
     } > BOOTROM
 
-    /* Trap handler at second 4K page of bootrom (0x0200B000) */
-    .traprom 0x0200B000 : {
+    /* Trap handler at second 4K page of bootrom (0x02009000) */
+    .traprom 0x02009000 : {
         *(traprom traprom.*)
     } > BOOTROM
 
-    ASSERT(__bootrom_end <= 0x0200B000, ".bootrom overflows into trap handler!")
+    ASSERT(__bootrom_end <= 0x02009000, ".bootrom overflows into trap handler!")
 
     /* Code that must be in MRAM (use __attribute__((section(".mram_text"))) */
     .mram_text : {
