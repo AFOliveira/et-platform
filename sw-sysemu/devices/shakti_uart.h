@@ -15,10 +15,11 @@
 #include "agent.h"
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
+#include "system.h"
 
 namespace bemu {
 
-template <unsigned long long Base, size_t N>
+template <unsigned long long Base, size_t N, uint32_t PlicSource>
 struct ShaktiUart : public MemoryRegion {
     using addr_type     = typename MemoryRegion::addr_type;
     using size_type     = typename MemoryRegion::size_type;
@@ -51,8 +52,27 @@ struct ShaktiUart : public MemoryRegion {
         STATUS_RXFIFOTHRE   = (1u << 8),
     };
 
-    static constexpr size_t RX_FIFO_DEPTH = 16;
+    // IEN register bits
+    enum : uint32_t {
+        IEN_TX_EMPTY_EN    = (1u << 0),
+        IEN_TX_FULL_EN     = (1u << 1),
+        IEN_RX_NOT_EMPTY_EN = (1u << 2),
+        IEN_RX_FULL_EN     = (1u << 3),
+        IEN_PARITY_ERROR_EN = (1u << 4),
+        IEN_OVERRUN_EN     = (1u << 5),
+        IEN_FRAME_ERROR_EN = (1u << 6),
+        IEN_BREAK_ERROR_EN = (1u << 7),
+        IEN_RX_THRESHOLD_EN = (1u << 8),
+    };
 
+    static constexpr uint32_t IRQ_EVENT_MASK = (1u << 9) - 1u;
+    static constexpr size_t RX_FIFO_DEPTH = 16;
+    static constexpr uint32_t IRQ_RX_EVENT_MASK =
+        IEN_RX_NOT_EMPTY_EN | IEN_RX_FULL_EN | IEN_RX_THRESHOLD_EN;
+    static constexpr uint32_t IRQ_RX_POLL_MASK =
+        IEN_RX_NOT_EMPTY_EN | IEN_RX_FULL_EN | IEN_RX_THRESHOLD_EN |
+        IEN_PARITY_ERROR_EN | IEN_OVERRUN_EN | IEN_FRAME_ERROR_EN |
+        IEN_BREAK_ERROR_EN;
     void read(const Agent& agent, size_type pos, size_type n, pointer result) override {
         (void) n;
 
@@ -67,6 +87,7 @@ struct ShaktiUart : public MemoryRegion {
                 (void)rx_fifo_pop(data);
             }
             *reinterpret_cast<uint32_t*>(result) = data;
+            sync_interrupt_line(agent, false);
             break;
         }
         case SHAKTI_UART_STATUS: {
@@ -77,6 +98,7 @@ struct ShaktiUart : public MemoryRegion {
             }
             // Error status bits are latched and clear-on-read.
             error_overrun = false;
+            sync_interrupt_line(agent, false);
             break;
         }
         case SHAKTI_UART_BAUD:
@@ -122,10 +144,12 @@ struct ShaktiUart : public MemoryRegion {
             reg_control = value & 0xFFFFu;
             break;
         case SHAKTI_UART_IEN:
-            reg_ien = value;
+            reg_ien = value & IRQ_EVENT_MASK;
+            sync_interrupt_line(agent, true);
             break;
         case SHAKTI_UART_RX_THRESHOLD:
             reg_rx_threshold = value & 0xFFu;
+            sync_interrupt_line(agent, true);
             break;
         case SHAKTI_UART_STATUS:
             // Read-only, ignore writes
@@ -144,6 +168,17 @@ struct ShaktiUart : public MemoryRegion {
 
     void dump_data(const Agent&, std::ostream&, size_type, size_type) const override { }
 
+    void clock_tick(const Agent& agent) {
+        if ((reg_ien & IRQ_RX_POLL_MASK) == 0) {
+            return;
+        }
+        sync_interrupt_line(agent, true);
+    }
+
+    bool interrupt_monitoring_active() const {
+        return (rx_fd != -1) && ((reg_ien & IRQ_RX_POLL_MASK) != 0);
+    }
+
     int tx_fd = -1;
     int rx_fd = -1;
 
@@ -158,6 +193,7 @@ private:
     size_t   rx_fifo_tail = 0;
     size_t   rx_fifo_count = 0;
     bool     error_overrun = false;
+    bool     interrupt_asserted = false;
 
     uint32_t status_value(bool poll_rx) {
         if (poll_rx) {
@@ -178,6 +214,25 @@ private:
             status |= STATUS_RXFIFOTHRE;
         }
         return status;
+    }
+
+    void sync_interrupt_line(const Agent& agent, bool poll_rx) {
+        if (agent.chip == nullptr) {
+            return;
+        }
+
+        const uint32_t status = status_value(poll_rx);
+        const bool should_raise = ((status & reg_ien & IRQ_EVENT_MASK) != 0);
+        if (should_raise == interrupt_asserted) {
+            return;
+        }
+
+        interrupt_asserted = should_raise;
+        if (should_raise) {
+            agent.chip->plic_interrupt_pending_set(PlicSource);
+        } else {
+            agent.chip->plic_interrupt_pending_clear(PlicSource);
+        }
     }
 
     bool rx_threshold_reached() const {

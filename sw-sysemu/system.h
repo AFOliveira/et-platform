@@ -200,6 +200,10 @@ public:
 #endif // EMU_HAS_SPIO
 
 #if EMU_HAS_SHAKTI_UART
+    // Interrupts
+    void plic_interrupt_pending_set(uint32_t source_id);
+    void plic_interrupt_pending_clear(uint32_t source_id);
+    // UART
     void uart_set_tx_fd(int fd);
     void uart_set_rx_fd(int fd);
     int uart_get_tx_fd() const;
@@ -534,6 +538,16 @@ inline int System::spio_uart1_get_tx_fd() const
 
 #if EMU_HAS_SHAKTI_UART
 
+inline void System::plic_interrupt_pending_set(uint32_t source_id)
+{
+    memory.plic_interrupt_pending_set(noagent, source_id);
+}
+
+inline void System::plic_interrupt_pending_clear(uint32_t source_id)
+{
+    memory.plic_interrupt_pending_clear(noagent, source_id);
+}
+
 inline void System::uart_set_tx_fd(int fd)
 {
     memory.uart_set_tx_fd(fd);
@@ -577,6 +591,10 @@ inline void System::tick_peripherals(uint64_t cycle)
     memory.rvtimer_clock_tick(noagent, cycle);
 #endif
 
+#if EMU_HAS_SHAKTI_UART
+    memory.uart_clock_tick(noagent);
+#endif
+
     // cycle at 1GHz, timer clock at 10MHz
     if ((cycle % 100) == 0) {
 
@@ -609,6 +627,10 @@ inline bool System::timers_active(void)
 #endif
 #if EMU_HAS_RVTIMER
     if (memory.rvtimer_is_active())
+        return true;
+#endif
+#if EMU_HAS_SHAKTI_UART
+    if (memory.uart_interrupt_monitoring_active())
         return true;
 #endif
     return false;

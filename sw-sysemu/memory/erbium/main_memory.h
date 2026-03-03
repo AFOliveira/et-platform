@@ -129,6 +129,8 @@ public:
     int uart_get_tx_fd() const;
     int uart_get_rx_fd() const;
     bool is_uart_enabled() const;
+    void uart_clock_tick(const Agent&);
+    bool uart_interrupt_monitoring_active() const;
 
     // PLIC helpers
     void plic_interrupt_pending_set(const Agent&, uint32_t source);
