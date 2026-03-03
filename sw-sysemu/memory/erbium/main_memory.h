@@ -58,8 +58,8 @@ private:
     constexpr static uint64_t region_bases[REGION_COUNT] = {
         /* erbreg  */ 0x0002000000ull,
         /* uart    */ 0x0002004000ull,
-        /* bootrom */ 0x000200A000ull,
-        /* sram    */ 0x000200E000ull,
+        /* bootrom */ 0x0002008000ull,
+        /* sram    */ 0x000200C000ull,
         /* dram    */ 0x0040000000ull,  /* Actually MRAM */
         /* sysreg  */ 0x0080000000ull,
         /* plic    */ 0x00C0000000ull,
