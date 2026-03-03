@@ -6,13 +6,13 @@
 #ifndef BEMU_SHAKTI_UART_H
 #define BEMU_SHAKTI_UART_H
 
+#include <array>
 #include <cerrno>
 #include <cstdint>
 #include <system_error>
 #include <unistd.h>
 #include <sys/select.h>
 #include "agent.h"
-#include "system.h"
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
 
@@ -44,7 +44,14 @@ struct ShaktiUart : public MemoryRegion {
         STATUS_TX_FULL      = (1u << 1),
         STATUS_RX_NOT_EMPTY = (1u << 2),
         STATUS_RX_FULL      = (1u << 3),
+        STATUS_PARITY_ERROR = (1u << 4),
+        STATUS_OVERRUN      = (1u << 5),
+        STATUS_FRAME_ERROR  = (1u << 6),
+        STATUS_BREAK_ERROR  = (1u << 7),
+        STATUS_RXFIFOTHRE   = (1u << 8),
     };
+
+    static constexpr size_t RX_FIFO_DEPTH = 16;
 
     void read(const Agent& agent, size_type pos, size_type n, pointer result) override {
         (void) n;
@@ -55,19 +62,21 @@ struct ShaktiUart : public MemoryRegion {
             break;
         case SHAKTI_UART_RCV_REG: {
             uint8_t data = 0;
-            if (agent.chip->is_uart_enabled() && rx_has_byte) {
-                data = rx_byte_buf;
-                rx_has_byte = false;
+            if (agent.chip->is_uart_enabled()) {
+                poll_rx_fifo();
+                (void)rx_fifo_pop(data);
             }
             *reinterpret_cast<uint32_t*>(result) = data;
             break;
         }
         case SHAKTI_UART_STATUS: {
-            uint32_t status = STATUS_TX_EMPTY;
-            if (agent.chip->is_uart_enabled() && rx_data_available()) {
-                status |= STATUS_RX_NOT_EMPTY;
+            if (agent.chip->is_uart_enabled()) {
+                *reinterpret_cast<uint32_t*>(result) = status_value(true);
+            } else {
+                *reinterpret_cast<uint32_t*>(result) = STATUS_TX_EMPTY;
             }
-            *reinterpret_cast<uint32_t*>(result) = status;
+            // Error status bits are latched and clear-on-read.
+            error_overrun = false;
             break;
         }
         case SHAKTI_UART_BAUD:
@@ -104,19 +113,19 @@ struct ShaktiUart : public MemoryRegion {
             }
             break;
         case SHAKTI_UART_BAUD:
-            reg_baud = value;
+            reg_baud = value & 0xFFFFu;
             break;
         case SHAKTI_UART_DELAY:
-            reg_delay = value;
+            reg_delay = value & 0xFFFFu;
             break;
         case SHAKTI_UART_CONTROL:
-            reg_control = value;
+            reg_control = value & 0xFFFFu;
             break;
         case SHAKTI_UART_IEN:
             reg_ien = value;
             break;
         case SHAKTI_UART_RX_THRESHOLD:
-            reg_rx_threshold = value;
+            reg_rx_threshold = value & 0xFFu;
             break;
         case SHAKTI_UART_STATUS:
             // Read-only, ignore writes
@@ -144,8 +153,71 @@ private:
     uint32_t reg_control = 0;
     uint32_t reg_ien = 0;
     uint32_t reg_rx_threshold = 0;
-    bool     rx_has_byte = false;
-    uint8_t  rx_byte_buf = 0;
+    std::array<uint8_t, RX_FIFO_DEPTH> rx_fifo{};
+    size_t   rx_fifo_head = 0;
+    size_t   rx_fifo_tail = 0;
+    size_t   rx_fifo_count = 0;
+    bool     error_overrun = false;
+
+    uint32_t status_value(bool poll_rx) {
+        if (poll_rx) {
+            poll_rx_fifo();
+        }
+
+        uint32_t status = STATUS_TX_EMPTY;
+        if (rx_fifo_count > 0) {
+            status |= STATUS_RX_NOT_EMPTY;
+        }
+        if (rx_fifo_count >= RX_FIFO_DEPTH) {
+            status |= STATUS_RX_FULL;
+        }
+        if (error_overrun) {
+            status |= STATUS_OVERRUN;
+        }
+        if (rx_threshold_reached()) {
+            status |= STATUS_RXFIFOTHRE;
+        }
+        return status;
+    }
+
+    bool rx_threshold_reached() const {
+        if (reg_rx_threshold == 0) {
+            return rx_fifo_count > 0;
+        }
+        return rx_fifo_count > reg_rx_threshold;
+    }
+
+    bool rx_fifo_push(uint8_t value) {
+        if (rx_fifo_count >= RX_FIFO_DEPTH) {
+            error_overrun = true;
+            return false;
+        }
+        rx_fifo[rx_fifo_tail] = value;
+        rx_fifo_tail = (rx_fifo_tail + 1) % RX_FIFO_DEPTH;
+        ++rx_fifo_count;
+        return true;
+    }
+
+    bool rx_fifo_pop(uint8_t& value) {
+        if (rx_fifo_count == 0) {
+            return false;
+        }
+        value = rx_fifo[rx_fifo_head];
+        rx_fifo_head = (rx_fifo_head + 1) % RX_FIFO_DEPTH;
+        --rx_fifo_count;
+        return true;
+    }
+
+    void poll_rx_fifo() {
+        while (true) {
+            uint8_t value = 0;
+            const int result = read_rx_byte_nonblocking(value);
+            if (result != 1) {
+                break;
+            }
+            (void)rx_fifo_push(value);
+        }
+    }
 
     // select() with timeout=0 checks if read() would block. However, it
     // returns "readable" both for actual data and for EOF — so select()
@@ -153,22 +225,20 @@ private:
     //   r == 1 : real byte  — buffer it for the guest
     //   r == 0 : EOF        — set rx_fd = -1, stop polling
     //   r <  0 : error      — no data
-    bool rx_data_available() {
-        if (rx_has_byte) return true;
-        if (rx_fd == -1) return false;
+    int read_rx_byte_nonblocking(uint8_t& value) {
+        if (rx_fd == -1) return 0;
 
         fd_set rfds;
         struct timeval tv = {0, 0};
         FD_ZERO(&rfds);
         FD_SET(rx_fd, &rfds);
         if (select(rx_fd + 1, &rfds, nullptr, nullptr, &tv) <= 0)
-            return false;
+            return 0;
 
-        uint8_t b;
-        ssize_t r = ::read(rx_fd, &b, 1);
-        if (r == 1) { rx_byte_buf = b; rx_has_byte = true; return true; }
-        if (r == 0) { rx_fd = -1; return false; }
-        return false;
+        ssize_t r = ::read(rx_fd, &value, 1);
+        if (r == 1) { return 1; }
+        if (r == 0) { rx_fd = -1; return 0; }
+        return -1;
     }
 };
 
