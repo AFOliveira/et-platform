@@ -142,6 +142,15 @@ sys_emu::evl_dv_handle_irq_inj(bool raise, uint64_t subopcode, uint64_t shire_ma
             clear_timer_interrupt(shire_mask);
         }
         break;
+    case ET_DIAG_IRQ_INJ_PLIC:
+#if EMU_ERBIUM
+        if (raise) {
+            chip.er_plic_interrupt_pending_set(shire_mask & 0xFFFFFFFFu);
+        } else {
+            chip.er_plic_interrupt_pending_clear(shire_mask & 0xFFFFFFFFu);
+        }
+#endif
+        break;
     }
 }
 
