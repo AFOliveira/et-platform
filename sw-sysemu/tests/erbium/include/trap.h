@@ -15,6 +15,7 @@
 
 /* Interrupt cause codes (bit 63 set + interrupt code) */
 #define CAUSE_MACHINE_TIMER_INTERRUPT   0x8000000000000007ULL
+#define CAUSE_MACHINE_EXTERNAL_INTERRUPT 0x800000000000000BULL
 
 /* Set expected exception cause in mscratch.
  * When trap occurs with matching cause -> PASS
