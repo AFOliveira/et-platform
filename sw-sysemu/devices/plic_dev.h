@@ -130,7 +130,7 @@ private:
                 return true;
             }
         }
-        return true;
+        return false;
     }
 
     // Run PLIC logic when there is a potential change
@@ -185,7 +185,7 @@ private:
 
     void reg_pending_read(size_type pos, uint32_t *result32) const {
         uint32_t index = pos / 4;
-        if (index >= S)
+        if (index >= (S + 31) / 32)
             return;
 
         *result32 = bitset_read_u32(ip, 32 * index);
@@ -214,6 +214,7 @@ private:
             *result32 = max_id[name_id];
             // To claim an interrupt, the target reads its Claim register
             if (max_id[name_id] > 0) {
+                ip[max_id[name_id]] = false;
                 in_flight[max_id[name_id]] = true;
                 // Save the ID of the Target that claimed the source interrupt
                 in_flight_by[max_id[name_id]] = name_id;
@@ -225,7 +226,7 @@ private:
     // PLIC Write register subregions
     void reg_priority_source_write(size_type pos, const uint32_t *source32) {
         uint32_t index = pos / 4;
-        if (index >= S)
+        if (index == 0 || index >= S)
             return;
 
         priority[index] = *source32 & PLIC_PRIORITY_MASK;
@@ -251,7 +252,7 @@ private:
             threshold[name_id] = *source32 & PLIC_THRESHOLD_MASK;
         } else if ((pos % 0x1000) == 4) { // MaxID registers
             // Complete an interrupt: target writes to MaxID the ID of the interrupt
-            if (in_flight[*source32] && (in_flight_by[*source32] == name_id)) {
+            if (*source32 < S && in_flight[*source32] && (in_flight_by[*source32] == name_id)) {
                 in_flight[*source32] = false;
                 update_logic(system);
             }
@@ -262,15 +263,19 @@ private:
     template<size_t Bitset_size>
     static uint32_t bitset_read_u32(const std::bitset<Bitset_size> &set, size_t pos) {
         uint32_t val = 0;
-        for (int i = 0; i < 32; i++)
-            val |= uint32_t(set[pos + i]) << i;
+        for (int i = 0; i < 32; i++) {
+            if (pos + i < Bitset_size)
+                val |= uint32_t(set[pos + i]) << i;
+        }
         return val;
     }
 
     template<size_t Bitset_size>
     static void bitset_write_u32(std::bitset<Bitset_size> &set, size_t pos, uint32_t val) {
-        for (int i = 0; i < 32; i++)
-            set[pos + i] = (val >> i) & 1;
+        for (int i = 0; i < 32; i++) {
+            if (pos + i < Bitset_size)
+                set[pos + i] = (val >> i) & 1;
+        }
     }
 
     std::bitset<S>                ip;        // Interrupt Pending (per source)

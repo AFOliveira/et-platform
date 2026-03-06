@@ -40,6 +40,19 @@
 /* Test constants */
 #define TEST_SOURCE_ID          1
 #define TEST_CONTEXT_ID         0
+#define INVALID_CONTEXT_ID      31
+
+/* Validation1 diagnostics */
+#define ET_DIAG_IRQ_INJ         0x5ULL
+#define ET_DIAG_IRQ_INJ_PLIC    0x3ULL
+
+static inline void plic_diag_set_pending(uint32_t source_id, uint32_t raise) {
+    uint64_t cmd = (ET_DIAG_IRQ_INJ << 56)
+                 | ((uint64_t)(raise & 1) << 55)
+                 | (ET_DIAG_IRQ_INJ_PLIC << 53)
+                 | source_id;
+    asm volatile("csrw validation1, %0" :: "r"(cmd));
+}
 
 int main() {
     uint32_t val;
@@ -63,6 +76,15 @@ int main() {
     }
 
     /*
+     * Test 1b: Source 0 priority is hardwired to 0.
+     */
+    PLIC_PRIORITY(0) = 7;
+    val = PLIC_PRIORITY(0);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+
+    /*
      * Test 2: Enable register write/read
      * Enable source 1 for context 0
      */
@@ -74,6 +96,30 @@ int main() {
 
     /* Clear enables */
     PLIC_ENABLE(TEST_CONTEXT_ID, 0) = 0;
+    val = PLIC_ENABLE(TEST_CONTEXT_ID, 0);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+
+    /*
+     * Test 2a: Out-of-range enable word access must be ignored.
+     * Erbium has 32 sources => only word 0 is valid.
+     */
+    PLIC_ENABLE(TEST_CONTEXT_ID, 1) = 0xFFFFFFFFu;
+    val = PLIC_ENABLE(TEST_CONTEXT_ID, 1);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+    val = PLIC_ENABLE(TEST_CONTEXT_ID, 0);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+
+    /*
+     * Test 2b: Writes to unmapped context must not alias context 0.
+     * Erbium only has context address IDs 0 and 1.
+     */
+    PLIC_ENABLE(INVALID_CONTEXT_ID, 0) = (1U << TEST_SOURCE_ID);
     val = PLIC_ENABLE(TEST_CONTEXT_ID, 0);
     if (val != 0) {
         TEST_FAIL;
@@ -96,19 +142,67 @@ int main() {
     }
 
     /*
-     * Test 4: Claim register read (no pending interrupts)
-     * Should return 0 when no interrupts are pending
+     * Test 4: Claim clears pending for claimed source.
      */
+    PLIC_PRIORITY(TEST_SOURCE_ID) = 1;
+    PLIC_ENABLE(TEST_CONTEXT_ID, 0) = (1U << TEST_SOURCE_ID);
+    plic_diag_set_pending(TEST_SOURCE_ID, 1);
+
+    val = PLIC_CLAIM(TEST_CONTEXT_ID);
+    if (val != TEST_SOURCE_ID) {
+        TEST_FAIL;
+    }
+    /* While source is in-flight, no second claim is allowed. */
     val = PLIC_CLAIM(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
+    /* Complete claimed source. If claim did not clear pending, source reappears. */
+    PLIC_CLAIM(TEST_CONTEXT_ID) = TEST_SOURCE_ID;
+    val = PLIC_CLAIM(TEST_CONTEXT_ID);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+    plic_diag_set_pending(TEST_SOURCE_ID, 0);
+
+    /*
+     * Test 4b: Out-of-range completion ID write must be ignored.
+     */
+    plic_diag_set_pending(TEST_SOURCE_ID, 1);
+    val = PLIC_CLAIM(TEST_CONTEXT_ID);
+    if (val != TEST_SOURCE_ID) {
+        TEST_FAIL;
+    }
+    PLIC_CLAIM(TEST_CONTEXT_ID) = 0xFFFFFFFFu;
+    val = PLIC_CLAIM(TEST_CONTEXT_ID);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+    PLIC_CLAIM(TEST_CONTEXT_ID) = TEST_SOURCE_ID;
+    val = PLIC_CLAIM(TEST_CONTEXT_ID);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+    plic_diag_set_pending(TEST_SOURCE_ID, 0);
+
+    /* Restore defaults used by the rest of this test. */
+    PLIC_ENABLE(TEST_CONTEXT_ID, 0) = 0;
+    PLIC_PRIORITY(TEST_SOURCE_ID) = 0;
 
     /*
      * Test 5: Pending register is read-only
      * Read should succeed, initial value should be 0
      */
     val = PLIC_PENDING(0);
+    if (val != 0) {
+        TEST_FAIL;
+    }
+
+    /*
+     * Test 5b: Erbium has 32 sources => only one pending word is valid.
+     * Reading word 1 must return zero.
+     */
+    val = PLIC_PENDING(1);
     if (val != 0) {
         TEST_FAIL;
     }
