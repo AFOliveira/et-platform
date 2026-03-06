@@ -11,6 +11,8 @@
 #include <system_error>
 #include <unistd.h>
 #include <sys/select.h>
+#include "agent.h"
+#include "system.h"
 #include "memory/memory_error.h"
 #include "memory/memory_region.h"
 
@@ -44,7 +46,7 @@ struct ShaktiUart : public MemoryRegion {
         STATUS_RX_FULL      = (1u << 3),
     };
 
-    void read(const Agent&, size_type pos, size_type n, pointer result) override {
+    void read(const Agent& agent, size_type pos, size_type n, pointer result) override {
         (void) n;
 
         switch (pos) {
@@ -53,7 +55,7 @@ struct ShaktiUart : public MemoryRegion {
             break;
         case SHAKTI_UART_RCV_REG: {
             uint8_t data = 0;
-            if (rx_has_byte) {
+            if (agent.chip->is_uart_enabled() && rx_has_byte) {
                 data = rx_byte_buf;
                 rx_has_byte = false;
             }
@@ -61,8 +63,8 @@ struct ShaktiUart : public MemoryRegion {
             break;
         }
         case SHAKTI_UART_STATUS: {
-            uint32_t status = STATUS_TX_EMPTY; // TX always ready
-            if (rx_data_available()) {
+            uint32_t status = STATUS_TX_EMPTY;
+            if (agent.chip->is_uart_enabled() && rx_data_available()) {
                 status |= STATUS_RX_NOT_EMPTY;
             }
             *reinterpret_cast<uint32_t*>(result) = status;
@@ -89,14 +91,14 @@ struct ShaktiUart : public MemoryRegion {
         }
     }
 
-    void write(const Agent&, size_type pos, size_type n, const_pointer source) override {
+    void write(const Agent& agent, size_type pos, size_type n, const_pointer source) override {
         (void) n;
 
         uint32_t value = *reinterpret_cast<const uint32_t*>(source);
 
         switch (pos) {
         case SHAKTI_UART_TX_REG:
-            if ((tx_fd != -1) && (::write(tx_fd, source, 1) < 0)) {
+            if (agent.chip->is_uart_enabled() && (tx_fd != -1) && (::write(tx_fd, source, 1) < 0)) {
                 auto error = std::error_code(errno, std::system_category());
                 throw std::system_error(error, "bemu::ShaktiUart::write()");
             }

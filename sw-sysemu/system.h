@@ -198,6 +198,7 @@ public:
     void uart_set_rx_fd(int fd);
     int uart_get_tx_fd() const;
     int uart_get_rx_fd() const;
+    bool is_uart_enabled() const;
 #endif // EMU_HAS_SHAKTI_UART
 
     // System registers
@@ -533,6 +534,12 @@ inline int System::uart_get_tx_fd() const
 inline int System::uart_get_rx_fd() const
 {
     return memory.uart_get_rx_fd();
+}
+
+
+inline bool System::is_uart_enabled() const
+{
+    return memory.is_uart_enabled();
 }
 
 #endif // EMU_HAS_SHAKTI_UART
