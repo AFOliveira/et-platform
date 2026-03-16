@@ -672,7 +672,7 @@ void System::esr_write(const Agent& agent, uint64_t addr, uint64_t value)
             write_icache_prefetch(Privilege::M, shire, value & 0xffffffffffffull);
             return;
         case ESR_CLK_GATE_CTRL:
-            shire_other_esrs[shire].clk_gate_ctrl = uint8_t(value & 0xDF);
+            shire_other_esrs[shire].clk_gate_ctrl = uint8_t(value & 0x5F);
             LOG_AGENT(DEBUG, agent, "S%u:clk_gate_ctrl = 0x%" PRIx16,
                       shireid(shire), shire_other_esrs[shire].clk_gate_ctrl);
             return;
