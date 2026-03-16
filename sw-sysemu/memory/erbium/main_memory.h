@@ -32,6 +32,7 @@ namespace bemu {
 // | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
 // | 0x00_C000_0000 | 0x00_C3FF_FFFF | 64MiB    | PLIC              |
+// | 0x00_FE00_0000 | 0x00_FE01_5FFF | 88KiB    | NIC               |
 // +----------------+----------------+----------+-------------------+
 //
 
@@ -51,6 +52,7 @@ private:
         dram_idx,
         sysreg_idx,
         plic_idx,
+        nic_idx,
 
         REGION_COUNT
     };
@@ -63,6 +65,7 @@ private:
         /* dram    */ 0x0040000000ull,  /* Actually MRAM */
         /* sysreg  */ 0x0080000000ull,
         /* plic    */ 0x00C0000000ull,
+        /* nic     */ 0x00FE000000ull,
     };
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
@@ -73,6 +76,7 @@ private:
         /* dram    */ 16_MiB,
         /* sysreg  */ 16_MiB,
         /* plic    */ 64_MiB,
+        /* nic     */ 0x16000,
     };
 
 public:

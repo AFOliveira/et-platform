@@ -23,6 +23,7 @@ void MainMemory::reset()
     regions[dram_idx].reset(new DenseRegion<region_bases[dram_idx], region_sizes[dram_idx]>());
     regions[sysreg_idx].reset(new SysregRegion<region_bases[sysreg_idx], region_sizes[sysreg_idx]>());
     regions[plic_idx].reset(new ER_PLIC<region_bases[plic_idx], region_sizes[plic_idx]>());
+    regions[nic_idx].reset(new DenseRegion<region_bases[nic_idx], region_sizes[nic_idx]>());
 }
 
 void MainMemory::wdt_clock_tick(const Agent& agent, uint64_t cycle)

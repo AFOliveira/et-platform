@@ -57,6 +57,9 @@ static inline bool paddr_is_esr(uint64_t addr)
 static inline bool paddr_is_plic(uint64_t addr)
 { return (addr >= 0xC0000000ull) && (addr < 0xC4000000ull); }
 
+static inline bool paddr_is_nic(uint64_t addr)
+{ return (addr >= 0xFE000000ull) && (addr < 0xFE016000ull); }
+
 
 static bool data_access_is_write(mem_access_type macc)
 {
@@ -289,6 +292,18 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
             || (size != 4)
             || !addr_is_size_aligned(addr, 8)
             || (mode == Privilege::U))
+        {
+            throw_access_fault(vaddr, macc);
+        }
+        return addr;
+    }
+
+    if (paddr_is_nic(addr)) {
+        // NIC (NI-700) configuration space: 32-bit registers, 4-byte aligned.
+        if (amo
+            || ts_tl_co
+            || (size != 4)
+            || !addr_is_size_aligned(addr, 4))
         {
             throw_access_fault(vaddr, macc);
         }
