@@ -1667,7 +1667,8 @@ uint64_t System::read_icache_prefetch(Privilege /*privilege*/, unsigned shire) c
     // NB: Prefetches finish instantaneously in sys_emu
     return 1;
 #else
-    return shire_other_esrs[shire].icache_prefetch_active;
+    // External signal returns idle status of prefetch FSM: 1 = idle, 0 = busy
+    return !shire_other_esrs[shire].icache_prefetch_active;
 #endif
 }
 
