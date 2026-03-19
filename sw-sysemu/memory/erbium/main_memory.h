@@ -32,7 +32,7 @@ namespace bemu {
 // | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
 // | 0x00_7FFF_D000 | 0x00_7FFF_FFFF | 12KiB    | OTP (read-only)   |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
-// | 0x00_C000_0000 | 0x00_C3FF_FFFF | 64MiB    | PLIC              |
+// | 0x00_A000_0000 | 0x00_A3FF_FFFF | 64MiB    | PLIC              |
 // +----------------+----------------+----------+-------------------+
 //
 
@@ -65,7 +65,7 @@ private:
         /* dram    */ 0x0040000000ull,  /* Actually MRAM */
         /* otp     */ 0x007FFFD000ull,
         /* sysreg  */ 0x0080000000ull,
-        /* plic    */ 0x00C0000000ull,
+        /* plic    */ 0x00A0000000ull,
     };
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
