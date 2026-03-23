@@ -60,6 +60,10 @@ namespace bemu {
 
 #define PA_SIZE        32
 
+// mtvec/stvec BASE alignment masks
+#define MTVEC_DIRECT_MASK  0x2ULL    // 4-byte aligned
+#define MTVEC_VECTOR_MASK  0x7EULL   // 128-byte aligned, bits [6:1] WARL(0)
+
 #elif EMU_ETSOC1
 //
 // ETSOC-1
@@ -158,6 +162,10 @@ namespace bemu {
 #define EMU_HAS_HIGH_MEMORY 1
 
 #define PA_SIZE        40
+
+// mtvec/stvec 4KB alignment masks
+#define MTVEC_DIRECT_MASK  0xFFEULL
+#define MTVEC_VECTOR_MASK  0xFFEULL
 
 #else
 #error "Architecture unspecified."

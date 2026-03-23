@@ -644,7 +644,10 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         val &= cpu.mideleg;
         break;
     case CSR_STVEC:
-        val = sextVA(val & ~0xFFEULL);
+        if (val & 1)
+            val = sextVA(val & ~MTVEC_VECTOR_MASK);
+        else
+            val = sextVA(val & ~MTVEC_DIRECT_MASK);
         cpu.stvec = val;
         break;
     case CSR_SCOUNTEREN:
@@ -738,7 +741,10 @@ static uint64_t csrset(Hart& cpu, uint16_t csr, uint64_t val)
         cpu.mie = val;
         break;
     case CSR_MTVEC:
-        val = sextVA(val & ~0xFFEULL);
+        if (val & 1)
+            val = sextVA(val & ~MTVEC_VECTOR_MASK);
+        else
+            val = sextVA(val & ~MTVEC_DIRECT_MASK);
         cpu.mtvec = val;
         break;
     case CSR_MCOUNTEREN:
