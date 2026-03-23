@@ -49,7 +49,7 @@ struct SysregsEr : public MemoryRegion {
     }
     
     addr_type first() const override { return Base; }
-    addr_type last() const override { return Base + LAST_OFFSET; }
+    addr_type last() const override { return Base + REGION_SIZE - 1; }
 
     void dump_data(const Agent&, std::ostream&, size_type, size_type) const override { }
 
@@ -76,8 +76,8 @@ private:
     static constexpr uint64_t MAILBOX0          = 0x68;
     static constexpr uint64_t MAILBOX1          = 0x70;
     static constexpr uint64_t RING_OSC          = 0x98;
-    // Must match the highest offset
-    static constexpr uint64_t LAST_OFFSET       = 0x98;
+    // Region size: covers all registers up to and including RING_OSC (8-byte aligned)
+    static constexpr uint64_t REGION_SIZE       = 0xA0;
 
     // Register Bit Masks
     static constexpr uint32_t SYSTEM_CONFIG_SYS_INTR_EN         = 1 << 0;
