@@ -174,6 +174,14 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
     }
 
     if (paddr_is_mram(addr)) {
+        // Boot protocol: first 256 bytes of MRAM are write-protected from
+        // CPU stores.
+        if (addr < (MRAM_BASE + 0x100)
+            && data_access_is_write(macc)
+            && macc != Mem_Access_CacheOp) {
+            throw_access_fault(vaddr, macc);
+        }
+
         uint16_t mprot = cpu.chip->neigh_esrs[neigh_index(cpu)].mprot;
 
         Privilege mode = effective_execution_mode(cpu, macc);
