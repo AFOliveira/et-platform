@@ -117,6 +117,9 @@ public:
     // Preload memory
     uint64_t load_elf(std::istream&);
     uint64_t load_elf(const char* filename);
+
+    // Boot protocol
+    void apply_boot_protocol(uint64_t payload_pc, uint64_t payload_sp);
     void load_raw(const char* filename, unsigned long long addr);
 
     // Reset state
