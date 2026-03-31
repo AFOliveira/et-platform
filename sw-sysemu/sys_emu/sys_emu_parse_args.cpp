@@ -186,6 +186,9 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
 #if EMU_HAS_SVCPROC
         {"sp_reset_pc",            required_argument, nullptr, 0},
 #endif
+        {"boot_elf",               required_argument, nullptr, 0},
+        {"payload_pc",             required_argument, nullptr, 0},
+        {"payload_sp",             required_argument, nullptr, 0},
         {"set_xreg",               required_argument, nullptr, 0},
 #endif
         {"max_cycles",             required_argument, nullptr, 0},
@@ -391,6 +394,18 @@ sys_emu::parse_command_line_arguments(int argc, char* argv[])
             sscanf(optarg, "%" PRIx64, &cmd_options.sp_reset_pc);
         }
 #endif
+        else if (!strcmp(name, "boot_elf"))
+        {
+            cmd_options.boot_elf = std::string(optarg);
+        }
+        else if (!strcmp(name, "payload_pc"))
+        {
+            sscanf(optarg, "%" PRIx64, &cmd_options.payload_pc);
+        }
+        else if (!strcmp(name, "payload_sp"))
+        {
+            sscanf(optarg, "%" PRIx64, &cmd_options.payload_sp);
+        }
         else if (!strcmp(name, "set_xreg"))
         {
             uint64_t thread, xreg, value;

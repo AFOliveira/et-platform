@@ -256,7 +256,7 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     breakpoints.clear();
     single_step.reset();
 
-    if (cmd_options.elf_files.empty() && cmd_options.file_load_files.empty() &&
+    if (cmd_options.elf_files.empty() && cmd_options.boot_elf.empty() && cmd_options.file_load_files.empty() &&
         cmd_options.mem_desc_file.empty() && cmd_options.api_comm_path.empty() && g_preload->empty()) {
         LOG_AGENT(FTL, agent, "%s", "Need an ELF file, a file load, a mem_desc file or runtime API!");
     }
@@ -283,6 +283,18 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
         }
         catch (...) {
             LOG_AGENT(FTL, agent, "Error preloading ELF[%d]", i);
+        }
+    }
+
+    // Load boot ELF (--boot_elf): loads ELF and captures entry point for boot protocol
+    uint64_t elf_entry = 0;
+    if (!cmd_options.boot_elf.empty()) {
+        LOG_AGENT(INFO, agent, "Loading boot ELF: \"%s\"", cmd_options.boot_elf.c_str());
+        try {
+            elf_entry = chip.load_elf(cmd_options.boot_elf.c_str());
+        }
+        catch (...) {
+            LOG_AGENT(FTL, agent, "Error loading boot ELF \"%s\"", cmd_options.boot_elf.c_str());
         }
     }
 
@@ -491,6 +503,12 @@ sys_emu::sys_emu(const sys_emu_cmd_options &cmd_options, api_communicate *api_co
     for (unsigned shire = 0; shire < EMU_NUM_SHIRES; ++shire) {
         chip.begin_warm_reset(shire);
         chip.end_warm_reset(shire);
+    }
+
+    // Apply boot protocol if enabled (--boot_elf, --payload_pc, or --payload_sp)
+    if (!cmd_options.boot_elf.empty() || cmd_options.payload_pc || cmd_options.payload_sp) {
+        uint64_t pc = cmd_options.payload_pc ? cmd_options.payload_pc : elf_entry;
+        chip.apply_boot_protocol(pc, cmd_options.payload_sp);
     }
 
     // Initialize xregs passed to command line
