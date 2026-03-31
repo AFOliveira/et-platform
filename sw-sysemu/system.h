@@ -115,8 +115,8 @@ public:
     void init(Stepping);
 
     // Preload memory
-    void load_elf(std::istream&);
-    void load_elf(const char* filename);
+    uint64_t load_elf(std::istream&);
+    uint64_t load_elf(const char* filename);
     void load_raw(const char* filename, unsigned long long addr);
 
     // Reset state
