@@ -14,20 +14,24 @@
 #include <hwinc/top.h>
 namespace bemu {
 
+static constexpr uint64_t XSPI_REGISTERS_SIZE = 0x38ull;
+
 //------------------------------------------------------------------------------
 // Erbium memory region address helpers
 //
 //   0x0200_0000 - 0x0200_0FFF: System registers (4K)
 //   0x0200_1000 - 0x0200_1FFF: MRAM registers (4K)
-//   0x0200_2000 - 0x0200_2FFF: Periph registers (4K)
-//   0x0200_F000 - 0x0200_FFFF: xSPI registers (4K)
+//   0x0200_2000 - 0x0200_2023: I2C registers (36B)
+//   0x0200_3000 - 0x0200_3063: QSPI registers (100B)
+//   0x0200_F000 - 0x0200_F037: xSPI registers (56B)
 //   0x0200_4000 - 0x0200_4FFF: UART registers (4K)
 //   0x0200_8000 - 0x0200_9FFF: Bootrom (8K)
 //   0x0200_C000 - 0x0200_CFFF: Scratch SRAM (4K)
-//   0x4000_0000 - 0x7FFF_FFFF: MRAM (1G, but only 16MB installed)
-//   0x7FFF_D000 - 0x7FFF_FFFF: OTP (12K, read-only)
+//   0x4000_0000 - 0x40FF_CFFF: MRAM (16MB - 12KB installed)
+//   0x40FF_D000 - 0x40FF_FFFF: OTP (12K, read-only)
 //   0x8000_0000 - 0x9FFF_FFFF: ESR/CPU registers (512M)
 //   0xA000_0000 - 0xA3FF_FFFF: PLIC (64M)
+//   0xFE00_0000 - 0xFE01_5FFF: NIC config (88K)
 //
 // Bases come from hwinc/top.h (regenerated from the top-level RDL);
 // upper bounds either come from the next region's base or, where the
@@ -39,11 +43,14 @@ static inline bool paddr_is_sysreg(uint64_t addr)
 static inline bool paddr_is_mramreg(uint64_t addr)
 { return (addr >= ERBIUM_TOP_MRAM_REGISTERS_BASE) && (addr < ERBIUM_TOP_I2C_REGISTERS_BASE); }
 
-static inline bool paddr_is_periph(uint64_t addr)
-{ return (addr >= ERBIUM_TOP_I2C_REGISTERS_BASE) && (addr < ERBIUM_TOP_QSPI_REGISTERS_BASE); }
+static inline bool paddr_is_i2c(uint64_t addr)
+{ return (addr >= ERBIUM_TOP_I2C_REGISTERS_BASE) && (addr < ERBIUM_TOP_I2C_REGISTERS_END); }
+
+static inline bool paddr_is_qspi(uint64_t addr)
+{ return (addr >= ERBIUM_TOP_QSPI_REGISTERS_BASE) && (addr < ERBIUM_TOP_QSPI_REGISTERS_END); }
 
 static inline bool paddr_is_xspi(uint64_t addr)
-{ return (addr >= ERBIUM_TOP_XSPI_REGISTERS_BASE) && (addr < ERBIUM_TOP_XSPI_REGISTERS_END); }
+{ return (addr >= ERBIUM_TOP_XSPI_REGISTERS_BASE) && (addr < ERBIUM_TOP_XSPI_REGISTERS_BASE + XSPI_REGISTERS_SIZE); }
 
 static inline bool paddr_is_uart(uint64_t addr)
 { return (addr >= ERBIUM_TOP_UART_REGISTERS_BASE) && (addr < ERBIUM_TOP_UART_REGISTERS_END); }
@@ -56,17 +63,20 @@ static inline bool paddr_is_bootrom(uint64_t addr)
 static inline bool paddr_is_sram(uint64_t addr)
 { return (addr >= ERBIUM_TOP_SRAM_BASE) && (addr < ERBIUM_TOP_SRAM_END); }
 
-// OTP is the top 12KB of MRAM space, just below the ESR base.
+// OTP is the top 12KB of installed MRAM space.
 static inline bool paddr_is_otp(uint64_t addr)
-{ return (addr >= ERBIUM_TOP_CPU_REGISTERS_BASE - 0x3000ull) && (addr < ERBIUM_TOP_CPU_REGISTERS_BASE); }
+{ return (addr >= ERBIUM_TOP_MRAM_BASE + ERBIUM_TOP_MRAM_SIZE - 12_KiB) && (addr < ERBIUM_TOP_MRAM_END); }
 
-// MRAM is the entire 1GB span between MRAM_BASE and the ESR base.
+// MRAM is the installed MRAM span below the OTP range.
 static inline bool paddr_is_mram(uint64_t addr)
-{ return (addr >= ERBIUM_TOP_MRAM_BASE) && (addr < ERBIUM_TOP_CPU_REGISTERS_BASE); }
+{ return (addr >= ERBIUM_TOP_MRAM_BASE) && (addr < ERBIUM_TOP_MRAM_BASE + ERBIUM_TOP_MRAM_SIZE - 12_KiB); }
 
 // ESR is the entire 0.5GB span between CPU_REGISTERS_BASE and the PLIC base.
 static inline bool paddr_is_esr(uint64_t addr)
 { return (addr >= ERBIUM_TOP_CPU_REGISTERS_BASE) && (addr < ERBIUM_TOP_PLIC_BASE); }
+
+static inline bool paddr_is_nic(uint64_t addr)
+{ return (addr >= ERBIUM_TOP_NIC_CONFIG_BASE) && (addr < ERBIUM_TOP_NIC_CONFIG_END); }
 
 static inline bool paddr_is_plic(uint64_t addr)
 { return (addr >= ERBIUM_TOP_PLIC_BASE) && (addr < ERBIUM_TOP_PLIC_END); }
@@ -275,8 +285,8 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         return addr;
     }
 
-    if (paddr_is_periph(addr)) {
-        // Periph registers: 32-bit aligned, 32-bit access, M/S privilege,
+    if (paddr_is_i2c(addr)) {
+        // I2C registers: 32-bit aligned, 32-bit access, M/S privilege,
         // no AMO/TensorOp/CacheOp
         Privilege mode = effective_execution_mode(cpu, macc);
         if (amo
@@ -305,6 +315,21 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
         return addr;
     }
 
+    if (paddr_is_qspi(addr)) {
+        // QSPI registers: 64-bit aligned, 32-bit access, M/S privilege,
+        // no AMO/TensorOp/CacheOp
+        Privilege mode = effective_execution_mode(cpu, macc);
+        if (amo
+            || ts_tl_co
+            || (size != 4)
+            || !addr_is_size_aligned(addr, 8)
+            || (mode == Privilege::U))
+        {
+            throw_access_fault(vaddr, macc);
+        }
+        return addr;
+    }
+
     if (paddr_is_uart(addr)) {
         // UART registers: 64-bit aligned, 32-bit access, M/S privilege,
         // no AMO/TensorOp/CacheOp
@@ -314,6 +339,21 @@ uint64_t pma_check_data_access(const Hart& cpu, uint64_t vaddr,
             || (size != 4)
             || !addr_is_size_aligned(addr, 8)
             || (mode == Privilege::U))
+        {
+            throw_access_fault(vaddr, macc);
+        }
+        return addr;
+    }
+
+    if (paddr_is_nic(addr)) {
+        // NIC config: 64-bit aligned, 32-bit access, M-mode only,
+        // no AMO/TensorOp/CacheOp
+        Privilege mode = effective_execution_mode(cpu, macc);
+        if (amo
+            || ts_tl_co
+            || (size != 4)
+            || !addr_is_size_aligned(addr, 8)
+            || (mode != Privilege::M))
         {
             throw_access_fault(vaddr, macc);
         }

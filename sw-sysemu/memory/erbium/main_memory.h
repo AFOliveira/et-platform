@@ -27,13 +27,18 @@ namespace bemu {
 // |      From      |      To        |   Size   | Maps to           |
 // +----------------+----------------+----------+-------------------+
 // | 0x00_0200_0000 | 0x00_0200_0FFF |  4KiB    | SystemRegisters   |
+// | 0x00_0200_1000 | 0x00_0200_1FFF |  4KiB    | MRAM Bridge       |
+// | 0x00_0200_2000 | 0x00_0200_2023 |  36B     | I2C               |
+// | 0x00_0200_3000 | 0x00_0200_3063 | 100B     | QSPI              |
 // | 0x00_0200_4000 | 0x00_0200_4FFF |  4KiB    | UART              |
 // | 0x00_0200_8000 | 0x00_0200_9FFF |  8KiB    | Boot ROM          |
 // | 0x00_0200_C000 | 0x00_0200_CFFF |  4KiB    | Scratch SRAM      |
-// | 0x00_4000_0000 | 0x00_40FF_FFFF | 16MiB    | MRAM              |
-// | 0x00_7FFF_D000 | 0x00_7FFF_FFFF | 12KiB    | OTP (read-only)   |
+// | 0x00_0200_F000 | 0x00_0200_F037 |  56B     | xSPI              |
+// | 0x00_4000_0000 | 0x00_40FF_CFFF | 16MiB-12KiB | MRAM           |
+// | 0x00_40FF_D000 | 0x00_40FF_FFFF | 12KiB    | OTP (read-only)   |
 // | 0x00_8000_0000 | 0x00_80FF_FFFF | 16MiB    | ESR Registers     |
 // | 0x00_A000_0000 | 0x00_A3FF_FFFF | 64MiB    | PLIC              |
+// | 0x00_FE00_0000 | 0x00_FE01_5FFF | 88KiB    | NIC config        |
 // +----------------+----------------+----------+-------------------+
 //
 
@@ -45,16 +50,22 @@ struct MainMemory {
     using const_pointer = typename MemoryRegion::const_pointer;
 
 private:
+    constexpr static size_t XSPI_REGISTERS_SIZE = 0x38;
+
     enum : unsigned {
         erbreg_idx,
         mram_bridge_idx,
+        i2c_idx,
+        qspi_idx,
         uart_idx,
         bootrom_idx,
         sram_idx,
+        xspi_idx,
         dram_idx,
         otp_idx,
         sysreg_idx,
         plic_idx,
+        nic_idx,
 
         REGION_COUNT
     };
@@ -62,25 +73,33 @@ private:
     constexpr static uint64_t region_bases[REGION_COUNT] = {
         /* erbreg  */ ERBIUM_TOP_SYSTEM_REGISTERS_BASE,
         /* mram_bridge */ ERBIUM_TOP_MRAM_REGISTERS_BASE,
+        /* i2c     */ ERBIUM_TOP_I2C_REGISTERS_BASE,
+        /* qspi    */ ERBIUM_TOP_QSPI_REGISTERS_BASE,
         /* uart    */ ERBIUM_TOP_UART_REGISTERS_BASE,
         /* bootrom */ ERBIUM_TOP_BOOTROM_BASE,
         /* sram    */ ERBIUM_TOP_SRAM_BASE,
+        /* xspi    */ ERBIUM_TOP_XSPI_REGISTERS_BASE,
         /* dram    */ ERBIUM_TOP_MRAM_BASE,
-        /* otp     */ 0x007FFFD000ull,
+        /* otp     */ ERBIUM_TOP_MRAM_BASE + ERBIUM_TOP_MRAM_SIZE - 12_KiB,
         /* sysreg  */ ERBIUM_TOP_CPU_REGISTERS_BASE,
         /* plic    */ ERBIUM_TOP_PLIC_BASE,
+        /* nic     */ ERBIUM_TOP_NIC_CONFIG_BASE,
     };
 
     constexpr static size_t region_sizes[REGION_COUNT] = {
         /* erbreg  */ ERBIUM_TOP_MRAM_REGISTERS_BASE - ERBIUM_TOP_SYSTEM_REGISTERS_BASE,
         /* mram_bridge */ ERBIUM_TOP_I2C_REGISTERS_BASE - ERBIUM_TOP_MRAM_REGISTERS_BASE,
+        /* i2c     */ ERBIUM_TOP_I2C_REGISTERS_SIZE,
+        /* qspi    */ ERBIUM_TOP_QSPI_REGISTERS_SIZE,
         /* uart    */ 4_KiB,
         /* bootrom */ ERBIUM_TOP_BOOTROM_SIZE,
         /* sram    */ ERBIUM_TOP_SRAM_SIZE,
-        /* dram    */ ERBIUM_TOP_MRAM_SIZE,
+        /* xspi    */ XSPI_REGISTERS_SIZE,
+        /* dram    */ ERBIUM_TOP_MRAM_SIZE - 12_KiB,
         /* otp     */ 12_KiB,
         /* sysreg  */ 16_MiB,
         /* plic    */ 64_MiB,
+        /* nic     */ ERBIUM_TOP_NIC_CONFIG_SIZE,
     };
 
 public:
