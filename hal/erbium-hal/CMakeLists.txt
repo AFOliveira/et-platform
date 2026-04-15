@@ -2,6 +2,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 if(CONFIG_HAS_AIFOUNDRY_HAL)
+  # Generic, OS-agnostic HAL — used by tests and any consumer.
   zephyr_include_directories(include)
-  # Erbium HAL is now header-only — no .c files to compile.
+  # Zephyr-only glue (e.g., aifoundry/cache.h for arch_dcache_*).
+  zephyr_include_directories(zephyr/include)
+  # Erbium HAL is header-only — no .c files to compile.
 endif()
