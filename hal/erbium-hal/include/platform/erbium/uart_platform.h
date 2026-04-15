@@ -28,10 +28,10 @@ static inline void hal_uart_platform_enable_pinmux(void)
 {
 	uintptr_t const addr = HAL_UART_PLATFORM_SYSREG_BASE +
 			       SYSTEM_SYSTEMCONFIG_ADDRESS;
-	uint32_t cfg = etsoc_read32(addr);
+	uint32_t cfg = reg_read32(addr);
 
 	cfg = SYSTEM_SYSTEMCONFIG_UART_ENABLE_MODIFY(cfg, 1U);
-	etsoc_write32(addr, cfg);
+	reg_write32(addr, cfg);
 }
 
 static inline bool hal_uart_platform_supports_baud_roundtrip(void)
@@ -41,7 +41,7 @@ static inline bool hal_uart_platform_supports_baud_roundtrip(void)
 
 static inline uint32_t hal_uart_platform_baud_get(void)
 {
-	return etsoc_read32(HAL_UART_PLATFORM_UART0_BASE + UART_BAUDREG_ADDRESS);
+	return reg_read32(HAL_UART_PLATFORM_UART0_BASE + UART_BAUDREG_ADDRESS);
 }
 
 static inline void hal_uart_platform_baud_set(uint32_t val)

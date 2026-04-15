@@ -5,7 +5,7 @@
  * Shakti UART HAL — stateless inline register access wrappers.
  * OS-agnostic. All functions take uintptr_t base, no OS types.
  *
- * MMIO goes through etsoc_read32/etsoc_write32 (word-sized).
+ * MMIO goes through reg_read32/reg_write32 (word-sized).
  * Bitfield extraction uses Semifore-style GET/SET/MODIFY macros from
  * the generated hwinc/uart.h header (matches ET-SoC1 HAL conventions).
  */
@@ -30,7 +30,7 @@
 
 static inline uint32_t shakti_uart_status(uintptr_t base)
 {
-	return etsoc_read32(base + UART_STATUSREG_ADDRESS);
+	return reg_read32(base + UART_STATUSREG_ADDRESS);
 }
 
 static inline bool shakti_uart_tx_ready(uintptr_t base)
@@ -54,12 +54,12 @@ static inline bool shakti_uart_rx_ready(uintptr_t base)
 
 static inline void shakti_uart_tx_byte(uintptr_t base, uint8_t c)
 {
-	etsoc_write32(base + UART_TXREG_ADDRESS, (uint32_t)c);
+	reg_write32(base + UART_TXREG_ADDRESS, (uint32_t)c);
 }
 
 static inline uint8_t shakti_uart_rx_byte(uintptr_t base)
 {
-	return (uint8_t)(etsoc_read32(base + UART_RXREG_ADDRESS) & 0xffU);
+	return (uint8_t)(reg_read32(base + UART_RXREG_ADDRESS) & 0xffU);
 }
 
 /* ------------------------------------------------------------------ */
@@ -71,10 +71,10 @@ static inline uint8_t shakti_uart_rx_byte(uintptr_t base)
 static inline void shakti_uart_tx_trigger(uintptr_t base, uint16_t baud,
 					  uint32_t ien)
 {
-	etsoc_write32(base + UART_BAUDREG_ADDRESS, (uint32_t)baud);
-	etsoc_write32(base + UART_DELAYREG_ADDRESS, 0U);
-	etsoc_write32(base + UART_INTERRUPTEN_ADDRESS, ien);
-	etsoc_write32(base + UART_RX_THRESHOLD_ADDRESS, 0U);
+	reg_write32(base + UART_BAUDREG_ADDRESS, (uint32_t)baud);
+	reg_write32(base + UART_DELAYREG_ADDRESS, 0U);
+	reg_write32(base + UART_INTERRUPTEN_ADDRESS, ien);
+	reg_write32(base + UART_RX_THRESHOLD_ADDRESS, 0U);
 }
 
 /* ------------------------------------------------------------------ */
@@ -108,7 +108,7 @@ static inline uint32_t shakti_uart_errors(uintptr_t base)
 
 static inline void shakti_uart_int_set(uintptr_t base, uint32_t val)
 {
-	etsoc_write32(base + UART_INTERRUPTEN_ADDRESS, val);
+	reg_write32(base + UART_INTERRUPTEN_ADDRESS, val);
 }
 
 static inline void shakti_uart_int_enable(uintptr_t base, uint32_t *shadow,
@@ -136,22 +136,22 @@ static inline bool shakti_uart_irq_pending(uintptr_t base, uint32_t ien_mask)
 
 static inline void shakti_uart_baud_set(uintptr_t base, uint16_t divisor)
 {
-	etsoc_write32(base + UART_BAUDREG_ADDRESS, (uint32_t)divisor);
+	reg_write32(base + UART_BAUDREG_ADDRESS, (uint32_t)divisor);
 }
 
 static inline void shakti_uart_control_set(uintptr_t base, uint32_t val)
 {
-	etsoc_write32(base + UART_CONTROLREG_ADDRESS, val);
+	reg_write32(base + UART_CONTROLREG_ADDRESS, val);
 }
 
 static inline void shakti_uart_delay_set(uintptr_t base, uint16_t delay)
 {
-	etsoc_write32(base + UART_DELAYREG_ADDRESS, (uint32_t)delay);
+	reg_write32(base + UART_DELAYREG_ADDRESS, (uint32_t)delay);
 }
 
 static inline void shakti_uart_rx_threshold_set(uintptr_t base, uint8_t level)
 {
-	etsoc_write32(base + UART_RX_THRESHOLD_ADDRESS, (uint32_t)level);
+	reg_write32(base + UART_RX_THRESHOLD_ADDRESS, (uint32_t)level);
 }
 
 #endif /* SHAKTI_UART_HAL_H_ */

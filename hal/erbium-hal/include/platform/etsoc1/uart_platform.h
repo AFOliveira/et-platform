@@ -47,13 +47,13 @@ static inline bool hal_uart_platform_fill_rx_cache(void)
 		return true;
 	}
 
-	lsr = etsoc_read32(HAL_UART_PLATFORM_UART0_BASE +
+	lsr = reg_read32(HAL_UART_PLATFORM_UART0_BASE +
 			    HAL_UART_PLATFORM_LSR_OFFSET);
 	if ((lsr & HAL_UART_PLATFORM_LSR_DR) == 0U) {
 		return false;
 	}
 
-	byte = (uint8_t)(etsoc_read32(HAL_UART_PLATFORM_UART0_BASE +
+	byte = (uint8_t)(reg_read32(HAL_UART_PLATFORM_UART0_BASE +
 				       HAL_UART_PLATFORM_RBR_THR_OFFSET) &
 			 0xffU);
 	if (byte == 0U) {
@@ -91,7 +91,7 @@ static inline void hal_uart_platform_baud_set(uint32_t val)
 
 static inline bool hal_uart_platform_tx_ready(void)
 {
-	uint32_t lsr = etsoc_read32(HAL_UART_PLATFORM_UART0_BASE +
+	uint32_t lsr = reg_read32(HAL_UART_PLATFORM_UART0_BASE +
 				     HAL_UART_PLATFORM_LSR_OFFSET);
 
 	return (lsr & HAL_UART_PLATFORM_LSR_THRE) == 0U;
@@ -119,7 +119,7 @@ static inline uint8_t hal_uart_platform_rx_byte(void)
 
 static inline void hal_uart_platform_tx_byte(uint8_t c)
 {
-	etsoc_write32(HAL_UART_PLATFORM_UART0_BASE +
+	reg_write32(HAL_UART_PLATFORM_UART0_BASE +
 		      HAL_UART_PLATFORM_RBR_THR_OFFSET, (uint32_t)c);
 }
 
