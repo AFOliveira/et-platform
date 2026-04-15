@@ -9,12 +9,20 @@
 *
 * On Erbium, valid tree_depth is 0..2 (max 2^(2+1) = 8 minions).
 * Writing a height > 2 should set tensor_error[9].
+*
+* HAL-ified variant: uses csr_read/csr_write from the Erbium HAL
+* instead of hand-rolled inline asm, and references CSR numbers via
+* MINION_CSR_*_ADDRESS from the generated register defs. The synthetic
+* minion_csr.rdl encodes byte_offset = csr_number * 8, so divide by 8
+* to recover the CSR number the assembler expects.
 */
 
 #include "test.h"
+#include <erbium_hal/csr.h>
+#include <hwinc/minion_csr.h>
 
-#define CSR_TENSOR_REDUCE  0x800
-#define CSR_TENSOR_ERROR   0x808
+/* Recover CSR number from the synthetic byte offset */
+#define MCSR(addr) ((addr) / 8)
 
 /* TensorReduce command encoding:
  * bits [1:0]  = command (0=send, 1=receive, 2=broadcast, 3=reduce)
@@ -28,20 +36,6 @@
 /* tensor_error bit 9 indicates invalid tree_depth */
 #define TENSOR_ERROR_INVALID_HEIGHT (1 << 9)
 
-static inline void write_csr_tensor_reduce(uint64_t val) {
-    asm volatile("csrw %0, %1" :: "i"(CSR_TENSOR_REDUCE), "r"(val));
-}
-
-static inline void write_csr_tensor_error(uint64_t val) {
-    asm volatile("csrw %0, %1" :: "i"(CSR_TENSOR_ERROR), "r"(val));
-}
-
-static inline uint64_t read_csr_tensor_error(void) {
-    uint64_t val;
-    asm volatile("csrr %0, %1" : "=r"(val) : "i"(CSR_TENSOR_ERROR));
-    return val;
-}
-
 int main() {
     uint64_t error;
 
@@ -53,19 +47,20 @@ int main() {
     }
 
     /* Clear tensor_error */
-    write_csr_tensor_error(0);
+    csr_write(MCSR(MINION_CSR_TENSOR_ERROR_ADDRESS), 0);
 
     /* Verify tensor_error is cleared */
-    error = read_csr_tensor_error();
+    error = csr_read(MCSR(MINION_CSR_TENSOR_ERROR_ADDRESS));
     if (error != 0) {
         TEST_FAIL;
     }
 
     /* Write tensor_reduce broadcast with invalid height (3) */
-    write_csr_tensor_reduce(TENSOR_REDUCE_BROADCAST(3));
+    csr_write(MCSR(MINION_CSR_TENSOR_REDUCE_ADDRESS),
+              TENSOR_REDUCE_BROADCAST(3));
 
     /* Read tensor_error and check bit 9 */
-    error = read_csr_tensor_error();
+    error = csr_read(MCSR(MINION_CSR_TENSOR_ERROR_ADDRESS));
     if (error & TENSOR_ERROR_INVALID_HEIGHT) {
         TEST_PASS;
     }
