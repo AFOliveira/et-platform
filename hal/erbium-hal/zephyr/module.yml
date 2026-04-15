@@ -1,0 +1,5 @@
+name: hal_aifoundry
+
+build:
+  cmake: .
+  kconfig: Kconfig
