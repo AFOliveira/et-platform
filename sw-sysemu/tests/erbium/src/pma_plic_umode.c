@@ -11,8 +11,9 @@
 #include "test.h"
 #include "trap.h"
 #include "priv.h"
+#include <hwinc/top.h>
 
-#define PLIC_BASE  0xA0000000ull
+#define PLIC_BASE ERBIUM_TOP_PLIC_BASE
 
 static void umode_test(void) {
     volatile uint32_t *plic = (volatile uint32_t *)PLIC_BASE;

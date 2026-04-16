@@ -13,13 +13,13 @@
 
 #include "test.h"
 #include <stdint.h>
+#include <erbium_hal/mmio.h>
+#include <hwinc/top.h>
+#include <api/thread.h>
+#include <api/barrier.h>
 
-#define ESR_THREAD0_DISABLE       0x80F40240ULL
-#define ESR_THREAD1_DISABLE       0x80F40010ULL
-#define MRAM_BASE                 0x40000000ULL
-#define NUM_HARTS                 16
-
-#define CSR_FLB  0x820
+#define MRAM_BASE ERBIUM_TOP_MRAM_BASE
+#define NUM_HARTS 16
 
 /*
  * FLB (Fast Local Barrier):
@@ -27,29 +27,21 @@
  */
 static inline int flb_barrier(unsigned barrier_id, unsigned num_harts) {
     uint64_t flb_val = barrier_id | ((num_harts - 1) << 5);
-    uint64_t is_last;
-
-    asm volatile("csrrw %0, %1, %2"
-                 : "=r"(is_last)
-                 : "i"(CSR_FLB), "r"(flb_val));
-
-    return is_last;
+    return flb_exchange(flb_val);
 }
 
 int main() {
-    volatile uint64_t *thread0_disable = (volatile uint64_t *)ESR_THREAD0_DISABLE;
-    volatile uint64_t *thread1_disable = (volatile uint64_t *)ESR_THREAD1_DISABLE;
     volatile uint64_t *mram = (volatile uint64_t *)MRAM_BASE;
 
     uint64_t hartid = get_hart_id();
 
     if (hartid == 0) {
-        *thread0_disable = 0x00;
-        *thread1_disable = 0x00;
+        thread_write_thread0_disable(0x00);
+        thread_write_thread1_disable(0x00);
     }
 
-    // Emulator is very predictable, let's introduce
-    // some delay so barrier makes sense.
+    /* Emulator is very predictable, let's introduce
+     * some delay so barrier makes sense. */
     if (hartid == 13) {
         for (int i = 0; i < 1000; i++) {
             asm volatile("nop");

@@ -12,8 +12,9 @@
 
 #include "test.h"
 #include "trap.h"
+#include <hwinc/top.h>
 
-#define ESR_BASE 0x80000000ull
+#define ESR_BASE ERBIUM_TOP_CPU_REGISTERS_BASE
 
 int main() {
     expect_exception(CAUSE_LOAD_ACCESS_FAULT);

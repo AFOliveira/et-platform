@@ -10,18 +10,20 @@
 
 #include <stdint.h>
 #include <erbium_hal/esr.h>
-#include <hwinc/esr.h>
+
+/* RDL disagreement — hwinc/esr.h says 0x38, RTL places it at 0x20. */
+#define MPROT_NEIGH_OFFSET 0x20ul
 
 static inline uint64_t platform_mprot_read(void)
 {
 	return esr_read_u64(ESR_PP_MACHINE, 0, ESR_SR_NEIGH,
-			    MACHINE_NEIGH_MPROT_ADDRESS);
+			    MPROT_NEIGH_OFFSET);
 }
 
 static inline void platform_mprot_write(uint64_t val)
 {
 	esr_write_u64(ESR_PP_MACHINE, 0, ESR_SR_NEIGH,
-		      MACHINE_NEIGH_MPROT_ADDRESS, val);
+		      MPROT_NEIGH_OFFSET, val);
 }
 
 #endif /* ERBIUM_API_MPROT_PLATFORM_H_ */
