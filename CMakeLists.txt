@@ -36,9 +36,11 @@ HostProject(et-driver "")
 #
 HostProject(common-sw "" g3log)
 HostProject(device-api "" common-sw)
-DeviceProject(etsoc-hal "")
+set(PROJECT_BASE_DIR "hal/platform")
+DeviceProject(etsoc "")
+set(PROJECT_BASE_DIR ".")
 DeviceProject(et-trace "")
-DeviceProject(et-common-libs "-DENABLE_WARNINGS_AS_ERRORS=OFF" et-trace etsoc-hal)
+DeviceProject(et-common-libs "-DENABLE_WARNINGS_AS_ERRORS=OFF" et-trace etsoc)
 
 #
 # Firmware
@@ -50,13 +52,13 @@ DeviceProject(signedImageFormat "")
 DeviceProject(device-bootloaders
 	"-DBUILD_DOC=OFF -DENABLE_WARNINGS_AS_ERRORS=OFF"
 	signedImageFormat device-api firmware-flash-tool
-	tf-protocol etsoc-hal et-trace et-common-libs
+	tf-protocol etsoc et-trace et-common-libs
 )
 
 DeviceProject(device-minion-runtime
 	"-DENABLE_CMD_EXECUTION_TRACE=OFF"
 	device-api signedImageFormat et-trace
-	etsoc-hal et-common-libs
+	etsoc et-common-libs
 	et-common-libs
 )
 
