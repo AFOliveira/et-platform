@@ -9,8 +9,9 @@
 
 #include "test.h"
 #include <stdint.h>
+#include <hwinc/top.h>
 
-#define MRAM_BASE 0x40000000ull
+#define MRAM_BASE ERBIUM_TOP_MRAM_BASE
 #define TEST_PATTERN 0xDEADBEEFCAFEFEEDull
 
 int main() {

@@ -9,9 +9,9 @@
 
 #include "test.h"
 #include <stdint.h>
+#include <hwinc/top.h>
 
-/* SRAM region: 0x0200C000 - 0x0200CFFF (4KB) */
-#define SRAM_BASE 0x0200C000ull
+#define SRAM_BASE ERBIUM_TOP_SRAM_BASE
 #define TEST_PATTERN 0xCAFEFEEDDEADBEEFull
 
 int main() {

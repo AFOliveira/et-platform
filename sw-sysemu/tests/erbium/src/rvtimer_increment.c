@@ -10,24 +10,19 @@
 
 #include "test.h"
 #include <stdint.h>
-
-/* ESR addresses for RVTimer */
-#define ESR_MTIME    0x80F40200ull
-#define ESR_MTIMECMP 0x80F40208ull
+#include <api/timer.h>
 
 int main() {
-    volatile uint64_t *mtime = (volatile uint64_t *)ESR_MTIME;
+    timer_write_mtime(0);
 
-    *mtime = 0;
-
-    uint64_t time1 = *mtime;
+    uint64_t time1 = timer_read_mtime();
 
     /* Delay loop - timer should tick during this */
     for (volatile int i = 0; i < 1000; i++) {
         asm volatile("nop");
     }
 
-    uint64_t time2 = *mtime;
+    uint64_t time2 = timer_read_mtime();
 
     if (time2 > time1) {
         TEST_PASS;

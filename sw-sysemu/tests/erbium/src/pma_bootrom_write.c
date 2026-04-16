@@ -10,9 +10,9 @@
 
 #include "test.h"
 #include "trap.h"
+#include <hwinc/top.h>
 
-/* Bootrom region: 0x02008000 - 0x02009FFF (8KB, read-only) */
-#define BOOTROM_BASE 0x02008000ull
+#define BOOTROM_BASE ERBIUM_TOP_BOOTROM_BASE
 
 int main() {
     expect_exception(CAUSE_STORE_ACCESS_FAULT);

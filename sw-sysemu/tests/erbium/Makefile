@@ -26,7 +26,11 @@ CFLAGS := -Wall -Wextra -Werror \
           -march=rv64imfc \
           -mabi=lp64f
 
-CPPFLAGS := -Iinclude -Icommon
+HAL_ROOT := ../../../hal
+CPPFLAGS := -Iinclude -Icommon \
+            -I$(HAL_ROOT) \
+            -I$(HAL_ROOT)/platform/erbium/include \
+            -I$(HAL_ROOT)/platform/erbium
 
 # Linker flags
 # Note: --no-warn-rwx-segments suppresses W^X warning for MRAM region.
