@@ -15,6 +15,13 @@
 
 #include <stdint.h>
 
+/* ESR sub-region offsets (bits [21:0] of the address). Values from
+ * sw-sysemu/esrs_et.cpp ESR_*_REGION less the 0x100000000 base. */
+#define ESR_SR_HART    0x000000U
+#define ESR_SR_NEIGH   0x100000U
+#define ESR_SR_CACHE   0x300000U
+#define ESR_SR_CPU     0x340000U  /* a.k.a. shire_other */
+
 static inline uintptr_t esr_addr(int pp, uint32_t shire,
 				 uint32_t subregion, uint32_t offset)
 {

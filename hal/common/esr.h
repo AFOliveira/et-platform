@@ -29,20 +29,8 @@ typedef enum {
 	ESR_PP_MACHINE    = 3,
 } esr_pp_t;
 
-/* Sub-region bases inside bits [21:0] of the ESR address.
- * These are the same on Erbium and ET-SoC1 — only the PP/shire bit
- * positions differ between the two chips.
- *
- * Values come from the RDL sub-addrmap instantiations:
- *   User_cpu @0x340000, Machine_cpu @0xF40000 -> masked [21:0] = 0x340000
- *   User_neigh @0x100000, Machine_neigh @0xD00000 -> masked [21:0] = 0x100000
- *   D_hart_esr @0x800000 -> masked [21:0] = 0x000000
- *   (PP bits at [23:22] are passed separately)
- */
-#define ESR_SR_HART    0x000000U  /* Hart debug sub-region */
-#define ESR_SR_NEIGH   0x100000U  /* Neighbourhood sub-region */
-#define ESR_SR_CPU     0x340000U  /* CPU (shire-wide) sub-region */
-
+/* Sub-region bases (ESR_SR_*) are platform-specific and come from
+ * <esr_platform.h>, along with esr_addr(). */
 #include <esr_platform.h>
 
 /* ------------------------------------------------------------------ */

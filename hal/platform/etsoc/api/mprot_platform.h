@@ -10,9 +10,9 @@
 
 #include <stdint.h>
 #include <common/esr.h>
+#include <hwinc/shire_esr.h>
 
-/* RDL disagreement — hwinc/esr.h says 0x38, RTL places it at 0x20. */
-#define MPROT_NEIGH_OFFSET 0x20ul
+#define MPROT_NEIGH_OFFSET M_SHIRE_NEIGH_MPROT_OFFSET
 
 static inline uint64_t platform_mprot_read(void)
 {

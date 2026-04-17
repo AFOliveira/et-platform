@@ -10,10 +10,10 @@
 
 #include <stdint.h>
 #include <common/csr.h>
-#include <hwinc/minion_csr.h>
+#include <etsoc_hal/inc/minion_csr.h>
 
-/* minion_csr.h *_ADDRESS macros are byte offsets (csr# * 8); asm wants csr#. */
-#define _MCSR(addr) ((addr) / 8)
+/* ET-SoC1 minion_csr.h *_ADDRESS macros are csr numbers directly. */
+#define _MCSR(addr) (addr)
 
 static inline void platform_tensor_write_reduce(uint64_t val)
 {

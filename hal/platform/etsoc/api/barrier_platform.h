@@ -9,10 +9,9 @@
 #define ETSOC_API_BARRIER_PLATFORM_H_
 
 #include <stdint.h>
-#include <hwinc/minion_csr.h>
+#include <etsoc_hal/inc/minion_csr.h>
 
-/* minion_csr.h *_ADDRESS macros are byte offsets (csr# * 8); asm wants csr#. */
-#define _MCSR_FLB ((MINION_CSR_FLB_ADDRESS) / 8)
+#define _MCSR_FLB (MINION_CSR_FLB_ADDRESS)
 
 static inline uint64_t platform_flb_exchange(uint64_t val)
 {

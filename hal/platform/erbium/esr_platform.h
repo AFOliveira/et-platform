@@ -16,6 +16,11 @@
 #include <stdint.h>
 #include <hwinc/top.h>
 
+/* ESR sub-region offsets (bits [21:0] of the address). */
+#define ESR_SR_HART    0x000000U
+#define ESR_SR_NEIGH   0x100000U
+#define ESR_SR_CPU     0x340000U
+
 static inline uintptr_t esr_addr(int pp, uint32_t shire,
 				 uint32_t subregion, uint32_t offset)
 {
