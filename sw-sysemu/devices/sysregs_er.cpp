@@ -10,7 +10,9 @@
 #include "memory/memory_error.h"
 #include "emu_gio.h"
 
-#define SYSREGS_ER_REGION_BASE 0x0002000000ULL
+extern "C" {
+#include <hwinc/top.h>
+}
 
 namespace bemu {
 
@@ -245,6 +247,6 @@ void SysregsEr<Base>::wdt_clock_tick(const Agent& agent, uint64_t cycle)
 }
 
 
-template struct SysregsEr<SYSREGS_ER_REGION_BASE>;
+template struct SysregsEr<ERBIUM_TOP_SYSTEM_REGISTERS_BASE>;
 
 } // namespace bemu

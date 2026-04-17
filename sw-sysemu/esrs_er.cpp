@@ -14,6 +14,11 @@
 #include "sysreg_error.h"
 #include "system.h"
 #include "memory/memory_error.h"
+
+extern "C" {
+#include <hwinc/top.h>
+}
+
 #ifdef SYS_EMU
 #include "checkers/mem_checker.h"
 #include "sys_emu.h"
@@ -164,7 +169,7 @@ void neigh_esrs_t::warm_reset()
 
 void neigh_esrs_t::cold_reset()
 {
-    minion_boot = 0x02008000; // boot rom
+    minion_boot = ERBIUM_TOP_BOOTROM_BASE;
     mprot = 0;
     dummy0 = 0;
     dummy2 = false;

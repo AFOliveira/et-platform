@@ -439,6 +439,7 @@ target_include_directories(sw-erbium
     PRIVATE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/sys_emu>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../hal/platform/erbium>
 )
 target_compile_definitions(sw-erbium
     PUBLIC
