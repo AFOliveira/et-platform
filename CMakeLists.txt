@@ -80,7 +80,7 @@ DeviceProject(test-compute-kernels ""
 #
 # Runtime
 #
-HostProject(sw-sysemu "" g3log common-sw et-driver)
+HostProject(sw-sysemu "" g3log common-sw et-driver erbium)
 HostProject(devicelayer  "" common-sw sw-sysemu)
 HostProject(esperanto-tools-libs ""
             devicelayer device-api g3log cereal easy_profiler
