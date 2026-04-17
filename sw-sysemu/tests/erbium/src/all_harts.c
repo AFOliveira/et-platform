@@ -13,7 +13,7 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <erbium_hal/mmio.h>
+#include <common/mmio.h>
 #include <hwinc/top.h>
 #include <api/thread.h>
 #include <api/barrier.h>

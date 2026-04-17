@@ -16,8 +16,8 @@
  * Build system selects the right platform header via -I path.
  */
 
-#ifndef ERBIUM_HAL_ESR_H_
-#define ERBIUM_HAL_ESR_H_
+#ifndef HAL_COMMON_ESR_H_
+#define HAL_COMMON_ESR_H_
 
 #include <stdint.h>
 
@@ -62,4 +62,4 @@ static inline void esr_write_u64(esr_pp_t pp, uint32_t shire,
 	*(volatile uint64_t *)esr_addr(pp, shire, subregion, offset) = val;
 }
 
-#endif /* ERBIUM_HAL_ESR_H_ */
+#endif /* HAL_COMMON_ESR_H_ */

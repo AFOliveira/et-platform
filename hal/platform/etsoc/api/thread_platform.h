@@ -9,7 +9,7 @@
 #define ETSOC_API_THREAD_PLATFORM_H_
 
 #include <stdint.h>
-#include <erbium_hal/esr.h>
+#include <common/esr.h>
 #include <hwinc/esr.h>
 
 static inline void platform_thread_write_thread0_disable(uint64_t val)

@@ -9,7 +9,7 @@
 #define ETSOC_API_MPROT_PLATFORM_H_
 
 #include <stdint.h>
-#include <erbium_hal/esr.h>
+#include <common/esr.h>
 
 /* RDL disagreement — hwinc/esr.h says 0x38, RTL places it at 0x20. */
 #define MPROT_NEIGH_OFFSET 0x20ul

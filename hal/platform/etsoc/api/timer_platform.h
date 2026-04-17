@@ -9,7 +9,7 @@
 #define ETSOC_API_TIMER_PLATFORM_H_
 
 #include <stdint.h>
-#include <erbium_hal/esr.h>
+#include <common/esr.h>
 #include <hwinc/esr.h>
 
 static inline uint64_t platform_timer_read_mtime(void)

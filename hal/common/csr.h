@@ -5,8 +5,8 @@
  * RISC-V CSR access primitives.
  */
 
-#ifndef ERBIUM_HAL_CSR_H_
-#define ERBIUM_HAL_CSR_H_
+#ifndef HAL_COMMON_CSR_H_
+#define HAL_COMMON_CSR_H_
 
 #define STRINGIFY_(x) #x
 #define STRINGIFY(x)  STRINGIFY_(x)
@@ -46,4 +46,4 @@
 				  : "memory");                \
 	} while (0)
 
-#endif /* ERBIUM_HAL_CSR_H_ */
+#endif /* HAL_COMMON_CSR_H_ */

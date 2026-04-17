@@ -10,8 +10,8 @@
  * Stateless, header-only, OS-agnostic.
  */
 
-#ifndef ERBIUM_HAL_MMIO_H_
-#define ERBIUM_HAL_MMIO_H_
+#ifndef HAL_COMMON_MMIO_H_
+#define HAL_COMMON_MMIO_H_
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -70,4 +70,4 @@ static inline int reg_wait_bit_clear(uintptr_t addr, uint32_t bit,
 	return reg_wait_for_bits(addr, bit, 0, max_iter);
 }
 
-#endif /* ERBIUM_HAL_MMIO_H_ */
+#endif /* HAL_COMMON_MMIO_H_ */

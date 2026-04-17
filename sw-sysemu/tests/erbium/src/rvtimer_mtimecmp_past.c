@@ -10,7 +10,7 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <erbium_hal/csr.h>
+#include <common/csr.h>
 #include <api/timer.h>
 
 #define MIP_MTIP (1UL << 7)

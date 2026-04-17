@@ -13,7 +13,7 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <erbium_hal/csr.h>
+#include <common/csr.h>
 #include <api/plic.h>
 
 /* Test constants */

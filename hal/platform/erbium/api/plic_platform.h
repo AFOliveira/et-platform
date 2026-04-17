@@ -9,7 +9,7 @@
 #define ERBIUM_API_PLIC_PLATFORM_H_
 
 #include <stdint.h>
-#include <erbium_hal/mmio.h>
+#include <common/mmio.h>
 #include <hwinc/top.h>
 
 #define _PLIC_BASE ERBIUM_TOP_PLIC_BASE

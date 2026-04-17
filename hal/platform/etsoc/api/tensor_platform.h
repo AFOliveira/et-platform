@@ -9,7 +9,7 @@
 #define ETSOC_API_TENSOR_PLATFORM_H_
 
 #include <stdint.h>
-#include <erbium_hal/csr.h>
+#include <common/csr.h>
 #include <hwinc/minion_csr.h>
 
 /* minion_csr.h *_ADDRESS macros are byte offsets (csr# * 8); asm wants csr#. */
