@@ -4,9 +4,7 @@ VERBOSE ?= 0
 
 # Paths
 BUILD_DIR := build
-EMU       := ../../build/erbium_emu
 RISCV     ?= /opt/et/bin
-EMU_ARGS  ?= -minions 0xff -mins_dis
 INPUT_DIR := inputs
 
 # Verbosity
@@ -27,23 +25,36 @@ CFLAGS := -Wall -Wextra -Werror \
           -mabi=lp64f
 
 HAL_ROOT     := ../../../hal
-HAL_PLATFORM := erbium
+HAL_PLATFORM ?= erbium
 include $(HAL_ROOT)/platform.mk
 
 CPPFLAGS := -Iinclude -Icommon $(HAL_CPPFLAGS)
 
-# Linker flags
-# Note: --no-warn-rwx-segments suppresses W^X warning for MRAM region.
-# For embedded test code on emulator, single RWX segment is acceptable.
-LDFLAGS := -Tcommon/erbium.ld -Wl,--section-start=bootrom=0x200a000 \
-           -Wl,--no-warn-rwx-segments
-
-# Sources
-BOOT_SRCS := common/boot.S common/crt.S common/trap.S
+# Per-platform build recipe: linker script, boot sources, emulator, args.
+ifeq ($(HAL_PLATFORM),erbium)
+  EMU       ?= ../../build/erbium_emu
+  EMU_ARGS  ?= -minions 0xff -mins_dis
+  LDFLAGS   := -Tcommon/erbium.ld -Wl,--section-start=bootrom=0x200a000 \
+               -Wl,--no-warn-rwx-segments
+  BOOT_SRCS := common/boot.S common/crt.S common/trap.S
+else ifeq ($(HAL_PLATFORM),etsoc)
+  EMU       ?= ../../build/sys_emu
+  EMU_ARGS  ?= -shires 0x1 -minions 0x1 -single_thread
+  LDFLAGS   := -Tcommon/etsoc.ld -Wl,--no-warn-rwx-segments
+  BOOT_SRCS := common/boot_etsoc.S common/crt.S common/trap_etsoc.S
+else
+  $(error Unsupported HAL_PLATFORM='$(HAL_PLATFORM)')
+endif
 
 # Test discovery
 tests_src := $(wildcard src/*.c)
 tests     := $(tests_src:src/%.c=%)
+
+# PLIC tests are Erbium-only (ET-SoC1 has no spec-level PLIC backend).
+ifeq ($(HAL_PLATFORM),etsoc)
+  tests := $(filter-out plic_register_access pma_plic_umode,$(tests))
+endif
+
 tests_elf := $(tests:%=$(BUILD_DIR)/%.elf)
 
 num_tests := $(words $(tests))
