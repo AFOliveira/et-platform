@@ -14,10 +14,12 @@
 #include "test.h"
 #include <stdint.h>
 #include <api/tensor.h>
+#include <hwinc/minion_csr.h>
 
 #define TENSOR_CMD_SEND    0
 #define TENSOR_REDUCE_SEND(minion_id)    (((minion_id) << 3) | TENSOR_CMD_SEND)
-#define TENSOR_ERROR_INVALID_ID  (1 << 9)
+#define TENSOR_ERROR_INVALID_ID \
+    MINION_CSR_TENSOR_ERROR_ILLEGAL_TENSOR_SEND_RCV_FIELD_MASK
 
 int main() {
     uint64_t error;

@@ -11,12 +11,10 @@
 #include "test.h"
 #include "trap.h"
 #include "priv.h"
-#include <hwinc/top.h>
-
-#define PLIC_BASE ERBIUM_TOP_PLIC_BASE
+#include <common/memmap.h>
 
 static void umode_test(void) {
-    volatile uint32_t *plic = (volatile uint32_t *)PLIC_BASE;
+    volatile uint32_t *plic = (volatile uint32_t *)HAL_PLIC_BASE;
     (void)*plic;
     TEST_FAIL;
 }

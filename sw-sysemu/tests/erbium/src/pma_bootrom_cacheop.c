@@ -14,16 +14,17 @@
 #include "test.h"
 #include <common/memmap.h>
 #include <api/tensor.h>
+#include <hwinc/minion_csr.h>
 
 #define MRAM_BASE    HAL_MAIN_MEM_BASE
 #define SRAM_BASE    HAL_SRAM_BASE
 #define BOOTROM_BASE HAL_BOOTROM_BASE
 
-#define TENSOR_ERROR_PMA  (1 << 7)
+#define TENSOR_ERROR_PMA  MINION_CSR_TENSOR_ERROR_MEM_FAULT_FIELD_MASK
 
 /* EvictVA/FlushVA need dest >= 1 to reach the PMA check (dest=0 is L1-only, skipped) */
-#define EVICT_VA(addr)    ((1ull << 58) | (addr))
-#define FLUSH_VA(addr)    ((1ull << 58) | (addr))
+#define EVICT_VA(addr)    (MINION_CSR_CO_EVICT_VA_DEST_LEVEL_SET(1ull) | (addr))
+#define FLUSH_VA(addr)    (MINION_CSR_CO_FLUSH_VA_DEST_LEVEL_SET(1ull) | (addr))
 #define PREFETCH_VA(addr) (addr)
 
 /* Expect CacheOps to succeed (no PMA error) */

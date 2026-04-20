@@ -13,10 +13,14 @@
 
 #include "test.h"
 #include <api/tensor.h>
+#include <hwinc/minion_csr.h>
 
 #define TENSOR_CMD_BROADCAST 2
-#define TENSOR_REDUCE_BROADCAST(height) (((height) << 3) | TENSOR_CMD_BROADCAST)
-#define TENSOR_ERROR_INVALID_HEIGHT (1 << 9)
+#define TENSOR_REDUCE_BROADCAST(height) \
+    (MINION_CSR_TENSOR_REDUCE_TREE_DEPTH_SET(height) | \
+     MINION_CSR_TENSOR_REDUCE_TENSOR_OP_ENCODING_SET(TENSOR_CMD_BROADCAST))
+#define TENSOR_ERROR_INVALID_HEIGHT \
+    MINION_CSR_TENSOR_ERROR_ILLEGAL_TENSOR_SEND_RCV_FIELD_MASK
 
 int main() {
     uint64_t error;
