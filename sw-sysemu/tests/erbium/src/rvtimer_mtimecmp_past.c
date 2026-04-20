@@ -10,7 +10,7 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <common/csr.h>
+#include "csr.h"
 #include <api/timer.h>
 
 #define MIP_MTIP (1UL << 7)

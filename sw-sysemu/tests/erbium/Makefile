@@ -28,7 +28,8 @@ HAL_ROOT     := ../../../hal
 HAL_PLATFORM ?= erbium
 include $(HAL_ROOT)/platform.mk
 
-CPPFLAGS := -Iinclude -Icommon $(HAL_CPPFLAGS)
+CPPFLAGS := -Iinclude -Icommon $(HAL_CPPFLAGS) \
+            -DPLATFORM_IS_$(shell echo $(HAL_PLATFORM) | tr a-z A-Z)
 
 # Per-platform build recipe: linker script, boot sources, emulator, args.
 ifeq ($(HAL_PLATFORM),erbium)
@@ -51,8 +52,12 @@ tests_src := $(wildcard src/*.c)
 tests     := $(tests_src:src/%.c=%)
 
 # PLIC tests are Erbium-only (ET-SoC1 has no spec-level PLIC backend).
+# tensor_reduce_invalid_* test Erbium-specific TENSOR_REDUCE field layout
+# (tree_depth / minion_id bit positions differ on ET-SoC1).
 ifeq ($(HAL_PLATFORM),etsoc)
-  tests := $(filter-out plic_register_access pma_plic_umode,$(tests))
+  tests := $(filter-out plic_register_access pma_plic_umode \
+                        tensor_reduce_invalid_height \
+                        tensor_reduce_invalid_minion,$(tests))
 endif
 
 tests_elf := $(tests:%=$(BUILD_DIR)/%.elf)

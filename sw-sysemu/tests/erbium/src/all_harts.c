@@ -12,11 +12,11 @@
 */
 
 #include "test.h"
+#include "minion_csr_compat.h"
 #include <stdint.h>
 #include <common/mmio.h>
 #include <common/memmap.h>
 #include <api/thread.h>
-#include <api/barrier.h>
 
 #define MRAM_BASE HAL_MAIN_MEM_BASE
 #define NUM_HARTS 16
@@ -27,7 +27,7 @@
  */
 static inline int flb_barrier(unsigned barrier_id, unsigned num_harts) {
     uint64_t flb_val = barrier_id | ((num_harts - 1) << 5);
-    return hal_flb_exchange(flb_val);
+    return minion_csr_swap(FLB, flb_val);
 }
 
 int main() {

@@ -11,7 +11,7 @@
 #include "test.h"
 #include "trap.h"
 #include <stdint.h>
-#include <common/csr.h>
+#include "csr.h"
 #include <api/timer.h>
 
 #define MIE_MTIE    (1UL << 7)

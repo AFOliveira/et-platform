@@ -12,9 +12,8 @@
 */
 
 #include "test.h"
+#include "minion_csr_compat.h"
 #include <stdint.h>
-#include <api/tensor.h>
-#include <hwinc/minion_csr.h>
 
 #define TENSOR_CMD_SEND    0
 #define TENSOR_REDUCE_SEND(minion_id)    (((minion_id) << 3) | TENSOR_CMD_SEND)
@@ -30,20 +29,17 @@ int main() {
         return 0;
     }
 
-    /* Clear tensor_error */
-    hal_tensor_write_error(0);
+    minion_csr_write(TENSOR_ERROR, 0);
 
-    /* Verify tensor_error is cleared */
-    error = hal_tensor_read_error();
+    error = minion_csr_read(TENSOR_ERROR);
     if (error != 0) {
         TEST_FAIL;
     }
 
     /* Write tensor_reduce with invalid minion ID (8) */
-    hal_tensor_write_reduce(TENSOR_REDUCE_SEND(8));
+    minion_csr_write(TENSOR_REDUCE, TENSOR_REDUCE_SEND(8));
 
-    /* Read tensor_error and check bit 9 */
-    error = hal_tensor_read_error();
+    error = minion_csr_read(TENSOR_ERROR);
     if (error & TENSOR_ERROR_INVALID_ID) {
         TEST_PASS;
     }

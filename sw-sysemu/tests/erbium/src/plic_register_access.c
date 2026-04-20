@@ -13,7 +13,7 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <common/csr.h>
+#include "csr.h"
 #include <api/plic.h>
 
 /* Test constants */

@@ -12,9 +12,8 @@
 */
 
 #include "test.h"
+#include "minion_csr_compat.h"
 #include <common/memmap.h>
-#include <api/tensor.h>
-#include <hwinc/minion_csr.h>
 
 #define MRAM_BASE    HAL_MAIN_MEM_BASE
 #define SRAM_BASE    HAL_SRAM_BASE
@@ -29,37 +28,37 @@
 
 /* Expect CacheOps to succeed (no PMA error) */
 static void check_cacheops_ok(uint64_t addr) {
-    hal_tensor_write_error(0);
-    hal_tensor_write_evict_va(EVICT_VA(addr));
-    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_EVICT_VA, EVICT_VA(addr));
+    if (minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA)
         TEST_FAIL;
 
-    hal_tensor_write_error(0);
-    hal_tensor_write_flush_va(FLUSH_VA(addr));
-    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_FLUSH_VA, FLUSH_VA(addr));
+    if (minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA)
         TEST_FAIL;
 
-    hal_tensor_write_error(0);
-    hal_tensor_write_prefetch_va(PREFETCH_VA(addr));
-    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_PREFETCH_VA, PREFETCH_VA(addr));
+    if (minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA)
         TEST_FAIL;
 }
 
 /* Expect CacheOps to fail (PMA error) */
 static void check_cacheops_fail(uint64_t addr) {
-    hal_tensor_write_error(0);
-    hal_tensor_write_evict_va(EVICT_VA(addr));
-    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_EVICT_VA, EVICT_VA(addr));
+    if (!(minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA))
         TEST_FAIL;
 
-    hal_tensor_write_error(0);
-    hal_tensor_write_flush_va(FLUSH_VA(addr));
-    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_FLUSH_VA, FLUSH_VA(addr));
+    if (!(minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA))
         TEST_FAIL;
 
-    hal_tensor_write_error(0);
-    hal_tensor_write_prefetch_va(PREFETCH_VA(addr));
-    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
+    minion_csr_write(TENSOR_ERROR, 0);
+    minion_csr_write(CO_PREFETCH_VA, PREFETCH_VA(addr));
+    if (!(minion_csr_read(TENSOR_ERROR) & TENSOR_ERROR_PMA))
         TEST_FAIL;
 }
 

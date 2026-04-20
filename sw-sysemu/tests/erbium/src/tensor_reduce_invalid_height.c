@@ -12,8 +12,7 @@
 */
 
 #include "test.h"
-#include <api/tensor.h>
-#include <hwinc/minion_csr.h>
+#include "minion_csr_compat.h"
 
 #define TENSOR_CMD_BROADCAST 2
 #define TENSOR_REDUCE_BROADCAST(height) \
@@ -31,20 +30,17 @@ int main() {
         return 0;
     }
 
-    /* Clear tensor_error */
-    hal_tensor_write_error(0);
+    minion_csr_write(TENSOR_ERROR, 0);
 
-    /* Verify tensor_error is cleared */
-    error = hal_tensor_read_error();
+    error = minion_csr_read(TENSOR_ERROR);
     if (error != 0) {
         TEST_FAIL;
     }
 
     /* Write tensor_reduce broadcast with invalid height (3) */
-    hal_tensor_write_reduce(TENSOR_REDUCE_BROADCAST(3));
+    minion_csr_write(TENSOR_REDUCE, TENSOR_REDUCE_BROADCAST(3));
 
-    /* Read tensor_error and check bit 9 */
-    error = hal_tensor_read_error();
+    error = minion_csr_read(TENSOR_ERROR);
     if (error & TENSOR_ERROR_INVALID_HEIGHT) {
         TEST_PASS;
     }
