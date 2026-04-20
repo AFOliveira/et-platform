@@ -18,37 +18,37 @@ int main(void)
     const uint64_t mask = 0x0006ull; /* avoid hart0 bit */
 
     /* ESR should start cleared */
-    if ((ipi_read_trigger() & 0xFFFFull) != 0) {
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != 0) {
         TEST_FAIL;
     }
 
     /* trigger sets bits */
-    ipi_write_trigger(mask);
-    if ((ipi_read_trigger() & 0xFFFFull) != mask) {
+    hal_ipi_write_trigger(mask);
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != mask) {
         TEST_FAIL;
     }
 
     /* trigger write of 0 is ignored */
-    ipi_write_trigger(0);
-    if ((ipi_read_trigger() & 0xFFFFull) != mask) {
+    hal_ipi_write_trigger(0);
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != mask) {
         TEST_FAIL;
     }
 
     /* clear one bit */
-    ipi_write_trigger_clear(0x0002ull);
-    if ((ipi_read_trigger() & 0xFFFFull) != 0x0004ull) {
+    hal_ipi_write_trigger_clear(0x0002ull);
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != 0x0004ull) {
         TEST_FAIL;
     }
 
     /* clear write of 0 is ignored */
-    ipi_write_trigger_clear(0);
-    if ((ipi_read_trigger() & 0xFFFFull) != 0x0004ull) {
+    hal_ipi_write_trigger_clear(0);
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != 0x0004ull) {
         TEST_FAIL;
     }
 
     /* clear remaining bit */
-    ipi_write_trigger_clear(0x0004ull);
-    if ((ipi_read_trigger() & 0xFFFFull) != 0x0ull) {
+    hal_ipi_write_trigger_clear(0x0004ull);
+    if ((hal_ipi_read_trigger() & 0xFFFFull) != 0x0ull) {
         TEST_FAIL;
     }
 

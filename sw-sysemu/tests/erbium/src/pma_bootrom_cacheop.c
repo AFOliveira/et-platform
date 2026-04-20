@@ -28,37 +28,37 @@
 
 /* Expect CacheOps to succeed (no PMA error) */
 static void check_cacheops_ok(uint64_t addr) {
-    tensor_write_error(0);
-    tensor_write_evict_va(EVICT_VA(addr));
-    if (tensor_read_error() & TENSOR_ERROR_PMA)
+    hal_tensor_write_error(0);
+    hal_tensor_write_evict_va(EVICT_VA(addr));
+    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
         TEST_FAIL;
 
-    tensor_write_error(0);
-    tensor_write_flush_va(FLUSH_VA(addr));
-    if (tensor_read_error() & TENSOR_ERROR_PMA)
+    hal_tensor_write_error(0);
+    hal_tensor_write_flush_va(FLUSH_VA(addr));
+    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
         TEST_FAIL;
 
-    tensor_write_error(0);
-    tensor_write_prefetch_va(PREFETCH_VA(addr));
-    if (tensor_read_error() & TENSOR_ERROR_PMA)
+    hal_tensor_write_error(0);
+    hal_tensor_write_prefetch_va(PREFETCH_VA(addr));
+    if (hal_tensor_read_error() & TENSOR_ERROR_PMA)
         TEST_FAIL;
 }
 
 /* Expect CacheOps to fail (PMA error) */
 static void check_cacheops_fail(uint64_t addr) {
-    tensor_write_error(0);
-    tensor_write_evict_va(EVICT_VA(addr));
-    if (!(tensor_read_error() & TENSOR_ERROR_PMA))
+    hal_tensor_write_error(0);
+    hal_tensor_write_evict_va(EVICT_VA(addr));
+    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
         TEST_FAIL;
 
-    tensor_write_error(0);
-    tensor_write_flush_va(FLUSH_VA(addr));
-    if (!(tensor_read_error() & TENSOR_ERROR_PMA))
+    hal_tensor_write_error(0);
+    hal_tensor_write_flush_va(FLUSH_VA(addr));
+    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
         TEST_FAIL;
 
-    tensor_write_error(0);
-    tensor_write_prefetch_va(PREFETCH_VA(addr));
-    if (!(tensor_read_error() & TENSOR_ERROR_PMA))
+    hal_tensor_write_error(0);
+    hal_tensor_write_prefetch_va(PREFETCH_VA(addr));
+    if (!(hal_tensor_read_error() & TENSOR_ERROR_PMA))
         TEST_FAIL;
 }
 

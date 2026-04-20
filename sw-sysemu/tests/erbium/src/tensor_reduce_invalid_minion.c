@@ -29,19 +29,19 @@ int main() {
     }
 
     /* Clear tensor_error */
-    tensor_write_error(0);
+    hal_tensor_write_error(0);
 
     /* Verify tensor_error is cleared */
-    error = tensor_read_error();
+    error = hal_tensor_read_error();
     if (error != 0) {
         TEST_FAIL;
     }
 
     /* Write tensor_reduce with invalid minion ID (8) */
-    tensor_write_reduce(TENSOR_REDUCE_SEND(8));
+    hal_tensor_write_reduce(TENSOR_REDUCE_SEND(8));
 
     /* Read tensor_error and check bit 9 */
-    error = tensor_read_error();
+    error = hal_tensor_read_error();
     if (error & TENSOR_ERROR_INVALID_ID) {
         TEST_PASS;
     }

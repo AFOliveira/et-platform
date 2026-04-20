@@ -24,7 +24,7 @@ void smode_test(void) {
 
 int main() {
     /* Enable MPROT: 4KB M-mode (size=0), 8KB S-mode (size=1) */
-    mprot_write(MPROT_EN | MPROT_MMODE_SIZE(0) | MPROT_SMODE_SIZE(1));
+    hal_mprot_write(MPROT_EN | MPROT_MMODE_SIZE(0) | MPROT_SMODE_SIZE(1));
 
     expect_no_exception();
 

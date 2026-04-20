@@ -11,12 +11,12 @@
 #include <stdint.h>
 #include <api/mprot_platform.h>
 
-static inline uint64_t mprot_read(void)
+static inline uint64_t hal_mprot_read(void)
 {
 	return platform_mprot_read();
 }
 
-static inline void mprot_write(uint64_t val)
+static inline void hal_mprot_write(uint64_t val)
 {
 	platform_mprot_write(val);
 }

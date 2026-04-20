@@ -29,8 +29,8 @@ int main() {
         for (int i = 0; i < 16; i++) {
             markers[i] = 0;
         }
-        thread_write_thread0_disable(0x00);
-        thread_write_thread1_disable(0xFF);
+        hal_thread_write_thread0_disable(0x00);
+        hal_thread_write_thread1_disable(0xFF);
     }
 
     /* Let all harts sync up */
@@ -42,7 +42,7 @@ int main() {
      * Phase 2: All harts write 0xFE to thread0_disable
      * 0xFE: bit 0 = 0 (H0 enabled), bits 1-7 = 1 (H2-H14 disabled)
      */
-    thread_write_thread0_disable(0xFE);
+    hal_thread_write_thread0_disable(0xFE);
 
     /* Give a moment for harts to get disabled (immediate on emulator) */
     for (volatile int i = 0; i < 200; i++) {

@@ -11,12 +11,12 @@
 #include <stdint.h>
 #include <api/thread_platform.h>
 
-static inline void thread_write_thread0_disable(uint64_t val)
+static inline void hal_thread_write_thread0_disable(uint64_t val)
 {
 	platform_thread_write_thread0_disable(val);
 }
 
-static inline void thread_write_thread1_disable(uint64_t val)
+static inline void hal_thread_write_thread1_disable(uint64_t val)
 {
 	platform_thread_write_thread1_disable(val);
 }

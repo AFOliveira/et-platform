@@ -22,7 +22,7 @@ void umode_test(void) {
 
 int main() {
     /* Ensure MPROT is disabled (default state, but be explicit) */
-    mprot_write(0);
+    hal_mprot_write(0);
 
     expect_no_exception();
 

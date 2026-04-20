@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <api/barrier_platform.h>
 
-static inline uint64_t flb_exchange(uint64_t val)
+static inline uint64_t hal_flb_exchange(uint64_t val)
 {
 	return platform_flb_exchange(val);
 }

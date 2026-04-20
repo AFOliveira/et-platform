@@ -18,18 +18,18 @@
 int main(void)
 {
     /* Enable timer interrupt delivery for minion 0. */
-    timer_write_mtime_local_target(0x1);
+    hal_timer_write_mtime_local_target(0x1);
 
     /* Start from a known state with no pending timer interrupt. */
-    timer_write_mtime(1000);
-    timer_write_mtimecmp(1000000);
+    hal_timer_write_mtime(1000);
+    hal_timer_write_mtimecmp(1000000);
 
     if (csr_read(mip) & MIP_MTIP) {
         TEST_FAIL;
     }
 
     /* Write MTIMECMP "in the past": should assert MTIP immediately. */
-    timer_write_mtimecmp(500);
+    hal_timer_write_mtimecmp(500);
 
     if (csr_read(mip) & MIP_MTIP) {
         TEST_PASS;

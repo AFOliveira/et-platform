@@ -27,7 +27,7 @@
  */
 static inline int flb_barrier(unsigned barrier_id, unsigned num_harts) {
     uint64_t flb_val = barrier_id | ((num_harts - 1) << 5);
-    return flb_exchange(flb_val);
+    return hal_flb_exchange(flb_val);
 }
 
 int main() {
@@ -36,8 +36,8 @@ int main() {
     uint64_t hartid = get_hart_id();
 
     if (hartid == 0) {
-        thread_write_thread0_disable(0x00);
-        thread_write_thread1_disable(0x00);
+        hal_thread_write_thread0_disable(0x00);
+        hal_thread_write_thread1_disable(0x00);
     }
 
     /* Emulator is very predictable, let's introduce

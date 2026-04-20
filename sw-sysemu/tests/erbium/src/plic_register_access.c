@@ -39,14 +39,14 @@ int main() {
     /*
      * Test 1: Priority register write/read
      */
-    plic_write_priority(TEST_SOURCE_ID, 5);
-    val = plic_read_priority(TEST_SOURCE_ID);
+    hal_plic_write_priority(TEST_SOURCE_ID, 5);
+    val = hal_plic_read_priority(TEST_SOURCE_ID);
     if (val != 5) {
         TEST_FAIL;
     }
 
-    plic_write_priority(TEST_SOURCE_ID, 0);
-    val = plic_read_priority(TEST_SOURCE_ID);
+    hal_plic_write_priority(TEST_SOURCE_ID, 0);
+    val = hal_plic_read_priority(TEST_SOURCE_ID);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -54,8 +54,8 @@ int main() {
     /*
      * Test 1b: Source 0 priority is hardwired to 0.
      */
-    plic_write_priority(0, 7);
-    val = plic_read_priority(0);
+    hal_plic_write_priority(0, 7);
+    val = hal_plic_read_priority(0);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -63,14 +63,14 @@ int main() {
     /*
      * Test 2: Enable register write/read
      */
-    plic_write_enable(TEST_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
-    val = plic_read_enable(TEST_CONTEXT_ID, 0);
+    hal_plic_write_enable(TEST_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
+    val = hal_plic_read_enable(TEST_CONTEXT_ID, 0);
     if (val != (1U << TEST_SOURCE_ID)) {
         TEST_FAIL;
     }
 
-    plic_write_enable(TEST_CONTEXT_ID, 0, 0);
-    val = plic_read_enable(TEST_CONTEXT_ID, 0);
+    hal_plic_write_enable(TEST_CONTEXT_ID, 0, 0);
+    val = hal_plic_read_enable(TEST_CONTEXT_ID, 0);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -78,12 +78,12 @@ int main() {
     /*
      * Test 2a: Out-of-range enable word access must be ignored.
      */
-    plic_write_enable(TEST_CONTEXT_ID, 1, 0xFFFFFFFFu);
-    val = plic_read_enable(TEST_CONTEXT_ID, 1);
+    hal_plic_write_enable(TEST_CONTEXT_ID, 1, 0xFFFFFFFFu);
+    val = hal_plic_read_enable(TEST_CONTEXT_ID, 1);
     if (val != 0) {
         TEST_FAIL;
     }
-    val = plic_read_enable(TEST_CONTEXT_ID, 0);
+    val = hal_plic_read_enable(TEST_CONTEXT_ID, 0);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -91,8 +91,8 @@ int main() {
     /*
      * Test 2b: Writes to unmapped context must not alias context 0.
      */
-    plic_write_enable(INVALID_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
-    val = plic_read_enable(TEST_CONTEXT_ID, 0);
+    hal_plic_write_enable(INVALID_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
+    val = hal_plic_read_enable(TEST_CONTEXT_ID, 0);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -100,14 +100,14 @@ int main() {
     /*
      * Test 3: Threshold register write/read
      */
-    plic_write_threshold(TEST_CONTEXT_ID, 3);
-    val = plic_read_threshold(TEST_CONTEXT_ID);
+    hal_plic_write_threshold(TEST_CONTEXT_ID, 3);
+    val = hal_plic_read_threshold(TEST_CONTEXT_ID);
     if (val != 3) {
         TEST_FAIL;
     }
 
-    plic_write_threshold(TEST_CONTEXT_ID, 0);
-    val = plic_read_threshold(TEST_CONTEXT_ID);
+    hal_plic_write_threshold(TEST_CONTEXT_ID, 0);
+    val = hal_plic_read_threshold(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -115,20 +115,20 @@ int main() {
     /*
      * Test 4: Claim clears pending for claimed source.
      */
-    plic_write_priority(TEST_SOURCE_ID, 1);
-    plic_write_enable(TEST_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
+    hal_plic_write_priority(TEST_SOURCE_ID, 1);
+    hal_plic_write_enable(TEST_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
     plic_diag_set_pending(TEST_SOURCE_ID, 1);
 
-    val = plic_claim(TEST_CONTEXT_ID);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != TEST_SOURCE_ID) {
         TEST_FAIL;
     }
-    val = plic_claim(TEST_CONTEXT_ID);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
-    plic_complete(TEST_CONTEXT_ID, TEST_SOURCE_ID);
-    val = plic_claim(TEST_CONTEXT_ID);
+    hal_plic_complete(TEST_CONTEXT_ID, TEST_SOURCE_ID);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
@@ -138,34 +138,34 @@ int main() {
      * Test 4b: Out-of-range completion ID write must be ignored.
      */
     plic_diag_set_pending(TEST_SOURCE_ID, 1);
-    val = plic_claim(TEST_CONTEXT_ID);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != TEST_SOURCE_ID) {
         TEST_FAIL;
     }
-    plic_complete(TEST_CONTEXT_ID, 0xFFFFFFFFu);
-    val = plic_claim(TEST_CONTEXT_ID);
+    hal_plic_complete(TEST_CONTEXT_ID, 0xFFFFFFFFu);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
-    plic_complete(TEST_CONTEXT_ID, TEST_SOURCE_ID);
-    val = plic_claim(TEST_CONTEXT_ID);
+    hal_plic_complete(TEST_CONTEXT_ID, TEST_SOURCE_ID);
+    val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != 0) {
         TEST_FAIL;
     }
     plic_diag_set_pending(TEST_SOURCE_ID, 0);
 
-    plic_write_enable(TEST_CONTEXT_ID, 0, 0);
-    plic_write_priority(TEST_SOURCE_ID, 0);
+    hal_plic_write_enable(TEST_CONTEXT_ID, 0, 0);
+    hal_plic_write_priority(TEST_SOURCE_ID, 0);
 
     /*
      * Test 5: Pending register is read-only
      */
-    val = plic_read_pending(0);
+    val = hal_plic_read_pending(0);
     if (val != 0) {
         TEST_FAIL;
     }
 
-    val = plic_read_pending(1);
+    val = hal_plic_read_pending(1);
     if (val != 0) {
         TEST_FAIL;
     }

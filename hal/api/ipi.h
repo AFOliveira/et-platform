@@ -11,17 +11,17 @@
 #include <stdint.h>
 #include <api/ipi_platform.h>
 
-static inline uint64_t ipi_read_trigger(void)
+static inline uint64_t hal_ipi_read_trigger(void)
 {
 	return platform_ipi_read_trigger();
 }
 
-static inline void ipi_write_trigger(uint64_t val)
+static inline void hal_ipi_write_trigger(uint64_t val)
 {
 	platform_ipi_write_trigger(val);
 }
 
-static inline void ipi_write_trigger_clear(uint64_t val)
+static inline void hal_ipi_write_trigger_clear(uint64_t val)
 {
 	platform_ipi_write_trigger_clear(val);
 }

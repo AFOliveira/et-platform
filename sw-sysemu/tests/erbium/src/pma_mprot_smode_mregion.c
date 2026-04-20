@@ -23,7 +23,7 @@ void smode_test(void) {
 
 int main() {
     /* Enable MPROT: 4KB M-mode region (MMODE_SIZE=0) */
-    mprot_write(MPROT_EN | MPROT_MMODE_SIZE(0) | MPROT_SMODE_SIZE(0));
+    hal_mprot_write(MPROT_EN | MPROT_MMODE_SIZE(0) | MPROT_SMODE_SIZE(0));
 
     expect_exception(CAUSE_LOAD_ACCESS_FAULT);
 

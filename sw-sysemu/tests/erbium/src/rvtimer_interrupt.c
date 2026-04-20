@@ -19,12 +19,12 @@
 
 int main() {
     /* Enable timer interrupt for minion 0 only */
-    timer_write_mtime_local_target(0x1);
+    hal_timer_write_mtime_local_target(0x1);
 
-    timer_write_mtime(0);
+    hal_timer_write_mtime(0);
 
     /* Set MTIMECMP to fire after 100 timer ticks */
-    timer_write_mtimecmp(100);
+    hal_timer_write_mtimecmp(100);
 
     expect_exception(CAUSE_MACHINE_TIMER_INTERRUPT);
 
