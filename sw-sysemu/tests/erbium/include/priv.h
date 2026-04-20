@@ -7,14 +7,14 @@
 #define ERBIUM_PRIV_H
 
 #include <stdint.h>
-#include <hwinc/top.h>
+#include <common/memmap.h>
 #include <api/mprot.h>
 
 #define MPROT_EN            (1 << 8)    /* Enable protection */
 #define MPROT_MMODE_SIZE(n) ((n) << 4)  /* M-mode region: 4KB * 2^n */
 #define MPROT_SMODE_SIZE(n) ((n) << 0)  /* S-mode region: 4KB * 2^n */
 
-#define MRAM_BASE  ERBIUM_TOP_MRAM_BASE
+#define MRAM_BASE  HAL_MAIN_MEM_BASE
 
 /*
  * Run callback in S-mode.

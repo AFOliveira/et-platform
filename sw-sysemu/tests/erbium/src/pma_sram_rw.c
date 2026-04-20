@@ -9,9 +9,9 @@
 
 #include "test.h"
 #include <stdint.h>
-#include <hwinc/top.h>
+#include <common/memmap.h>
 
-#define SRAM_BASE ERBIUM_TOP_SRAM_BASE
+#define SRAM_BASE HAL_SRAM_BASE
 #define TEST_PATTERN 0xCAFEFEEDDEADBEEFull
 
 int main() {

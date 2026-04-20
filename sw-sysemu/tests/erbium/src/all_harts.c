@@ -14,11 +14,11 @@
 #include "test.h"
 #include <stdint.h>
 #include <common/mmio.h>
-#include <hwinc/top.h>
+#include <common/memmap.h>
 #include <api/thread.h>
 #include <api/barrier.h>
 
-#define MRAM_BASE ERBIUM_TOP_MRAM_BASE
+#define MRAM_BASE HAL_MAIN_MEM_BASE
 #define NUM_HARTS 16
 
 /*

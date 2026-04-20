@@ -10,9 +10,9 @@
 
 #include "test.h"
 #include "trap.h"
-#include <hwinc/top.h>
+#include <common/memmap.h>
 
-#define BOOTROM_BASE ERBIUM_TOP_BOOTROM_BASE
+#define BOOTROM_BASE HAL_BOOTROM_BASE
 
 int main() {
     expect_exception(CAUSE_STORE_ACCESS_FAULT);

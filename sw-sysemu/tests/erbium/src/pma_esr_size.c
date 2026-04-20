@@ -12,9 +12,9 @@
 
 #include "test.h"
 #include "trap.h"
-#include <hwinc/top.h>
+#include <common/memmap.h>
 
-#define ESR_BASE ERBIUM_TOP_CPU_REGISTERS_BASE
+#define ESR_BASE HAL_ESR_BASE
 
 int main() {
     expect_exception(CAUSE_LOAD_ACCESS_FAULT);

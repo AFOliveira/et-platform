@@ -12,12 +12,12 @@
 */
 
 #include "test.h"
-#include <hwinc/top.h>
+#include <common/memmap.h>
 #include <api/tensor.h>
 
-#define MRAM_BASE    ERBIUM_TOP_MRAM_BASE
-#define SRAM_BASE    ERBIUM_TOP_SRAM_BASE
-#define BOOTROM_BASE ERBIUM_TOP_BOOTROM_BASE
+#define MRAM_BASE    HAL_MAIN_MEM_BASE
+#define SRAM_BASE    HAL_SRAM_BASE
+#define BOOTROM_BASE HAL_BOOTROM_BASE
 
 #define TENSOR_ERROR_PMA  (1 << 7)
 

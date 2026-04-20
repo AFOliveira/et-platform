@@ -13,10 +13,10 @@
 #include "test.h"
 #include <stdint.h>
 #include <common/mmio.h>
-#include <hwinc/top.h>
+#include <common/memmap.h>
 #include <api/thread.h>
 
-#define MRAM_BASE ERBIUM_TOP_MRAM_BASE
+#define MRAM_BASE HAL_MAIN_MEM_BASE
 #define MARKERS   (MRAM_BASE + 0x100)
 
 int main() {
