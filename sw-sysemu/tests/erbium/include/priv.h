@@ -10,9 +10,18 @@
 #include <common/memmap.h>
 #include <api/mprot.h>
 
-#define MPROT_EN            (1 << 8)    /* Enable protection */
-#define MPROT_MMODE_SIZE(n) ((n) << 4)  /* M-mode region: 4KB * 2^n */
-#define MPROT_SMODE_SIZE(n) ((n) << 0)  /* S-mode region: 4KB * 2^n */
+/* MPROT field layout is Erbium-only; ET-SoC1's MPROT lives in a
+ * different hwinc header with unrelated field names. */
+#if defined(PLATFORM_IS_ERBIUM)
+#  include <hwinc/esr.h>
+#  define MPROT_EN            MACHINE_NEIGH_MPROT_MPROT_EN_FIELD_MASK
+#  define MPROT_MMODE_SIZE(n) MACHINE_NEIGH_MPROT_MMODE_SIZE_SET(n)
+#  define MPROT_SMODE_SIZE(n) MACHINE_NEIGH_MPROT_SMODE_SIZE_SET(n)
+#else
+#  define MPROT_EN            (1 << 8)
+#  define MPROT_MMODE_SIZE(n) ((n) << 4)
+#  define MPROT_SMODE_SIZE(n) ((n) << 0)
+#endif
 
 #define MRAM_BASE  HAL_MAIN_MEM_BASE
 
