@@ -26,7 +26,9 @@
  * - Returns 1 if this hart was the last (triggered wrap), 0 otherwise
  */
 static inline int flb_barrier(unsigned barrier_id, unsigned num_harts) {
-    uint64_t flb_val = barrier_id | ((num_harts - 1) << 5);
+    uint64_t flb_val =
+        MINION_CSR_FLB_BARRIER_NUMBER_SET(barrier_id) |
+        MINION_CSR_FLB_MATCH_VALUE_SET(num_harts - 1);
     return minion_csr_swap(FLB, flb_val);
 }
 
