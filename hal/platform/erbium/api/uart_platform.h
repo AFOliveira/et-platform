@@ -14,11 +14,12 @@
 
 #include <common/mmio.h>
 #include <hwinc/system.h>
+#include <hwinc/top.h>
 #include <hwinc/uart.h>
 #include <api/shakti_uart.h>
 
-#define HAL_UART_PLATFORM_UART0_BASE   0x0002004000ull
-#define HAL_UART_PLATFORM_SYSREG_BASE  0x0002000000ull
+#define HAL_UART_PLATFORM_UART0_BASE   ERBIUM_TOP_UART_REGISTERS_BASE
+#define HAL_UART_PLATFORM_SYSREG_BASE  ERBIUM_TOP_SYSTEM_REGISTERS_BASE
 
 static inline bool hal_uart_platform_supports_pinmux_gate(void)
 {
