@@ -19,8 +19,9 @@
 #include <stdint.h>
 
 #include <common/mmio.h>
+#include <hwinc/hal_device.h>
 
-#define HAL_UART_PLATFORM_UART0_BASE  0x0012002000ull
+#define HAL_UART_PLATFORM_UART0_BASE  ((uintptr_t)R_PU_UART_BASEADDR)
 
 #define HAL_UART_PLATFORM_RBR_THR_OFFSET  0x00u
 #define HAL_UART_PLATFORM_LSR_OFFSET      0x14u
