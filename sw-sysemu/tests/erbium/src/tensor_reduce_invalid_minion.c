@@ -16,7 +16,13 @@
 #include <stdint.h>
 
 #define TENSOR_CMD_SEND    0
+
+/* For SEND/RECEIVE commands the emulator reads the target minion from
+ * bits [15:3] of TENSOR_REDUCE — overlapping tree_depth. The hwinc
+ * MINION_ID_LSB=7 field does not match the emulator's decoder, so the
+ * shift here is 3, not 7. */
 #define TENSOR_REDUCE_SEND(minion_id)    (((minion_id) << 3) | TENSOR_CMD_SEND)
+
 #define TENSOR_ERROR_INVALID_ID \
     MINION_CSR_TENSOR_ERROR_ILLEGAL_TENSOR_SEND_RCV_FIELD_MASK
 
