@@ -12,6 +12,8 @@
 #include <common/esr.h>
 #include <hwinc/esr.h>
 
+#define HAL_IPI_TRIGGER_MASK  MACHINE_CPU_IPI_TRIGGER_IPI_TRIGGER_FIELD_MASK
+
 static inline uint64_t platform_ipi_read_trigger(void)
 {
 	return esr_read_u64(ESR_PP_MACHINE, 0, ESR_SR_CPU,
