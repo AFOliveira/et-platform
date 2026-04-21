@@ -13,25 +13,13 @@
 
 #include "test.h"
 #include <stdint.h>
-#include "csr.h"
+#include "diag.h"
 #include <api/plic.h>
 
 /* Test constants */
 #define TEST_SOURCE_ID          1
 #define TEST_CONTEXT_ID         0
 #define INVALID_CONTEXT_ID      31
-
-/* Validation1 diagnostics */
-#define ET_DIAG_IRQ_INJ         0x5ULL
-#define ET_DIAG_IRQ_INJ_PLIC    0x3ULL
-
-static inline void plic_diag_set_pending(uint32_t source_id, uint32_t raise) {
-    uint64_t cmd = (ET_DIAG_IRQ_INJ << 56)
-                 | ((uint64_t)(raise & 1) << 55)
-                 | (ET_DIAG_IRQ_INJ_PLIC << 53)
-                 | source_id;
-    csr_write(validation1, cmd);
-}
 
 int main() {
     uint32_t val;
@@ -117,7 +105,7 @@ int main() {
      */
     hal_plic_write_priority(TEST_SOURCE_ID, 1);
     hal_plic_write_enable(TEST_CONTEXT_ID, 0, (1U << TEST_SOURCE_ID));
-    plic_diag_set_pending(TEST_SOURCE_ID, 1);
+    diag_plic_set_pending(TEST_SOURCE_ID, 1);
 
     val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != TEST_SOURCE_ID) {
@@ -132,12 +120,12 @@ int main() {
     if (val != 0) {
         TEST_FAIL;
     }
-    plic_diag_set_pending(TEST_SOURCE_ID, 0);
+    diag_plic_set_pending(TEST_SOURCE_ID, 0);
 
     /*
      * Test 4b: Out-of-range completion ID write must be ignored.
      */
-    plic_diag_set_pending(TEST_SOURCE_ID, 1);
+    diag_plic_set_pending(TEST_SOURCE_ID, 1);
     val = hal_plic_claim(TEST_CONTEXT_ID);
     if (val != TEST_SOURCE_ID) {
         TEST_FAIL;
@@ -152,7 +140,7 @@ int main() {
     if (val != 0) {
         TEST_FAIL;
     }
-    plic_diag_set_pending(TEST_SOURCE_ID, 0);
+    diag_plic_set_pending(TEST_SOURCE_ID, 0);
 
     hal_plic_write_enable(TEST_CONTEXT_ID, 0, 0);
     hal_plic_write_priority(TEST_SOURCE_ID, 0);
