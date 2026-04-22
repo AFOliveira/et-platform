@@ -11,8 +11,8 @@
 #include "common_utils.h"
 
 /* minion_bl */
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/atomic.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/atomic.h>
 #include <transports/mm_cm_iface/broadcast.h>
 
 /* etsoc_hal */

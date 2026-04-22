@@ -2,11 +2,11 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include <etsoc/common/common_defs.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/sync.h>
+#include <common/etsoc/common_defs.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/sync.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/message_types.h>
 

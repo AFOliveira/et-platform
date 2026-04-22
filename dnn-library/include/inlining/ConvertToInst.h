@@ -10,7 +10,7 @@
 #include "Compiler.h"
 #include "LibTensor.h"
 #include "LoadStore2.h"
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 #include "utils.h"
 #include <cmath>
 #include <fenv.h>

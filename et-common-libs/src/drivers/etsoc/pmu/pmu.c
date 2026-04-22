@@ -4,9 +4,9 @@
 *-------------------------------------------------------------------------
 */
 
-#include "etsoc/isa/esr_defines.h"
-#include "etsoc/isa/hart.h"
-#include "etsoc/drivers/pmu/pmu.h"
+#include "isa/etsoc/esr_defines.h"
+#include "isa/etsoc/hart.h"
+#include "drivers/etsoc/pmu/pmu.h"
 
 // Must be called by only one hart in a neighborhood
 int64_t configure_sc_pmcs(uint64_t ctl_status_cfg, uint64_t pmc0_cfg, uint64_t pmc1_cfg)

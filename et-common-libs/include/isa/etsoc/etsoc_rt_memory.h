@@ -12,8 +12,8 @@
 #ifndef ETSOC_RT_MEMORY_DEFS_H_
 #define ETSOC_RT_MEMORY_DEFS_H_
 
-#include "etsoc/isa/atomic.h"
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/atomic.h"
+#include "isa/etsoc/io.h"
 
 #include <stdint.h>
 

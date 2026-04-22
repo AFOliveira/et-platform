@@ -1,5 +1,5 @@
-#include "etsoc/isa/hart.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "common/etsoc/utils.h"
 
 #include <stdint.h>
 

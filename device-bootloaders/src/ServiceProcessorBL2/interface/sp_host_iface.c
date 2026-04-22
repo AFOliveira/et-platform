@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "config/mgmt_build_config.h"
 #include "sp_host_iface.h"
-#include "etsoc/drivers/pcie/pcie_int.h"
+#include "drivers/etsoc/pcie/pcie_int.h"
 #include "transports/vq/vq.h"
 #include "interrupt.h"
 #include "log.h"

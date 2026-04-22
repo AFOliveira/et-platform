@@ -12,7 +12,7 @@
 #ifndef __SP_MM_IFACE_H__
 #define __SP_MM_IFACE_H__
 
-#include "etsoc/common/common_defs.h"
+#include "common/etsoc/common_defs.h"
 #include "transports/sp_mm_iface/sp_mm_comms_spec.h"
 #include "transports/vq/vq.h"
 

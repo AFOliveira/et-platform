@@ -3,8 +3,8 @@
 #include <array>
 #include <stdio.h>
 
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/hart.h>
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/hart.h>
 
 #include "entryPoint.h"
 

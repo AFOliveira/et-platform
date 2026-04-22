@@ -19,8 +19,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
-#include <etsoc/isa/atomic.h>
-#include <etsoc/isa/cacheops-umode.h>
+#include <isa/etsoc/atomic.h>
+#include <isa/etsoc/cacheops-umode.h>
 
 #ifdef GPSDK
 #include "sync.h"

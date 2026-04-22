@@ -6,8 +6,8 @@
 #include "test_compute_pass2.h"
 #include "test_filter_data.h"
 #include "test_act_data.h"
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/fcc.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/fcc.h>
 
 void init_l2_scp(uint32_t shire_id, uint32_t minion_id);
 

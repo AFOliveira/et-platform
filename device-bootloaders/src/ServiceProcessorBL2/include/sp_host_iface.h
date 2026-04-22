@@ -16,9 +16,9 @@
 #ifndef SP_HOST_IFACE_DEFS_H
 #define SP_HOST_IFACE_DEFS_H
 
-#include "etsoc/common/common_defs.h"
+#include "common/etsoc/common_defs.h"
 #include "transports/vq/vq.h"
-#include "etsoc/drivers/pcie/pcie_int.h"
+#include "drivers/etsoc/pcie/pcie_int.h"
 #include "config/mgmt_build_config.h"
 
 /*! \def SP_MM_CQ_MAX_ELEMENT_SIZE

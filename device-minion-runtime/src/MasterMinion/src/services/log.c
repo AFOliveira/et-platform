@@ -20,9 +20,9 @@
 
 /* mm_rt_svcs */
 #include <common/printf.h>
-#include <etsoc/isa/atomic.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/sync.h>
+#include <isa/etsoc/atomic.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/sync.h>
 #include <system/layout.h>
 
 /* mm specific headers */

@@ -4,11 +4,11 @@
 * SPDX-License-Identifier: Apache-2.0
 *
 ************************************************************************/
-#include "etsoc/isa/io.h"
-#include "etsoc/drivers/pcie/pcie_int.h"
-#include "etsoc/drivers/pcie/pcie_device.h"
-#include "etsoc/isa/atomic.h"
-#include "etsoc/isa/etsoc_rt_memory.h"
+#include "isa/etsoc/io.h"
+#include "drivers/etsoc/pcie/pcie_int.h"
+#include "drivers/etsoc/pcie/pcie_device.h"
+#include "isa/etsoc/atomic.h"
+#include "isa/etsoc/etsoc_rt_memory.h"
 
 /*! \enum pcie_int_t
     \brief Enum which specifies the PCI interrupt types

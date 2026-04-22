@@ -1,4 +1,4 @@
-#include "etsoc/isa/syscall.h"
+#include "isa/etsoc/syscall.h"
 
 .section .text.init, "ax", @progbits
 .global _start

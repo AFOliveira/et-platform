@@ -17,12 +17,12 @@
 #include <inttypes.h>
 
 // Device common
-#include <etsoc/isa/utils.h>
-#include <etsoc/common/utils.h>
+#include <isa/etsoc/utils.h>
+#include <common/etsoc/utils.h>
 
 
 // FW syscall IDs
-#include <etsoc/isa/syscall.h>
+#include <isa/etsoc/syscall.h>
 #include <stdio.h>
 
 #include "UberKernelCommon.h"

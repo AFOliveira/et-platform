@@ -18,11 +18,11 @@
 */
 /***********************************************************************/
 /* mm_rt_svcs */
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/drivers/pmu/pmu.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/syscall.h>
+#include <drivers/etsoc/pmu/pmu.h>
 #include <system/layout.h>
 #include <transports/sp_mm_iface/sp_mm_comms_spec.h>
 

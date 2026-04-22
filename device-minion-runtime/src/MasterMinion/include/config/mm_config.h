@@ -28,7 +28,7 @@
 #define __MM_CONFIG_H__
 
 /* mm_rt_svcs */
-#include <etsoc/common/common_defs.h>
+#include <common/etsoc/common_defs.h>
 #include <system/layout.h>
 #include <transports/sp_mm_iface/sp_mm_shared_config.h>
 

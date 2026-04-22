@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/atomic.h"
-#include "etsoc/isa/flb.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/atomic.h"
+#include "isa/etsoc/flb.h"
+#include "common/etsoc/utils.h"
 #include "common.h"
 
 #define BASE_ADDR_FOR_THIS_TEST  0x8200000000ULL

@@ -1,10 +1,10 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 #include <trace/trace_umode.h>
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/isa/atomic.h>
-#include "etsoc/isa/hart.h"
+#include <isa/etsoc/cacheops-umode.h>
+#include <isa/etsoc/atomic.h>
+#include "isa/etsoc/hart.h"
 
 /* Define base addresses for memory operations to generate shire cache and memory shire events.
    Only first hart of each neighborhood is generating/logging events.

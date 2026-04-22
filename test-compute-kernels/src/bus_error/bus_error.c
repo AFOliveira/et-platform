@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/hart.h>
 
 /* Defines for dummy MPROT in U-mode */
 #define ESR_NEIGH_DUMMY_MPROT_REGNO  0x4

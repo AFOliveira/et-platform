@@ -14,7 +14,7 @@ extern "C" {
 
 #include <stddef.h>
 #include <stdbool.h>
-#include "etsoc/isa/esr_defines.h"
+#include "isa/etsoc/esr_defines.h"
 
 // PMU support: Defines and basic API
 typedef uint8_t hpm_counter_e;

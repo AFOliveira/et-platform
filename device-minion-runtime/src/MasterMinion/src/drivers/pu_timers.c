@@ -17,8 +17,8 @@
 #include <stddef.h>
 
 /* mm_rt_svcs */
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/atomic.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/atomic.h>
 
 /* etsoc_hal */
 #include <hwinc/pu_timer.h>

@@ -18,7 +18,7 @@
 
 #include <esperanto/device-apis/management-api/device_mgmt_api_spec.h> /* TODO: eliminate this */
 #include <esperanto/device-apis/management-api/device_mgmt_api_rpc_types.h>
-#include "etsoc/common/common_defs.h"
+#include "common/etsoc/common_defs.h"
 #include "transports/sp_mm_iface/sp_mm_iface.h"
 #include "minion_configuration.h"
 #include "FreeRTOS.h"

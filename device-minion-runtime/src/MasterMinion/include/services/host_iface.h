@@ -18,7 +18,7 @@
 #define HOST_IFACE_DEFS_H
 
 /* mm_rt_svcs */
-#include <etsoc/common/common_defs.h>
+#include <common/etsoc/common_defs.h>
 #include <transports/vq/vq.h>
 
 /* mm specific headers */

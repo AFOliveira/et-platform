@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 #include <trace/trace_umode.h>
 
 int64_t entry_point(void);

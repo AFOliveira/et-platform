@@ -6,7 +6,7 @@
 ************************************************************************/
 
 #include <stdio.h>
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "printx.h"
 #include "bl1_main.h"
 #include "bl1_pll.h"

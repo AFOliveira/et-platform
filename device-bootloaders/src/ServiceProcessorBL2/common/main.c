@@ -1,14 +1,14 @@
 #include "config/mgmt_build_config.h"
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 #include "interrupt.h"
 #include "dummy_isr.h"
-#include "etsoc/drivers/pcie/pcie_int.h"
+#include "drivers/etsoc/pcie/pcie_int.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
 
 #include "cache_flush_ops.h"
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "service_processor_ROM_data.h"
 #include "service_processor_BL1_data.h"
 #include "service_processor_BL2_data.h"

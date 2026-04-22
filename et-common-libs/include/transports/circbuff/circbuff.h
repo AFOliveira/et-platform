@@ -11,8 +11,8 @@
 /***********************************************************************/
 #ifndef CIRCBUFF_H
 #define CIRCBUFF_H
-#include "etsoc/common/common_defs.h"
-#include "etsoc/isa/etsoc_memory.h"
+#include "common/etsoc/common_defs.h"
+#include "isa/etsoc/etsoc_memory.h"
 
 /**
  * @brief Defines for Circular Buffer status codes.

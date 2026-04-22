@@ -24,7 +24,7 @@
 /* Define this macro to enable logging of VQ transactions. */
 #ifdef VQ_ENABLE_LOGGING
 
-#include "etsoc/common/log_internal.h"
+#include "common/etsoc/log_internal.h"
 
 #endif /* VQ_ENABLE_LOGGING */
 

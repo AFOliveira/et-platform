@@ -20,7 +20,7 @@
 #include "etsoc_hal/inc/minion_csr.h"
 #include "hwinc/sp_misc.h"
 #include "hwinc/etsoc_shire_other_esr.h"
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include <system/layout.h>
 #include "bl_error_code.h"
 

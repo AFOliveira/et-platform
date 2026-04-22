@@ -15,23 +15,23 @@ set(CM_RT_SVCS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/cm-rt-svcs)
 
 #Listing of header only public interfaces
 set(CM_RT_SVCS_HDRS
-    include/etsoc/common/common_defs.h
-    include/etsoc/common/log_common.h
-    include/etsoc/isa/atomic.h
-    include/etsoc/isa/atomic-impl.h
-    include/etsoc/isa/esr_defines.h
-    include/etsoc/isa/fcc.h
-    include/etsoc/isa/flb.h
-    include/etsoc/isa/hart.h
-    include/etsoc/isa/io.h
-    include/etsoc/isa/etsoc_memory.h
-    include/etsoc/isa/macros.h
-    include/etsoc/isa/cacheops.h
-    include/etsoc/isa/cacheops_common.h
-    include/etsoc/isa/sync.h
-    include/etsoc/isa/syscall.h
-    include/etsoc/isa/riscv_encoding.h
-    include/etsoc/isa/utils.h
+    include/common/etsoc/common_defs.h
+    include/common/etsoc/log_common.h
+    include/isa/etsoc/atomic.h
+    include/isa/etsoc/atomic-impl.h
+    include/isa/etsoc/esr_defines.h
+    include/isa/etsoc/fcc.h
+    include/isa/etsoc/flb.h
+    include/isa/etsoc/hart.h
+    include/isa/etsoc/io.h
+    include/isa/etsoc/etsoc_memory.h
+    include/isa/etsoc/macros.h
+    include/isa/etsoc/cacheops.h
+    include/isa/etsoc/cacheops_common.h
+    include/isa/etsoc/sync.h
+    include/isa/etsoc/syscall.h
+    include/isa/etsoc/riscv_encoding.h
+    include/isa/etsoc/utils.h
     include/system/abi.h
     include/system/etsoc_ddr_region_map.h
     include/system/layout.h
@@ -42,8 +42,8 @@ set(CM_RT_SVCS_HDRS
 set(CM_RT_SVCS_LIB_HDRS
     include/common/printf.h
     include/transports/circbuff/circbuff.h
-    include/etsoc/drivers/pmu/pmu.h
-    include/etsoc/drivers/serial/serial.h
+    include/drivers/etsoc/pmu/pmu.h
+    include/drivers/etsoc/serial/serial.h
     include/transports/mm_cm_iface/message_types.h
 )
 
@@ -55,9 +55,9 @@ set(CM_RT_SVCS_LIB_HDRS
 #the CM_RT_SVCS (Compute Minion Runtime Services) Library
 add_library(cm-rt-svcs STATIC
     src/common/printf.c
-    src/etsoc/isa/etsoc_memory.c
-    src/etsoc/drivers/pmu/pmu.c
-    src/etsoc/drivers/serial/serial.c
+    src/isa/etsoc/etsoc_memory.c
+    src/drivers/etsoc/pmu/pmu.c
+    src/drivers/etsoc/serial/serial.c
     src/transports/circbuff/circbuff.c
 )
 

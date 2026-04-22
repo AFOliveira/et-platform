@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "etsoc/isa/cacheops-umode.h"
+#include "isa/etsoc/cacheops-umode.h"
 
 int entry_point(void);
 

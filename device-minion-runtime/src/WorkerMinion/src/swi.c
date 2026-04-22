@@ -1,5 +1,5 @@
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/riscv_encoding.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/riscv_encoding.h>
 #include <system/layout.h>
 #include "cm_to_mm_iface.h"
 #include "kernel.h"

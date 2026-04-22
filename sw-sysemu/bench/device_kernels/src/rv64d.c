@@ -1,7 +1,7 @@
 #include "macros.h"
-#include "etsoc/isa/tensors.h"
-#include "etsoc/isa/cacheops.h"
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/tensors.h"
+#include "isa/etsoc/cacheops.h"
+#include "isa/etsoc/hart.h"
 #include <stdint.h>
 
 

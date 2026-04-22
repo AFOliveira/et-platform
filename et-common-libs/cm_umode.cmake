@@ -12,20 +12,20 @@ set(CM_UMODE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/cm-umode)
 #Listing of header only public interfaces
 set(CM_UMODE_HDRS
     # ETSOC ISA headers
-    include/etsoc/isa/atomic.h
-    include/etsoc/isa/atomic-impl.h
-    include/etsoc/isa/barriers.h
-    include/etsoc/isa/cacheops.h
-    include/etsoc/isa/cacheops_common.h
-    include/etsoc/isa/cacheops-umode.h    
-    include/etsoc/isa/esr_defines.h
-    include/etsoc/isa/fcc.h
-    include/etsoc/isa/flb.h
-    include/etsoc/isa/hart.h
-    include/etsoc/isa/sync.h
-    include/etsoc/isa/syscall.h
-    include/etsoc/isa/tensors.h
-    include/etsoc/isa/utils.h
+    include/isa/etsoc/atomic.h
+    include/isa/etsoc/atomic-impl.h
+    include/isa/etsoc/barriers.h
+    include/isa/etsoc/cacheops.h
+    include/isa/etsoc/cacheops_common.h
+    include/isa/etsoc/cacheops-umode.h    
+    include/isa/etsoc/esr_defines.h
+    include/isa/etsoc/fcc.h
+    include/isa/etsoc/flb.h
+    include/isa/etsoc/hart.h
+    include/isa/etsoc/sync.h
+    include/isa/etsoc/syscall.h
+    include/isa/etsoc/tensors.h
+    include/isa/etsoc/utils.h
     include/trace/trace_umode.h
     include/trace/trace_umode_cb.h
     include/system/abi.h
@@ -34,8 +34,8 @@ set(CM_UMODE_HDRS
 #Listing of public headers that expose services provided by
 #the CM UMODE (Compute Minion User Mode) Library
 set(CM_UMODE_LIB_HDRS
-    include/etsoc/common/utils.h
-    include/etsoc/drivers/pmu/pmu.h
+    include/common/etsoc/utils.h
+    include/drivers/etsoc/pmu/pmu.h
 )
 
 ########################
@@ -45,8 +45,8 @@ set(CM_UMODE_LIB_HDRS
 #the CM UMODE (Compute Minion User Mode) Library
 add_library(cm-umode STATIC
     src/common/printf.c
-    src/etsoc/common/utils.c
-    src/etsoc/drivers/pmu/pmu.c
+    src/common/etsoc/utils.c
+    src/drivers/etsoc/pmu/pmu.c
     src/trace/trace_umode.c
     src/common/printf_dummy.c
     src/libc_stub/stdlib.c

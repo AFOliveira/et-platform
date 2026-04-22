@@ -14,11 +14,11 @@
 #include <inttypes.h>
 
 // FW syscall IDs
-#include "etsoc/isa/syscall.h"
+#include "isa/etsoc/syscall.h"
 
 // Shared
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
 
 // Helper thread masks
 #define SYNC_SHIRE_ID             32

@@ -17,7 +17,7 @@
 #ifndef __MGMT_BUILD_CONFIG_H__
 #define __MGMT_BUILD_CONFIG_H__
 
-#include "etsoc/common/common_defs.h"
+#include "common/etsoc/common_defs.h"
 #include "hwinc/hal_device.h"
 #include "system/layout.h"
 

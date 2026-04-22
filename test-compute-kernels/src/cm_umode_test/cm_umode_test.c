@@ -1,6 +1,6 @@
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/common/utils.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/cacheops-umode.h>
+#include <common/etsoc/utils.h>
 
 static inline int min(int a, int b) { return a < b ? a : b; }
 

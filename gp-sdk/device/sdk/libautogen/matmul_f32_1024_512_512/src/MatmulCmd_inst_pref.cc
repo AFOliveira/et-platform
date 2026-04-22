@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/esr_defines.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/esr_defines.h>
 #include "kernel_arguments.h"
 
 #include "inst_pref_decls.h"

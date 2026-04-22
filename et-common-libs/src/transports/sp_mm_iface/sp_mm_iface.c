@@ -36,13 +36,13 @@
 #include "transports/sp_mm_iface/sp_mm_iface.h"
 #include "transports/sp_mm_iface/sp_mm_shared_config.h"
 #include "transports/sp_mm_iface/sp_mm_comms_spec.h"
-#include "etsoc/isa/esr_defines.h"
+#include "isa/etsoc/esr_defines.h"
 #include "hwinc/hal_device.h"
 
 /* Define this macro to enable logging in SP-MM interface transactions. */
 #ifdef SP_MM_IFACE_ENABLE_LOGGING
 
-#include "etsoc/common/log_internal.h"
+#include "common/etsoc/log_internal.h"
 
 #endif /* SP_MM_IFACE_ENABLE_LOGGING */
 

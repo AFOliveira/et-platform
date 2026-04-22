@@ -11,7 +11,7 @@
 #include "FFT.h"
 #include "ImageConditioning.h"
 #include "LibTensor.h"
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 #include "utils.h"
 #include <assert.h>
 #include <cmath>

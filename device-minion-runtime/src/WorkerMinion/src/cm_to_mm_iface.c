@@ -16,10 +16,10 @@
 */
 /***********************************************************************/
 #include <string.h>
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/syscall.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/syscall.h>
 #include <system/layout.h>
 #include <transports/circbuff/circbuff.h>
 

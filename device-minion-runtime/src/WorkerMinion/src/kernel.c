@@ -13,19 +13,19 @@
 #include <stdbool.h>
 #include <inttypes.h>
 
-#include <etsoc/common/common_defs.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/drivers/pmu/pmu.h>
+#include <common/etsoc/common_defs.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/syscall.h>
+#include <drivers/etsoc/pmu/pmu.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/message_types.h>
-#include <etsoc/isa/riscv_encoding.h>
+#include <isa/etsoc/riscv_encoding.h>
 
 #include "syscall_internal.h"
 #include "cm_mm_defines.h"

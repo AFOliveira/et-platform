@@ -4,9 +4,9 @@
 *-------------------------------------------------------------------------
 */
 
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "printx.h"
 #include "bl1_spi_controller.h"
 #include "hwinc/sp_spi0.h"

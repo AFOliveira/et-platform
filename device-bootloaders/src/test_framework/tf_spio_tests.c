@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 #include "tf.h"
 #include "bl2_sp_pll.h"
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "bl2_spi_flash.h"
 
 int8_t SPIO_RAM_Read_Word_Cmd_Handler(void* test_cmd);

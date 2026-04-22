@@ -1,5 +1,5 @@
-#include "etsoc/drivers/serial/serial.h"
-#include "etsoc/isa/io.h"
+#include "drivers/etsoc/serial/serial.h"
+#include "isa/etsoc/io.h"
 
 #include "etsoc_hal/inc/DW_apb_uart.h"
 

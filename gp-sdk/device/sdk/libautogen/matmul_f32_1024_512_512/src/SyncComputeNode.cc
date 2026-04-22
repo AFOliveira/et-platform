@@ -8,7 +8,7 @@
 #include "SyncComputeNode.h"
 #include "SysEmuControl.h"
 #include "common_arguments.h"
-#include <etsoc/isa/cacheops-umode.h>
+#include <isa/etsoc/cacheops-umode.h>
 
 void SendCreditsToActPref(uint32_t minionId, uint32_t shireID, [[maybe_unused]] uint64_t logHartHeaderAddress = 0) {
   if ( minionId < N_CREDITS_TO_ACT_PREF){

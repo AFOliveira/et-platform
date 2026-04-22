@@ -1,7 +1,7 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stdio.h>
-#include <etsoc/isa/utils.h>
+#include <isa/etsoc/utils.h>
 
 /* mm specific headers */
 #include "drivers/pcie_dma.h"
@@ -11,7 +11,7 @@
 #include "config/mm_config.h"
 
 /* mm-rt-svcs */
-#include <etsoc/isa/etsoc_memory.h>
+#include <isa/etsoc/etsoc_memory.h>
 #include <system/layout.h>
 
 /* Cycle Bit */

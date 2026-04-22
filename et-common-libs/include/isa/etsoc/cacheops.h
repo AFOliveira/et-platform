@@ -13,7 +13,7 @@
 #include <inttypes.h>
 #endif
 
-#include "etsoc/isa/utils.h"
+#include "isa/etsoc/utils.h"
 #include "cacheops_common.h"
 
 //-------------------------------------------------------------------------------------------------

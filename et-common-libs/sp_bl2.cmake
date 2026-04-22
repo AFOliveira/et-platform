@@ -15,19 +15,19 @@ set(SP_BL2_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/sp-bl2)
 
 #Listing of header only public interfaces
 set(SP_BL2_HDRS
-    include/etsoc/common/common_defs.h
-    include/etsoc/common/log_common.h
-    include/etsoc/drivers/pcie/pcie_int.h
-    include/etsoc/drivers/pmu/pmu.h
-    include/etsoc/isa/atomic.h
-    include/etsoc/isa/atomic-impl.h
-    include/etsoc/isa/etsoc_memory.h
-    include/etsoc/isa/io.h
-    include/etsoc/isa/cacheops.h
-    include/etsoc/isa/cacheops_common.h
-    include/etsoc/isa/esr_defines.h
-    include/etsoc/isa/fcc.h
-    include/etsoc/isa/utils.h
+    include/common/etsoc/common_defs.h
+    include/common/etsoc/log_common.h
+    include/drivers/etsoc/pcie/pcie_int.h
+    include/drivers/etsoc/pmu/pmu.h
+    include/isa/etsoc/atomic.h
+    include/isa/etsoc/atomic-impl.h
+    include/isa/etsoc/etsoc_memory.h
+    include/isa/etsoc/io.h
+    include/isa/etsoc/cacheops.h
+    include/isa/etsoc/cacheops_common.h
+    include/isa/etsoc/esr_defines.h
+    include/isa/etsoc/fcc.h
+    include/isa/etsoc/utils.h
     include/transports/vq/vq.h
     include/transports/circbuff/circbuff.h
     include/transports/sp_mm_iface/sp_mm_comms_spec.h
@@ -41,8 +41,8 @@ set(SP_BL2_HDRS
 #Listing of public headers that expose services provided by
 #the SP_BL2 (SP Bootloader 2 Library)
 set(SP_BL2_LIB_HDRS
-    include/etsoc/drivers/serial/serial.h
-    include/etsoc/isa/etsoc_rt_memory.h
+    include/drivers/etsoc/serial/serial.h
+    include/isa/etsoc/etsoc_rt_memory.h
 )
 
 #########################
@@ -52,8 +52,8 @@ set(SP_BL2_LIB_HDRS
 #Listing of sources that implement services provided by
 #the SP_BL2 (SP Bootloader 2 Library)
 add_library(sp-bl2 STATIC
-    src/etsoc/isa/etsoc_memory.c
-    src/etsoc/drivers/pcie/pcie_int.c
+    src/isa/etsoc/etsoc_memory.c
+    src/drivers/etsoc/pcie/pcie_int.c
     src/transports/circbuff/circbuff.c
     src/transports/vq/vq.c
     src/transports/sp_mm_iface/sp_mm_iface.c

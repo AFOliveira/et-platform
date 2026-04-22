@@ -1,6 +1,6 @@
 #include <stdint.h>
-#include "etsoc/isa/hart.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "common/etsoc/utils.h"
 
 int64_t entry_point(void);
 

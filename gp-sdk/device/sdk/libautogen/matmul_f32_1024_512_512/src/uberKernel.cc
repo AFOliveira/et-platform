@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/barriers.h>
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/common/utils.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/barriers.h>
+#include <isa/etsoc/cacheops-umode.h>
+#include <common/etsoc/utils.h>
 #include "SyncComputeNode.h"
 #include "kernel_arguments.h"
 #include "neuralizer_device_types.h"

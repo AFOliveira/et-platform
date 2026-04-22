@@ -4,7 +4,7 @@
 */
 
 /* Include api specific header */
-#include <etsoc/isa/cacheops-umode.h>
+#include <isa/etsoc/cacheops-umode.h>
 
 /* Define memory address and data size */
 #define MS_BASE_DEST   0x8100006000ULL

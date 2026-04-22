@@ -36,8 +36,8 @@
 #include <esperanto/device-apis/device_apis_message_types.h>
 
 /* mm_rt_svcs */
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/etsoc_memory.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/etsoc_memory.h>
 
 /* mm_rt_helpers */
 #include "error_codes.h"

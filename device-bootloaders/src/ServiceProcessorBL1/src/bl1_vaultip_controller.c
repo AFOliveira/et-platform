@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 #include "printx.h"
 #include "crc32.h"
 

@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 
 /* Self abort kernel */
 int64_t entry_point(void);

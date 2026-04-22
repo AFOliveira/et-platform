@@ -23,7 +23,7 @@
 /***********************************************************************/
 /* mm_rt_svcs */
 #include <transports/vq/vq.h>
-#include <etsoc/drivers/pcie/pcie_int.h>
+#include <drivers/etsoc/pcie/pcie_int.h>
 
 /* etsoc_hal */
 #include "hwinc/hal_device.h"

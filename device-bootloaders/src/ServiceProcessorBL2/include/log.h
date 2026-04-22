@@ -13,7 +13,7 @@
 
 #include <stddef.h>
 #include <inttypes.h>
-#include <etsoc/common/log_common.h>
+#include <common/etsoc/log_common.h>
 
 /*! \def LOG_STRING_MAX_SIZE_SP
     \brief Max string message length which can be logged over serial.

@@ -1,7 +1,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/hart.h"
 #include "lfsr.h"
 
 typedef struct {

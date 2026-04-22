@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 
 typedef struct {
     uint64_t stack_size; /* in bytes */

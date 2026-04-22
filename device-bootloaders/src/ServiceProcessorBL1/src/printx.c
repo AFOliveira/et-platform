@@ -4,7 +4,7 @@
 *-------------------------------------------------------------------------
 */
 
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 
 #include "printx.h"
 #include "stdbool.h"

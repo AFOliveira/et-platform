@@ -1,8 +1,8 @@
 #include <stdint.h>
 #include <stddef.h>
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/atomic.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/atomic.h"
+#include "common/etsoc/utils.h"
 #include "common.h"
 
 #define BASE_ADDR_FOR_THIS_TEST  0x8105000040ULL

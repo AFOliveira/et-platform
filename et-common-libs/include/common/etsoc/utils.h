@@ -4,7 +4,7 @@
   SPDX-License-Identifier: Apache-2.0
 */
 /***********************************************************************/
-/*! \file include/etsoc/common/utils.h
+/*! \file include/common/etsoc/utils.h
     \brief A C header that defines the common util routines to be used.
 */
 /***********************************************************************/
@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 #include <stddef.h>
-#include "etsoc/drivers/pmu/pmu.h"
+#include "drivers/etsoc/pmu/pmu.h"
 #include "trace/trace_umode.h"
 
 /*! \def et_printf(fmt, ...)

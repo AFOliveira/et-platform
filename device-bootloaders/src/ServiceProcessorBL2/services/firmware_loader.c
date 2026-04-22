@@ -11,7 +11,7 @@
         load_firmware
 */
 /***********************************************************************/
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 #include <string.h>
 #include <stdio.h>
 #include "log.h"

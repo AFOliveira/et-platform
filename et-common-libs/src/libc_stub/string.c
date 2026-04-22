@@ -1,6 +1,6 @@
 #include "string.h"
 
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 
 void* memset(void* s, int c, size_t n) {
   return et_memset(s, c, n);

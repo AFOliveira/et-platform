@@ -1,15 +1,15 @@
 
 #include <stdint.h>
-#include "etsoc/isa/cacheops.h"
+#include "isa/etsoc/cacheops.h"
 #include "common.h"
 #include "device-mrt-trace.h"
-#include "etsoc/isa/esr_defines.h"
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/esr_defines.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
+#include "isa/etsoc/hart.h"
 #include "sync_minions.h"
-#include "etsoc/isa/syscall.h"
-#include "etsoc/isa/tensors.h"
+#include "isa/etsoc/syscall.h"
+#include "isa/etsoc/tensors.h"
 #include "vpu.h"
 
 // This test uses kernel tl_tfma_reduce_2s.

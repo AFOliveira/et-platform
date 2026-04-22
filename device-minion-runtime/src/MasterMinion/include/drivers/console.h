@@ -12,7 +12,7 @@
 
 /* mm_rt_helpers */
 #include <common/printf.h>
-#include <etsoc/drivers/serial/serial.h>
+#include <drivers/etsoc/serial/serial.h>
 
 /*! \fn void Console_Putchar(char character)
     \brief Write a character to the serial port

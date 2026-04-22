@@ -8,8 +8,8 @@
 #include <stddef.h>
 
 /* minion_bl */
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/hart.h>
 
 extern int64_t syscall_handler(uint64_t number, uint64_t arg1, uint64_t arg2, uint64_t arg3);
 

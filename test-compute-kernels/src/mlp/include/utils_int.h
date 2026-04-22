@@ -9,7 +9,7 @@
 
 #include <inttypes.h>
 
-#include <etsoc/isa/esr_defines.h>
+#include <isa/etsoc/esr_defines.h>
 
 #ifdef __cplusplus
 #define EXTERN_C extern "C"

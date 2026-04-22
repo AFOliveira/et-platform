@@ -8,7 +8,7 @@
 
 #include "GPSDKCommonCode.h"
 #include "trace/trace_umode.h"
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 
 /*! \file profiling.h
     \brief Functions and macros for tracing of user-defined events

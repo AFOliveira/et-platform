@@ -18,10 +18,10 @@
 #define ACTIVE_T0_M1	0x1f //Minions that have thread 0 active minus 1
 #include <stdio.h>
 
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/hart.h>
 
 
-#include <etsoc/isa/esr_defines.h>
+#include <isa/etsoc/esr_defines.h>
 #include <dnn_lib/utils.h>
 
 #include "kernel_arguments.h"

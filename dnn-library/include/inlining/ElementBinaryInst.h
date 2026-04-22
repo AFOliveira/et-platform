@@ -10,7 +10,7 @@
 #include "Float16.h"
 #include "LibTensor.h"
 #include "LoadStore.h"
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 #include "utils.h"
 #include <cassert>
 #include <cmath>

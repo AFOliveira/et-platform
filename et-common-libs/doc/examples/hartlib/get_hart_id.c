@@ -6,7 +6,7 @@
 */
 
 /* Include api specific header */
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/hart.h>
 #include "utils.h"
 
 /* Stub implementation */

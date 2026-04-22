@@ -16,8 +16,8 @@
 #include <type_traits>
 
 #ifdef __riscv
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/isa/utils.h>
+#include <isa/etsoc/cacheops-umode.h>
+#include <isa/etsoc/utils.h>
 #endif
 
 namespace dnn_lib {

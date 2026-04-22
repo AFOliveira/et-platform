@@ -4,14 +4,14 @@
  *-------------------------------------------------------------------------
  */
 
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/hart.h>
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/hart.h>
 #include <algorithm>
 #include <cstdint>
 
 #include "entryPoint.h"
 #include "saxpy_kernel_arguments.h"
-#include <etsoc/isa/tensors.h>
+#include <isa/etsoc/tensors.h>
 
 int entryPoint_0(KernelArguments* args);
 DECLARE_KERNEL_ENTRY_POINTS(entryPoint_0, nullptr);

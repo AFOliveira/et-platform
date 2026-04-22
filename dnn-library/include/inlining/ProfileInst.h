@@ -14,9 +14,9 @@
 #include <limits>
 #include <string.h>
 
-#include <etsoc/isa/barriers.h>
-#include <etsoc/isa/tensors.h>
-#include <etsoc/isa/utils.h>
+#include <isa/etsoc/barriers.h>
+#include <isa/etsoc/tensors.h>
+#include <isa/etsoc/utils.h>
 
 #include "LibTensor.h"
 #include "utils.h"

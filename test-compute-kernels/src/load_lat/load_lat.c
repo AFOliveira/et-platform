@@ -7,11 +7,11 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "etsoc/isa/hart.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "common/etsoc/utils.h"
 #include "common.h"
 
-#include "etsoc/isa/cacheops.h"
+#include "isa/etsoc/cacheops.h"
 #include "markers.h"
 
 #define CACHE_LINE_SIZE 8

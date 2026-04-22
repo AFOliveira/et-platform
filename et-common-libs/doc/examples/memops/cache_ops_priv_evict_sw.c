@@ -5,7 +5,7 @@
 */
 
 /* Include api specific header */
-#include <etsoc/isa/cacheops-umode.h>
+#include <isa/etsoc/cacheops-umode.h>
 #include "utils.h"
 
 int main(void)

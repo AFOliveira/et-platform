@@ -2,10 +2,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 
-#include "etsoc/isa/cacheops.h"
+#include "isa/etsoc/cacheops.h"
 #include "common_code.h"
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/tensors.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/tensors.h"
 
 #define N_CREDITS_TO_ACT_PREF 3
 

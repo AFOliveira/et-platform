@@ -4,7 +4,7 @@
  *-------------------------------------------------------------------------
  */
 
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 
 /* stub implementations of __throw__XXX libstdc++ functions.
  * as we are working with -nostdlib -fno-exceptions.. we need a way for the stdlib headers

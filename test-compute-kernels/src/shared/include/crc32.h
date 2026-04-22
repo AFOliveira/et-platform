@@ -3,7 +3,7 @@
 #define CRC32_H
 
 #include <stdint.h>
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 //static const uint32_t crc32polynomial = 0xEDB88320;                                                                                                                                                                                                                                                                                                                
 
 // table generated from generate_crc32_tables()

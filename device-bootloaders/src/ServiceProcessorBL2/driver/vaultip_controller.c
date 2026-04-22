@@ -15,8 +15,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include "etsoc/isa/io.h"
-#include "etsoc/drivers/serial/serial.h"
+#include "isa/etsoc/io.h"
+#include "drivers/etsoc/serial/serial.h"
 #include "crc32.h"
 #include "hal_vaultip_hw.h"
 #include "hal_vaultip_sw.h"

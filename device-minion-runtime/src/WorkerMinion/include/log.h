@@ -5,7 +5,7 @@
 #include <inttypes.h>
 
 /* cm specific headers */
-#include <etsoc/common/log_common.h>
+#include <common/etsoc/log_common.h>
 #include "device_minion_runtime_build_configuration.h"
 #include "trace.h"
 

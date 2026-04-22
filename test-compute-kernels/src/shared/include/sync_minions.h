@@ -1,8 +1,8 @@
 #ifndef SYNC_MINIONS_H
 #define SYNC_MINIONS_H
 
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
 
 #define ALL_BANKS_MASK 0xFUL;
 #define OPCODE_FLUSH_CB 0x0A01UL;

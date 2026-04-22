@@ -11,10 +11,10 @@
 #include "LibCommon.h"
 #include <cmath>
 #include <cstdint>
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/tensors.h>
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/cacheops-umode.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/tensors.h>
 #include <sstream>
 #include <utility>
 

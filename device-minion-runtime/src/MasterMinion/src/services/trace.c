@@ -25,12 +25,12 @@
 #include <esperanto/device-apis/operations-api/device_ops_api_spec.h>
 
 /* mm_rt_svcs */
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/atomic.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/sync.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/atomic.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/sync.h>
 #include <system/layout.h>
 
 /* mm specific headers */

@@ -5,12 +5,12 @@
  */
 
 #include <stdint.h>
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/cacheops.h"
-#include "etsoc/isa/tensors.h"
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
-#include "etsoc/isa/esr_defines.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/cacheops.h"
+#include "isa/etsoc/tensors.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
+#include "isa/etsoc/esr_defines.h"
 #include "vpu.h"
 #include "common.h"
 #include "crc32.h"

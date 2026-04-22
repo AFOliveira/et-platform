@@ -1,4 +1,4 @@
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/hart.h>
 
 static inline int min(int a, int b) { return a < b ? a : b; }
 

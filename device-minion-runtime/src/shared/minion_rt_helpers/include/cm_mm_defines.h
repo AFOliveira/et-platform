@@ -12,7 +12,7 @@
 #ifndef CM_TO_MM_DEFS_H
 #define CM_TO_MM_DEFS_H
 
-#include <etsoc/isa/sync.h>
+#include <isa/etsoc/sync.h>
 #include <stdio.h>
 
 /*! \def CM_MM_MASTER_HART_DISPATCHER_IDX

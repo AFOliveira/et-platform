@@ -2,9 +2,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
+#include "isa/etsoc/hart.h"
 
 static void prefetch_thread(uint64_t cycles);
 static void compute_thread(uint64_t cycles);

@@ -3,11 +3,11 @@
 #include <stdint.h>
 #include <inttypes.h>
 
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/common/utils.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/syscall.h>
+#include <common/etsoc/utils.h>
 #include <trace/trace_umode.h>
 #include "lfsr.h"
 

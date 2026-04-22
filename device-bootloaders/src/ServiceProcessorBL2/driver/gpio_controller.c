@@ -17,7 +17,7 @@
 
 #include <stdio.h>
 
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "bl2_gpio_controller.h"
 #include "bl_error_code.h"
 #include "bl2_main.h"

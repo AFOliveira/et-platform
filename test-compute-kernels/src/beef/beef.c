@@ -1,4 +1,4 @@
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/hart.h"
 
 #include <stdint.h>
 #include <stddef.h>

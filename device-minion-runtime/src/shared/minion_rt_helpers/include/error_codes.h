@@ -14,7 +14,7 @@
 #ifndef _ERROR_CODES_H_
 #define _ERROR_CODES_H_
 
-#include <etsoc/common/common_defs.h>
+#include <common/etsoc/common_defs.h>
 
 /*! \def STATUS_SUCCESS
     \brief Generic status success

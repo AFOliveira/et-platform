@@ -10,7 +10,7 @@
 #include "Addresser.h"
 #include "Float16.h"
 #include "LibTensor.h"
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 #include "utils.h"
 #include <cmath>
 #include <fenv.h>

@@ -51,7 +51,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include "log.h"
-#include "etsoc/drivers/serial/serial.h"
+#include "drivers/etsoc/serial/serial.h"
 #include "crc32.h"
 #include "bl2_scratch_buffer.h"
 #include "bl2_spi_controller.h"

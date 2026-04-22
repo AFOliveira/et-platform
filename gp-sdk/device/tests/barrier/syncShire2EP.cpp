@@ -5,11 +5,11 @@
  *-------------------------------------------------------------------------
  */
 
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/tensors.h>
-#include <etsoc/isa/utils.h> 
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/tensors.h>
+#include <isa/etsoc/utils.h> 
 
 #include "entryPoint.h"
 

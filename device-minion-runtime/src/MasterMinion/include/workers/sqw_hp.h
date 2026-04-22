@@ -14,9 +14,9 @@
 #define SQW_HP_DEFS_H
 
 /* mm_rt_svcs */
-#include <etsoc/common/common_defs.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/drivers/pmu/pmu.h>
+#include <common/etsoc/common_defs.h>
+#include <isa/etsoc/sync.h>
+#include <drivers/etsoc/pmu/pmu.h>
 #include <transports/vq/vq.h>
 
 /* mm specific headers */

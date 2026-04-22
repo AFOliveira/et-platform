@@ -9,10 +9,10 @@
 */
 /***********************************************************************/
 
-#include "etsoc/drivers/pmu/pmu.h"
-#include "etsoc/isa/etsoc_memory.h"
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/syscall.h"
+#include "drivers/etsoc/pmu/pmu.h"
+#include "isa/etsoc/etsoc_memory.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/syscall.h"
 
 #include "common/printf.h"
 

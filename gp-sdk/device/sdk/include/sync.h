@@ -11,16 +11,16 @@
 #include <type_traits>
 
 // Device common
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/tensors.h>
-#include <etsoc/isa/utils.h>
-#include <etsoc/isa/atomic.h>
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/tensors.h>
+#include <isa/etsoc/utils.h>
+#include <isa/etsoc/atomic.h>
 
 
 // FW syscall IDs
-#include <etsoc/isa/syscall.h>
+#include <isa/etsoc/syscall.h>
 #include "system/abi.h"
 
 #include <profiling.h>

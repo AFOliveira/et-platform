@@ -19,9 +19,9 @@
         ETSOC_Memory_Write_SCP
 */
 /***********************************************************************/
-#include "etsoc/isa/etsoc_memory.h"
-#include "etsoc/isa/io.h"
-#include "etsoc/isa/atomic.h"
+#include "isa/etsoc/etsoc_memory.h"
+#include "isa/etsoc/io.h"
+#include "isa/etsoc/atomic.h"
 #include "system/layout.h"
 #ifdef MEM_DEBUG
 #include "../../../MasterMinion/include/services/log.h"

@@ -17,8 +17,8 @@
 extern "C" {
 #endif
 
-#include "etsoc/isa/utils.h"
-#include "etsoc/isa/syscall.h"
+#include "isa/etsoc/utils.h"
+#include "isa/etsoc/syscall.h"
 #include "cacheops_common.h"
 
 //-------------------------------------------------------------------------------------------------

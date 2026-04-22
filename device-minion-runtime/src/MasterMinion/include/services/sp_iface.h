@@ -14,7 +14,7 @@
 #define SP_IFACE_DEFS_H
 
 /* mm_rt_svcs */
-#include <etsoc/common/common_defs.h>
+#include <common/etsoc/common_defs.h>
 #include <transports/sp_mm_iface/sp_mm_iface.h> /* header from shared/helper lib */
 #include <transports/sp_mm_iface/sp_mm_comms_spec.h>
 

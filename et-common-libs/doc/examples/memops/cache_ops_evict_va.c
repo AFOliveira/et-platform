@@ -4,7 +4,7 @@
 */
 
 /* Include api specific header */
-#include <etsoc/isa/cacheops-umode.h>
+#include <isa/etsoc/cacheops-umode.h>
 #include "utils.h"
 
 /* Define base addresses for memory operations to generate shire cache and memory shire events.

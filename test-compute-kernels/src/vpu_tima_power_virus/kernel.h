@@ -3,7 +3,7 @@
 #define __VPU_PV_TIMA__ 1
 
 #include "scp_content.h"
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 
 void check(uint32_t *mem, uint32_t* gold);
 void vpu_tima_pv_dump_vpurf(uint32_t* mem);

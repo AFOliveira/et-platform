@@ -25,11 +25,11 @@
 #include <math.h>
 
 /* mm_rt_svcs */
-#include <etsoc/isa/syscall.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/common/common_defs.h>
+#include <isa/etsoc/syscall.h>
+#include <isa/etsoc/sync.h>
+#include <common/etsoc/common_defs.h>
 #include <system/layout.h>
-#include <etsoc/drivers/pmu/pmu.h>
+#include <drivers/etsoc/pmu/pmu.h>
 
 /* mm_rt_helpers */
 #include "error_codes.h"

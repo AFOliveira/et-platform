@@ -4,7 +4,7 @@
 */
 
 /* Include api specific header */
-#include <etsoc/isa/atomics.h>
+#include <isa/etsoc/atomics.h>
 #include "utils.h"
 
 /* Declare global variables */

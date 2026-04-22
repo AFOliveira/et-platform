@@ -18,10 +18,10 @@
 #include <esperanto/device-apis/operations-api/device_ops_api_spec.h>
 #include <stddef.h>
 #include <inttypes.h>
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/cacheops.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/cacheops.h>
 #include <system/layout.h>
 
 #include "error_codes.h"

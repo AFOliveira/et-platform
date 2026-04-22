@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 #include "trace/trace_umode_cb.h"
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/hart.h"
 
 /*! \def et_trace_pmc_compute(hart_id)
     \brief A macro used to dump Minion and Neighborhood PMCs in trace buffer.

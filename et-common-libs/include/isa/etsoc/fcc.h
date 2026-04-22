@@ -15,7 +15,7 @@
 extern "C" {
 #endif
 
-#include "etsoc/isa/esr_defines.h"
+#include "isa/etsoc/esr_defines.h"
 #include <stdint.h>
 
 /*! \def THREAD_0

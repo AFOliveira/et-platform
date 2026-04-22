@@ -4,7 +4,7 @@
 *-------------------------------------------------------------------------
 */
 /***********************************************************************/
-/*! \file include/etsoc/isa/utils.h
+/*! \file include/isa/etsoc/utils.h
     \brief A C header that defines the functions to issue instructions.
 */
 /***********************************************************************/
@@ -17,8 +17,8 @@ extern "C" {
 
 #include <inttypes.h>
 
-#include "etsoc/isa/esr_defines.h"
-#include "etsoc/isa/fcc.h"
+#include "isa/etsoc/esr_defines.h"
+#include "isa/etsoc/fcc.h"
 
 #ifdef __cplusplus
 #define EXTERN_C extern "C"

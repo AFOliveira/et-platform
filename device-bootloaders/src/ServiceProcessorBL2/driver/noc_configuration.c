@@ -18,7 +18,7 @@
 #include "bl_error_code.h"
 #include "log.h"
 
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "hwinc/sp_cru_reset.h"
 #include "hwinc/hal_device.h"
 

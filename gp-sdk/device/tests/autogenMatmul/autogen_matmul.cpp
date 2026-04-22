@@ -7,7 +7,7 @@
 
 #include "entryPoint.h"
 class kernelArguments;
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 
 int entryPoint_0(kernelArguments* args);
 DECLARE_KERNEL_ENTRY_POINTS(entryPoint_0, entryPoint_0);

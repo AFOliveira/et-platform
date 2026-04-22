@@ -15,10 +15,10 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "etsoc/isa/atomic.h"
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/utils.h"
+#include "isa/etsoc/atomic.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/utils.h"
 
 /*! \struct local_fcc_barrier_t
     \brief Structure containing in and out local FCC barriers.

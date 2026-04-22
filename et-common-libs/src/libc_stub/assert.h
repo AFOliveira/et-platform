@@ -4,7 +4,7 @@
 extern "C" {
 #endif
 
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 
 #ifdef NDEBUG
 #define assert(condition) ((void)0)

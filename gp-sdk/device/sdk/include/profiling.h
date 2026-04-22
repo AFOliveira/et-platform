@@ -7,7 +7,7 @@
 #define GPSDK_PROFILING_H
 
 #include "trace/trace_umode.h"
-#include <etsoc/common/utils.h>
+#include <common/etsoc/utils.h>
 #include "CommonCode.h"
 
 /*! \file profiling.h

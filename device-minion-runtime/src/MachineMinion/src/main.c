@@ -20,11 +20,11 @@
 #include <stdint.h>
 
 /* minion_bl */
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/sync.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/sync.h>
 #include <system/layout.h>
 
 /* Machine minion specific headers */

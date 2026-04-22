@@ -10,10 +10,10 @@
 */
 /***********************************************************************/
 /* cm_rt_svcs */
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/common/common_defs.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/hart.h>
+#include <common/etsoc/common_defs.h>
 
 /* FW common headers */
 #include "error_codes.h"

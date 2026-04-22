@@ -14,7 +14,7 @@
 
 #if defined(SP_RT)
 
-#include "etsoc/common/log_common.h"
+#include "common/etsoc/log_common.h"
 extern int32_t Log_Write(log_level_t level, const char *const fmt, ...)
     __attribute__((format(printf, 2, 3)));
 
@@ -24,7 +24,7 @@ extern int32_t Log_Write(log_level_t level, const char *const fmt, ...)
 
 #if defined(MM_RT)
 
-#include "etsoc/common/log_common.h"
+#include "common/etsoc/log_common.h"
 extern int32_t __Log_Write(log_level_t level, const char *const fmt, ...)
     __attribute__((format(printf, 2, 3)));
 

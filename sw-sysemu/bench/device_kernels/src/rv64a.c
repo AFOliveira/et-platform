@@ -1,7 +1,7 @@
 #include "macros.h"
-#include "etsoc/isa/tensors.h"
-#include "etsoc/isa/cacheops.h"
-#include "etsoc/isa/hart.h"
+#include "isa/etsoc/tensors.h"
+#include "isa/etsoc/cacheops.h"
+#include "isa/etsoc/hart.h"
 
 int main() {
 	float f1 = 30.310381553859823, f2 = 43.32382555801926, f3 = 33.51972679444442, output;

@@ -14,9 +14,9 @@
 #ifndef __VQ_H__
 #define __VQ_H__
 
-#include "etsoc/common/common_defs.h"
-#include "etsoc/isa/atomic.h"
-#include "etsoc/isa/etsoc_rt_memory.h"
+#include "common/etsoc/common_defs.h"
+#include "isa/etsoc/atomic.h"
+#include "isa/etsoc/etsoc_rt_memory.h"
 #include "transports/circbuff/circbuff.h"
 
 /**

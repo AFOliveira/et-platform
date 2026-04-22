@@ -14,21 +14,21 @@ set(SP_BL1_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/sp-bl1)
 ################################################
 #Listing of header only public interfaces
 set(SP_BL1_HDRS
-    include/etsoc/drivers/pmu/pmu.h
-    include/etsoc/isa/io.h
-    include/etsoc/isa/atomic.h
-    include/etsoc/isa/atomic-impl.h
-    include/etsoc/isa/etsoc_memory.h
-    include/etsoc/isa/esr_defines.h
-    include/etsoc/isa/macros.h
-    include/etsoc/isa/fcc.h
-    include/etsoc/isa/flb.h
-    include/etsoc/isa/hart.h
-    include/etsoc/isa/sync.h
-    include/etsoc/isa/cacheops.h
-    include/etsoc/isa/cacheops_common.h
-    include/etsoc/isa/riscv_encoding.h
-    include/etsoc/isa/utils.h
+    include/drivers/etsoc/pmu/pmu.h
+    include/isa/etsoc/io.h
+    include/isa/etsoc/atomic.h
+    include/isa/etsoc/atomic-impl.h
+    include/isa/etsoc/etsoc_memory.h
+    include/isa/etsoc/esr_defines.h
+    include/isa/etsoc/macros.h
+    include/isa/etsoc/fcc.h
+    include/isa/etsoc/flb.h
+    include/isa/etsoc/hart.h
+    include/isa/etsoc/sync.h
+    include/isa/etsoc/cacheops.h
+    include/isa/etsoc/cacheops_common.h
+    include/isa/etsoc/riscv_encoding.h
+    include/isa/etsoc/utils.h
     include/system/layout.h
     include/system/etsoc_ddr_region_map.h
 )
@@ -36,7 +36,7 @@ set(SP_BL1_HDRS
 #Listing of public headers that expose services provided by
 #the SP_BL1 (Minion Bootloader Library
 set(SP_BL1_LIB_HDRS
-    include/etsoc/drivers/serial/serial.h
+    include/drivers/etsoc/serial/serial.h
 )
 
 #########################
@@ -46,7 +46,7 @@ set(SP_BL1_LIB_HDRS
 #Listing of sources that implement services provided by
 #the SP_BL1 (Minion Bootloader) Library
 add_library(sp-bl1 STATIC
-    src/etsoc/drivers/serial/serial.c
+    src/drivers/etsoc/serial/serial.c
 )
 
 set_target_properties(sp-bl1 PROPERTIES LINKER_LANGUAGE C)

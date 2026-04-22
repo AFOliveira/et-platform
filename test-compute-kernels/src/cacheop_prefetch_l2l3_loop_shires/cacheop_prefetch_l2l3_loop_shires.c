@@ -1,8 +1,8 @@
-#include "etsoc/isa/hart.h"
-#include "etsoc/isa/cacheops.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "isa/etsoc/cacheops.h"
+#include "common/etsoc/utils.h"
 #include "common.h"
-#include "etsoc/isa/fcc.h"
+#include "isa/etsoc/fcc.h"
 
 #include <stdint.h>
 #include <stddef.h>

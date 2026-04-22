@@ -6,13 +6,13 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "etsoc/isa/hart.h"
-#include "etsoc/common/utils.h"
+#include "isa/etsoc/hart.h"
+#include "common/etsoc/utils.h"
 #include "common.h"
 
-#include "etsoc/isa/cacheops.h"
-#include "etsoc/isa/fcc.h"
-#include "etsoc/isa/flb.h"
+#include "isa/etsoc/cacheops.h"
+#include "isa/etsoc/fcc.h"
+#include "isa/etsoc/flb.h"
 #include "sync_minions.h"
 #include "markers.h"
 

@@ -40,7 +40,7 @@ uint64_t noc_pv_lcg(uint64_t seed) {
    return (x * seed) % y;
 }
 
-#include "etsoc/isa/syscall.h"
+#include "isa/etsoc/syscall.h"
 void noc_pv_evict_whole_l1() {
    syscall(SYSCALL_CACHE_OPS_EVICT_L1, 0, to_L2, 0);
 }

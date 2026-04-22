@@ -10,9 +10,9 @@
 #include <stdio.h>
 #include "delays.h"
 #include "log.h"
-#include "etsoc/isa/io.h"
+#include "isa/etsoc/io.h"
 #include "system/layout.h"
-#include "etsoc/drivers/pcie/pcie_int.h"
+#include "drivers/etsoc/pcie/pcie_int.h"
 #include "pcie_configuration.h"
 #include "thermal_pwr_mgmt.h"
 #include "bl2_reset.h"

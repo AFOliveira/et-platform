@@ -1,38 +1,38 @@
 #if defined(TEST_PACKAGE_SP_BL)
 
 // sp_bl1
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/utils.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/utils.h>
 #include <system/layout.h>
 #include <system/etsoc_ddr_region_map.h>
 
-#include <etsoc/drivers/serial/serial.h>
+#include <drivers/etsoc/serial/serial.h>
 
 // sp_bl2
-#include <etsoc/common/common_defs.h>
-#include <etsoc/common/log_common.h>
-#include <etsoc/drivers/pcie/pcie_int.h>
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/utils.h>
+#include <common/etsoc/common_defs.h>
+#include <common/etsoc/log_common.h>
+#include <drivers/etsoc/pcie/pcie_int.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/utils.h>
 //#include <transports/vq/vq.h>  // commented out due 'etsoc_rt_memory.h:53:2: error: #error "Definition for device runtime memory access not provided!"'
 #include <transports/circbuff/circbuff.h>
 #include <transports/sp_mm_iface/sp_mm_comms_spec.h>
@@ -42,46 +42,46 @@
 #include <system/layout.h>
 #include <system/etsoc_ddr_region_map.h>
 
-#include <etsoc/drivers/serial/serial.h>
-//#include <etsoc/isa/etsoc_rt_memory.h>
+#include <drivers/etsoc/serial/serial.h>
+//#include <isa/etsoc/etsoc_rt_memory.h>
 
 #elif defined(TEST_PACKAGE_CM_UMODE)
 
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/barriers.h>
-//#include <etsoc/isa/cacheops.h> clases with cacheops-umode.h
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/isa/tensors.h>
-#include <etsoc/isa/utils.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/barriers.h>
+//#include <isa/etsoc/cacheops.h> clases with cacheops-umode.h
+#include <isa/etsoc/cacheops-umode.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/syscall.h>
+#include <isa/etsoc/tensors.h>
+#include <isa/etsoc/utils.h>
 #include <trace/trace_umode.h>
 #include <trace/trace_umode_cb.h>
 
-#include <etsoc/common/utils.h>
-#include <etsoc/drivers/pmu/pmu.h>
+#include <common/etsoc/utils.h>
+#include <drivers/etsoc/pmu/pmu.h>
 
 #elif defined(TEST_PACKAGE_MINION_BL)
 
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/utils.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/syscall.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>
 
@@ -89,31 +89,31 @@
 
 #elif defined(TEST_PACKAGE_MM_RT_SVCS)
 
-#include <etsoc/common/common_defs.h>
-#include <etsoc/common/log_common.h>
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/utils.h>
+#include <common/etsoc/common_defs.h>
+#include <common/etsoc/log_common.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/syscall.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>
 
 #include <common/printf.h>
-#include <etsoc/drivers/serial/serial.h>
-#include <etsoc/drivers/pcie/pcie_int.h>
-#include <etsoc/drivers/pcie/pcie_device.h>
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/isa/etsoc_rt_memory.h>
+#include <drivers/etsoc/serial/serial.h>
+#include <drivers/etsoc/pcie/pcie_int.h>
+#include <drivers/etsoc/pcie/pcie_device.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <isa/etsoc/etsoc_rt_memory.h>
 #include <transports/circbuff/circbuff.h>
 #include <transports/vq/vq.h>
 #include <transports/mm_cm_iface/broadcast.h>
@@ -124,29 +124,29 @@
 
 #elif defined(TEST_PACKAGE_CM_RT_SVCS)
 
-#include <etsoc/common/common_defs.h>
-#include <etsoc/common/log_common.h>
-#include <etsoc/isa/atomic.h>
-//#include <etsoc/isa/atomic-impl.h> clashes with atomic.h
-#include <etsoc/isa/esr_defines.h>
-#include <etsoc/isa/fcc.h>
-#include <etsoc/isa/flb.h>
-#include <etsoc/isa/hart.h>
-#include <etsoc/isa/io.h>
-#include <etsoc/isa/etsoc_memory.h>
-#include <etsoc/isa/macros.h>
-#include <etsoc/isa/cacheops.h>
-#include <etsoc/isa/sync.h>
-#include <etsoc/isa/syscall.h>
-#include <etsoc/isa/riscv_encoding.h>
-#include <etsoc/isa/utils.h>
+#include <common/etsoc/common_defs.h>
+#include <common/etsoc/log_common.h>
+#include <isa/etsoc/atomic.h>
+//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/etsoc/esr_defines.h>
+#include <isa/etsoc/fcc.h>
+#include <isa/etsoc/flb.h>
+#include <isa/etsoc/hart.h>
+#include <isa/etsoc/io.h>
+#include <isa/etsoc/etsoc_memory.h>
+#include <isa/etsoc/macros.h>
+#include <isa/etsoc/cacheops.h>
+#include <isa/etsoc/sync.h>
+#include <isa/etsoc/syscall.h>
+#include <isa/etsoc/riscv_encoding.h>
+#include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>
 
 #include <common/printf.h>
 #include <transports/circbuff/circbuff.h>
-#include <etsoc/drivers/pmu/pmu.h>
-#include <etsoc/drivers/serial/serial.h>
+#include <drivers/etsoc/pmu/pmu.h>
+#include <drivers/etsoc/serial/serial.h>
 #include <transports/mm_cm_iface/message_types.h>
 
 #else

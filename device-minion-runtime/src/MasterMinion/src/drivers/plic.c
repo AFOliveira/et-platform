@@ -17,7 +17,7 @@
 #include <stddef.h>
 
 /* mm_rt_svcs */
-#include <etsoc/isa/io.h>
+#include <isa/etsoc/io.h>
 
 /* etsoc_hal */
 #include "hwinc/hal_device.h"

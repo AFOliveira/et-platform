@@ -11,10 +11,10 @@
 #include "entryPoint.h"
 #include "sync.h"
 #include "flbLock.h"
-#include <etsoc/common/utils.h>
-#include <etsoc/isa/barriers.h>
-#include <etsoc/isa/cacheops-umode.h>
-#include <etsoc/isa/hart.h>
+#include <common/etsoc/utils.h>
+#include <isa/etsoc/barriers.h>
+#include <isa/etsoc/cacheops-umode.h>
+#include <isa/etsoc/hart.h>
 #include <system/abi.h>
 
 /* Linker labels to global .bss and .data sections */

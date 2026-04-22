@@ -1,10 +1,10 @@
 // Local
 #include <stdint.h>
-#include <etsoc/isa/hart.h>
+#include <isa/etsoc/hart.h>
 
 #define N_SHIRES_COMPUTE 32
 
-#include "etsoc/common/utils.h"
+#include "common/etsoc/utils.h"
 #include "utils_int.h"
 #include "test_common.h"
 
