@@ -29,6 +29,10 @@ set(DRIVERS_HDRS
     include/drivers/common/plic.h
     include/drivers/etsoc/plic_platform.h
     include/drivers/erbium/plic_platform.h
+    include/drivers/common/uart.h
+    include/drivers/etsoc/uart_platform.h
+    include/drivers/erbium/uart_platform.h
+    include/drivers/erbium/shakti_uart.h
 )
 
 add_library(drivers INTERFACE)
