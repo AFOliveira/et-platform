@@ -58,6 +58,11 @@ if (WITH_CM_RT_SVCS)
     include(cm_rt_svcs.cmake)
 endif()
 
+option(WITH_DRIVERS "Install Layer 1 peripheral driver headers" ON)
+if (WITH_DRIVERS)
+    include(drivers.cmake)
+endif()
+
 ########## Documentation #####################################
 if (BUILD_DOC)
     # check if Doxygen is installed
