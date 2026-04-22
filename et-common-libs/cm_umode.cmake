@@ -18,6 +18,7 @@ set(CM_UMODE_HDRS
     include/isa/etsoc/cacheops.h
     include/isa/common/cacheops_common.h
     include/isa/etsoc/cacheops-umode.h    
+    include/isa/common/cacheops-umode.h
     include/isa/etsoc/esr_defines.h
     include/isa/etsoc/fcc.h
     include/isa/etsoc/flb.h
@@ -33,6 +34,7 @@ set(CM_UMODE_HDRS
     include/isa/erbium/fcc.h
     include/isa/erbium/utils.h
     include/isa/erbium/barriers.h
+    include/isa/erbium/cacheops-umode.h
     include/trace/trace_umode.h
     include/trace/trace_umode_cb.h
     include/system/abi.h
