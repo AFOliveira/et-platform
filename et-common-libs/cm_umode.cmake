@@ -24,6 +24,7 @@ set(CM_UMODE_HDRS
     include/isa/etsoc/flb.h
     include/isa/common/hart.h
     include/isa/etsoc/sync.h
+    include/isa/common/sync.h
     include/isa/common/syscall.h
     include/isa/common/tensors.h
     include/isa/etsoc/utils.h
@@ -35,6 +36,7 @@ set(CM_UMODE_HDRS
     include/isa/erbium/utils.h
     include/isa/erbium/barriers.h
     include/isa/erbium/cacheops-umode.h
+    include/isa/erbium/sync.h
     include/trace/trace_umode.h
     include/trace/trace_umode_cb.h
     include/system/abi.h

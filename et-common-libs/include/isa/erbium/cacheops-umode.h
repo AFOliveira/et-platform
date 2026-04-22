@@ -30,11 +30,11 @@ extern "C" {
 static inline __attribute__((always_inline))
 void cache_ops_cb_drain(uint64_t drain_shire, uint64_t drain_bank)
 {
+    /* Erbium has no shire-cache coalescing buffer; preserve the
+     * memory-ordering intent of the ET-SoC1 drain with a FENCE. */
     (void)drain_shire;
     (void)drain_bank;
-#if defined(ET_PLATFORM_ERBIUM_STRICT_CACHEOPS)
-#  error "cache_ops_cb_drain: no Erbium implementation yet"
-#endif
+    __asm__ __volatile__("fence" ::: "memory");
 }
 
 #ifdef __cplusplus

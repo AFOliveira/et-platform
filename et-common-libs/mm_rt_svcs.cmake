@@ -29,6 +29,7 @@ set(MM_RT_SVCS_HDRS
     include/isa/common/io.h
     include/isa/common/macros.h
     include/isa/etsoc/sync.h
+    include/isa/common/sync.h
     include/isa/common/syscall.h
     include/isa/common/riscv_encoding.h
     include/isa/etsoc/utils.h

@@ -25,6 +25,7 @@ set(SP_BL1_HDRS
     include/isa/etsoc/flb.h
     include/isa/common/hart.h
     include/isa/etsoc/sync.h
+    include/isa/common/sync.h
     include/isa/etsoc/cacheops.h
     include/isa/common/cacheops_common.h
     include/isa/common/riscv_encoding.h

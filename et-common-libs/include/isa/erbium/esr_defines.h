@@ -28,7 +28,9 @@
 
 #include <stdint.h>
 
-#define ERBIUM_ESR_BASE          0x80000000ul
+#include "hwinc/top.h"              /* ERBIUM_TOP_CPU_REGISTERS_BASE */
+
+#define ERBIUM_ESR_BASE          ERBIUM_TOP_CPU_REGISTERS_BASE
 #define ERBIUM_ESR_PP_SHIFT      22
 #define ERBIUM_ESR_SHIRE_SHIFT   24
 

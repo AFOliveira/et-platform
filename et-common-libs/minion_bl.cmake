@@ -26,6 +26,7 @@ set(MINION_BL_HDRS
     include/isa/common/hart.h
     include/isa/common/io.h
     include/isa/etsoc/sync.h
+    include/isa/common/sync.h
     include/isa/etsoc/cacheops.h
     include/isa/common/cacheops_common.h
     include/isa/common/syscall.h
