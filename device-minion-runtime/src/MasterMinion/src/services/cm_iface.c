@@ -18,14 +18,14 @@
 #include <stdbool.h>
 
 /* mm_rt_svcs */
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/hart.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/broadcast.h>
 #include <transports/circbuff/circbuff.h>

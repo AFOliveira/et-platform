@@ -13,7 +13,7 @@
 #include "hwinc/sp_cru_reset.h"
 #include "hwinc/sp_misc.h"
 #include "hwinc/sp_u0esr.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "log.h"
 #include "usb2_0.h"
 

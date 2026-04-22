@@ -1,6 +1,6 @@
 // Local
 #include <stdint.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 #define N_SHIRES_COMPUTE 32
 

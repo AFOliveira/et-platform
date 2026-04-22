@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 /* mm_rt_svcs */
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <system/layout.h>
 
 /* mm specific headers */

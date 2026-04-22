@@ -15,9 +15,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "isa/etsoc/atomic.h"
+#include "isa/common/atomic.h"
 #include "isa/etsoc/fcc.h"
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "isa/etsoc/utils.h"
 
 /*! \struct local_fcc_barrier_t

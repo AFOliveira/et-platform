@@ -22,7 +22,7 @@
 
 
 // FW syscall IDs
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <stdio.h>
 
 #include "UberKernelCommon.h"

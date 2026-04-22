@@ -1,4 +1,4 @@
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "drivers/etsoc/serial/serial.h"
 #include "hwinc/sp_uart0.h"
 

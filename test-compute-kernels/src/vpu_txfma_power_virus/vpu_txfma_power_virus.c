@@ -1,4 +1,4 @@
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include "kernel.h"
 
 typedef struct {

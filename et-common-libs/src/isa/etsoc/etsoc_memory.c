@@ -20,8 +20,8 @@
 */
 /***********************************************************************/
 #include "isa/etsoc/etsoc_memory.h"
-#include "isa/etsoc/io.h"
-#include "isa/etsoc/atomic.h"
+#include "isa/common/io.h"
+#include "isa/common/atomic.h"
 #include "system/layout.h"
 #ifdef MEM_DEBUG
 #include "../../../MasterMinion/include/services/log.h"

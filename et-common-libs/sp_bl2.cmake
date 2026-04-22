@@ -19,12 +19,12 @@ set(SP_BL2_HDRS
     include/common/etsoc/log_common.h
     include/drivers/etsoc/pcie/pcie_int.h
     include/drivers/etsoc/pmu/pmu.h
-    include/isa/etsoc/atomic.h
-    include/isa/etsoc/atomic-impl.h
+    include/isa/common/atomic.h
+    include/isa/common/atomic-impl.h
     include/isa/etsoc/etsoc_memory.h
-    include/isa/etsoc/io.h
+    include/isa/common/io.h
     include/isa/etsoc/cacheops.h
-    include/isa/etsoc/cacheops_common.h
+    include/isa/common/cacheops_common.h
     include/isa/etsoc/esr_defines.h
     include/isa/etsoc/fcc.h
     include/isa/etsoc/utils.h

@@ -1,4 +1,4 @@
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "isa/etsoc/cacheops.h"
 #include "common/etsoc/utils.h"
 #include "common.h"

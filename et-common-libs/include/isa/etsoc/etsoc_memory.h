@@ -12,8 +12,8 @@
 #define ETSOC_MEMORY_DEFS_H_
 
 #include "isa/etsoc/cacheops.h"
-#include "isa/etsoc/io.h"
-#include "isa/etsoc/atomic.h"
+#include "isa/common/io.h"
+#include "isa/common/atomic.h"
 #include <stdint.h>
 #include <string.h>
 

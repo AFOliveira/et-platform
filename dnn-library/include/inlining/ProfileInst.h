@@ -15,7 +15,7 @@
 #include <string.h>
 
 #include <isa/etsoc/barriers.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 #include <isa/etsoc/utils.h>
 
 #include "LibTensor.h"

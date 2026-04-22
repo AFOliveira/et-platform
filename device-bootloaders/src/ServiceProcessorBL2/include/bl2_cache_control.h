@@ -12,7 +12,7 @@
 #include "bl_error_code.h"
 #include "config/mgmt_build_config.h"
 #include <interrupt.h>
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "hwinc/etsoc_shire_cache_esr.h"
 #include "hwinc/sp_cru_reset.h"
 #include "hwinc/sp_plic.h"

@@ -9,7 +9,7 @@
 
 /* minion_bl */
 #include <isa/etsoc/esr_defines.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 
 .section .text, "ax", @progbits /* TODO FIXME move to M +RX page sections */
 

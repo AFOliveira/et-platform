@@ -15,7 +15,7 @@
 #include "drivers/etsoc/serial/serial.h"
 #include <stdio.h>
 #include "log.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_spi_controller.h"
 #include "spio_DW_apb_ssi_config.h"
 #include "bl2_main.h"

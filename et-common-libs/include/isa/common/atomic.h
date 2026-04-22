@@ -524,7 +524,7 @@ static inline uint64_t atomic_compare_and_exchange_global_64(
     Example(s) of using atomic functions.
 */
 
-#include "isa/etsoc/atomic-impl.h"
+#include "isa/common/atomic-impl.h"
 
 #ifdef __cplusplus
 }

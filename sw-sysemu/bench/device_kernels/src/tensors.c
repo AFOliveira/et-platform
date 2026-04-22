@@ -1,7 +1,7 @@
 #include "macros.h"
-#include "isa/etsoc/tensors.h"
+#include "isa/common/tensors.h"
 #include "isa/etsoc/cacheops.h"
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 
 static inline void evict_dcache(void)
 {

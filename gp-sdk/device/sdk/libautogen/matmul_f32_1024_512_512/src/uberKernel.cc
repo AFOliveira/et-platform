@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/barriers.h>
 #include <isa/etsoc/cacheops-umode.h>
 #include <common/etsoc/utils.h>

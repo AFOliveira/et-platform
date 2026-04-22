@@ -64,7 +64,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_flash_fs.h"
 #include "bl2_i2c_driver.h"
 #include "bl2_gpio_controller.h"

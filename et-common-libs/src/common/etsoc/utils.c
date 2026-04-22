@@ -1,5 +1,5 @@
 #include "common/etsoc/utils.h"
-#include "isa/etsoc/syscall.h"
+#include "isa/common/syscall.h"
 
 #ifdef __clang__
 #define inhibit_loop_to_libcall

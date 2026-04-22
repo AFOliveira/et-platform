@@ -12,7 +12,7 @@
 #include <isa/etsoc/cacheops.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/sync.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/broadcast.h>

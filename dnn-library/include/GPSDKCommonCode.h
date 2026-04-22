@@ -14,7 +14,7 @@
 // Global
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/cacheops-umode.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 #include <inttypes.h>
 #include <system/abi.h>
 

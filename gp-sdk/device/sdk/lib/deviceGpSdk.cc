@@ -14,7 +14,7 @@
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/barriers.h>
 #include <isa/etsoc/cacheops-umode.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <system/abi.h>
 
 /* Linker labels to global .bss and .data sections */

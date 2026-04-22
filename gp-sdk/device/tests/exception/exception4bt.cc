@@ -4,7 +4,7 @@
 #include <stdio.h>
 
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 #include "entryPoint.h"
 #include "../custom_stack/user_defined_stack_kernel_arguments.h"

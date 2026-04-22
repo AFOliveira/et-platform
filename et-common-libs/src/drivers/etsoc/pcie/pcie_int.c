@@ -4,10 +4,10 @@
 * SPDX-License-Identifier: Apache-2.0
 *
 ************************************************************************/
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "drivers/etsoc/pcie/pcie_int.h"
 #include "drivers/etsoc/pcie/pcie_device.h"
-#include "isa/etsoc/atomic.h"
+#include "isa/common/atomic.h"
 #include "isa/etsoc/etsoc_rt_memory.h"
 
 /*! \enum pcie_int_t

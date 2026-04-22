@@ -6,10 +6,10 @@
 #include "isa/etsoc/esr_defines.h"
 #include "isa/etsoc/fcc.h"
 #include "isa/etsoc/flb.h"
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "sync_minions.h"
-#include "isa/etsoc/syscall.h"
-#include "isa/etsoc/tensors.h"
+#include "isa/common/syscall.h"
+#include "isa/common/tensors.h"
 #include "vpu.h"
 
 // This test uses kernel tl_tfma_reduce_2s.

@@ -9,8 +9,8 @@
 */
 /***********************************************************************/
 
-#ifndef _ETSOC_ISA_HART_H_
-#define _ETSOC_ISA_HART_H_
+#ifndef _ISA_COMMON_HART_H_
+#define _ISA_COMMON_HART_H_
 
 #ifdef __cplusplus
 extern "C" {
@@ -90,4 +90,4 @@ static inline unsigned int __attribute__((always_inline, const)) get_thread_id(v
 }
 #endif
 
-#endif /* _ETSOC_ISA_HART_H_ */
+#endif /* _ISA_COMMON_HART_H_ */

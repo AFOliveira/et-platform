@@ -1,4 +1,4 @@
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 
 #define INPUT_DATA 0x4000 /* 16 KB */
 

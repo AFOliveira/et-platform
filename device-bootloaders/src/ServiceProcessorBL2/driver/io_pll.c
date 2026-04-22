@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "bl_error_code.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_sp_pll.h"
 #include "bl2_main.h"
 #include "bl2_timer.h"

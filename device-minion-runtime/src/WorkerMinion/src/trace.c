@@ -20,7 +20,7 @@
 #include <inttypes.h>
 #include <drivers/etsoc/pmu/pmu.h>
 #include <isa/etsoc/etsoc_memory.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/cacheops.h>
 #include <system/layout.h>
 

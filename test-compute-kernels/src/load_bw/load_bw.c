@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "common/etsoc/utils.h"
 #include "common.h"
 

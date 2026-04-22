@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/esr_defines.h>
 #include "kernel_arguments.h"
 

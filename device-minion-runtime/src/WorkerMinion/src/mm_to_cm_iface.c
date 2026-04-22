@@ -1,10 +1,10 @@
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/flb.h>
 #include <isa/etsoc/cacheops.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/hart.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/message_types.h>
 

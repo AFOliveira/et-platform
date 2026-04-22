@@ -8,7 +8,7 @@
 #include "task.h"
 
 #include "cache_flush_ops.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "service_processor_ROM_data.h"
 #include "service_processor_BL1_data.h"
 #include "service_processor_BL2_data.h"

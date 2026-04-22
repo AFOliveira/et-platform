@@ -1,5 +1,5 @@
 
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 typedef struct {
   int* a;

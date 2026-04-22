@@ -26,7 +26,7 @@
 #include "bl2_pmic_controller.h"
 #include "bl2_reset.h"
 #include "bl_error_code.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "config/mgmt_build_config.h"
 #include <interrupt.h>
 

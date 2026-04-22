@@ -14,7 +14,7 @@
 #endif
 
 #include "isa/etsoc/utils.h"
-#include "cacheops_common.h"
+#include "isa/common/cacheops_common.h"
 
 //-------------------------------------------------------------------------------------------------
 //

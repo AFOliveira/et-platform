@@ -12,7 +12,7 @@
         syscall_handler
 */
 /***********************************************************************/
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include "syscall_internal.h"
 #include "kernel.h"
 

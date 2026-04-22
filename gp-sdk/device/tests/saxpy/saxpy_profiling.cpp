@@ -5,14 +5,14 @@
  */
 
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 #include "entryPoint.h"
 #include <algorithm>
 #include <cstdint>
 #include "saxpy_kernel_arguments.h"
 #include "profiling.h"
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 
 int entryPoint_0(KernelArguments* args);
 DECLARE_KERNEL_ENTRY_POINTS(entryPoint_0, nullptr);

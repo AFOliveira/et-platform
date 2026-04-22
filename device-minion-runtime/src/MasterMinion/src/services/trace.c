@@ -26,9 +26,9 @@
 
 /* mm_rt_svcs */
 #include <drivers/etsoc/pmu/pmu.h>
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 #include <isa/etsoc/cacheops.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/sync.h>
 #include <system/layout.h>

@@ -10,7 +10,7 @@
 #include "sync.h"
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/cacheops-umode.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 class KernelArguments;
 int entryPoint(KernelArguments* args);

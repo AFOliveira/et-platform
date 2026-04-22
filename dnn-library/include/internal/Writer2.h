@@ -10,7 +10,7 @@
 #include "Float16.h"
 #include "LibCommon.h"
 #include "LibTypes.h"
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 
 namespace dnn_lib_v2 {
 

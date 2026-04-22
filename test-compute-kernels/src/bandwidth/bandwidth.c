@@ -8,7 +8,7 @@
 #include <stddef.h>
 
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <trace/trace_umode.h>
 
 #define CACHE_LINE_SIZE 64

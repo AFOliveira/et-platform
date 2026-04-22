@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "common/etsoc/utils.h"
 
 int64_t entry_point(void);

@@ -20,8 +20,8 @@
 
 /* mm_rt_svcs */
 #include <common/printf.h>
-#include <isa/etsoc/atomic.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/atomic.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/sync.h>
 #include <system/layout.h>
 

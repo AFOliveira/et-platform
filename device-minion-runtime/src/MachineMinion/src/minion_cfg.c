@@ -12,7 +12,7 @@
 
 /* minion_bl */
 #include <isa/etsoc/esr_defines.h>
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 #include <transports/mm_cm_iface/broadcast.h>
 
 /* etsoc_hal */

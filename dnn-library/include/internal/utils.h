@@ -13,8 +13,8 @@
 #include <cstdint>
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/cacheops-umode.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/hart.h>
+#include <isa/common/tensors.h>
 #include <sstream>
 #include <utility>
 

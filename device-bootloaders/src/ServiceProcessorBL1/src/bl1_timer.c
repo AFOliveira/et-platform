@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl1_timer.h"
 #include "hwinc/sp_rvtim.h"
 #include "hwinc/hal_device.h"

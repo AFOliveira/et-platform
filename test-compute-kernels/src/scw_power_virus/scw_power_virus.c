@@ -1,4 +1,4 @@
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 #define bool uint64_t
 #define false 0x0ULL

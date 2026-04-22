@@ -29,7 +29,7 @@
 /***********************************************************************/
 #include <stdio.h>
 #include "log.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_reset.h"
 
 #include "hwinc/sp_cru.h"

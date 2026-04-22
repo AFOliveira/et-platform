@@ -15,7 +15,7 @@
 #include <stdbool.h>
 
 /* mm_rt_svcs */
-#include <isa/etsoc/io.h>
+#include <isa/common/io.h>
 #include <drivers/etsoc/pcie/pcie_device.h>
 
 /* etsoc_hal */

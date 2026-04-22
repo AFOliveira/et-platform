@@ -10,8 +10,8 @@
 */
 /***********************************************************************/
 /* mm_rt_svcs */
-#include <isa/etsoc/macros.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/macros.h>
+#include <isa/common/riscv_encoding.h>
 
 /* mm specific headers */
 #include "services/log.h"

@@ -9,7 +9,7 @@
 
 #include "entryPoint.h"
 #include <cstddef>
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 
 
 #define REP4(...) {__VA_ARGS__}, {__VA_ARGS__}, {__VA_ARGS__}, {__VA_ARGS__}

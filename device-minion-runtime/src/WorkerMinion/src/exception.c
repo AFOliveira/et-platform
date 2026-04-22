@@ -3,9 +3,9 @@
 #include <string.h>
 
 #include <common/etsoc/common_defs.h>
-#include <isa/etsoc/macros.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/macros.h>
+#include <isa/common/hart.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/sync.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/message_types.h>

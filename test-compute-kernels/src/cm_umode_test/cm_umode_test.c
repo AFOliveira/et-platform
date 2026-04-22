@@ -1,4 +1,4 @@
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/cacheops-umode.h>
 #include <common/etsoc/utils.h>
 

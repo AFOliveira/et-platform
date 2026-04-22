@@ -9,7 +9,7 @@
 
 #include "Compiler.h"
 #include <cstdint>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 
 static const float MAX_FP16_DENORM = ((float(1 << 10) - 1) / float(1 << 24)); // maximum fp16 denormal = 2^-14 - 2^-24
 

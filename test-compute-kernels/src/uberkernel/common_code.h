@@ -14,7 +14,7 @@
 #include <inttypes.h>
 
 // FW syscall IDs
-#include "isa/etsoc/syscall.h"
+#include "isa/common/syscall.h"
 
 // Shared
 #include "isa/etsoc/fcc.h"

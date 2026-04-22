@@ -25,7 +25,7 @@
 #include <math.h>
 
 /* mm_rt_svcs */
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <isa/etsoc/sync.h>
 #include <common/etsoc/common_defs.h>
 #include <system/layout.h>

@@ -19,7 +19,7 @@
 #include <drivers/etsoc/pmu/pmu.h>
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <system/layout.h>
 #include <transports/circbuff/circbuff.h>
 

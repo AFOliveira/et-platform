@@ -26,12 +26,12 @@
 */
 /***********************************************************************/
 /* mm_rt_svcs */
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 #include <common/etsoc/common_defs.h>
 #include <isa/etsoc/cacheops.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include <system/abi.h>
 #include <transports/circbuff/circbuff.h>
 #include <transports/vq/vq.h>

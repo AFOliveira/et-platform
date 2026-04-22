@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_timer.h"
 
 #include "hwinc/sp_rvtim.h"

@@ -10,9 +10,9 @@
 */
 /***********************************************************************/
 /* cm_rt_svcs */
-#include <isa/etsoc/macros.h>
-#include <isa/etsoc/riscv_encoding.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/macros.h>
+#include <isa/common/riscv_encoding.h>
+#include <isa/common/hart.h>
 #include <common/etsoc/common_defs.h>
 
 /* FW common headers */

@@ -1,4 +1,4 @@
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 
 .section .text, "ax", @progbits /* TODO FIXME move to S +RX page sections */
 

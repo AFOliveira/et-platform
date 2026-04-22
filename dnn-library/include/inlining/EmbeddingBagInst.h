@@ -19,7 +19,7 @@
 #include "LibTensor.h"
 #include "LibTypes.h"
 #include "common/etsoc/utils.h"
-#include "isa/etsoc/atomic.h"
+#include "isa/common/atomic.h"
 #include "utils.h"
 
 // static bool enablePrinting;

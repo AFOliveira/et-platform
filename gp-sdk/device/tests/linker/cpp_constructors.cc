@@ -5,8 +5,8 @@
  */
 
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
-#include "isa/etsoc/atomic.h"
+#include <isa/common/hart.h>
+#include "isa/common/atomic.h"
 
 #include "entryPoint.h"
 

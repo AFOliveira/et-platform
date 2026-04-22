@@ -56,7 +56,7 @@ uint64_t sc_pv_self_check(uint64_t scp[][SC_PV_ELEMS_CACHE], uint64_t seed) {
 
 #include "clear_l2_scp.h"
 
-#include "isa/etsoc/syscall.h"
+#include "isa/common/syscall.h"
 void sc_pv_evict_whole_l1() {
    syscall(SYSCALL_CACHE_OPS_EVICT_L1, 0, to_L2, 0);
 }

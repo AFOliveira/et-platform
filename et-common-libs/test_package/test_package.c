@@ -2,18 +2,18 @@
 
 // sp_bl1
 #include <drivers/etsoc/pmu/pmu.h>
-#include <isa/etsoc/io.h>
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/io.h>
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/esr_defines.h>
-#include <isa/etsoc/macros.h>
+#include <isa/common/macros.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/sync.h>
 #include <isa/etsoc/cacheops.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/utils.h>
 #include <system/layout.h>
 #include <system/etsoc_ddr_region_map.h>
@@ -25,10 +25,10 @@
 #include <common/etsoc/log_common.h>
 #include <drivers/etsoc/pcie/pcie_int.h>
 #include <drivers/etsoc/pmu/pmu.h>
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/etsoc_memory.h>
-#include <isa/etsoc/io.h>
+#include <isa/common/io.h>
 #include <isa/etsoc/cacheops.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
@@ -47,17 +47,17 @@
 
 #elif defined(TEST_PACKAGE_CM_UMODE)
 
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/barriers.h>
 //#include <isa/etsoc/cacheops.h> clases with cacheops-umode.h
 #include <isa/etsoc/cacheops-umode.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/syscall.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/hart.h>
+#include <isa/common/syscall.h>
+#include <isa/common/tensors.h>
 #include <isa/etsoc/utils.h>
 #include <trace/trace_umode.h>
 #include <trace/trace_umode_cb.h>
@@ -68,19 +68,19 @@
 #elif defined(TEST_PACKAGE_MINION_BL)
 
 #include <drivers/etsoc/pmu/pmu.h>
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/esr_defines.h>
-#include <isa/etsoc/macros.h>
+#include <isa/common/macros.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/io.h>
+#include <isa/common/hart.h>
+#include <isa/common/io.h>
 #include <isa/etsoc/sync.h>
 #include <isa/etsoc/cacheops.h>
-#include <isa/etsoc/syscall.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/syscall.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>
@@ -91,19 +91,19 @@
 
 #include <common/etsoc/common_defs.h>
 #include <common/etsoc/log_common.h>
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/cacheops.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/etsoc_memory.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/io.h>
-#include <isa/etsoc/macros.h>
+#include <isa/common/hart.h>
+#include <isa/common/io.h>
+#include <isa/common/macros.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/syscall.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>
@@ -126,19 +126,19 @@
 
 #include <common/etsoc/common_defs.h>
 #include <common/etsoc/log_common.h>
-#include <isa/etsoc/atomic.h>
-//#include <isa/etsoc/atomic-impl.h> clashes with atomic.h
+#include <isa/common/atomic.h>
+//#include <isa/common/atomic-impl.h> clashes with atomic.h
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/io.h>
+#include <isa/common/hart.h>
+#include <isa/common/io.h>
 #include <isa/etsoc/etsoc_memory.h>
-#include <isa/etsoc/macros.h>
+#include <isa/common/macros.h>
 #include <isa/etsoc/cacheops.h>
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/syscall.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/syscall.h>
+#include <isa/common/riscv_encoding.h>
 #include <isa/etsoc/utils.h>
 #include <system/etsoc_ddr_region_map.h>
 #include <system/layout.h>

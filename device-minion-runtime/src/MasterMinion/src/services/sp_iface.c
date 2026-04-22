@@ -19,9 +19,9 @@
 /***********************************************************************/
 /* mm_rt_svcs */
 #include <isa/etsoc/sync.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/riscv_encoding.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/hart.h>
+#include <isa/common/riscv_encoding.h>
+#include <isa/common/syscall.h>
 #include <drivers/etsoc/pmu/pmu.h>
 #include <system/layout.h>
 #include <transports/sp_mm_iface/sp_mm_comms_spec.h>

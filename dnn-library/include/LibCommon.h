@@ -14,12 +14,12 @@
 #include "LibUtils.h"
 #include <algorithm>
 #include <cmath>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <limits>
 #include <string.h>
 #include <type_traits>
 
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 // Shall match wrappers in UberKernel.cc
 extern void log_enter_user_region_wrapper(uint64_t ptr, uint16_t regionId);
 extern void log_exit_user_region_wrapper(uint64_t ptr, uint16_t regionId);

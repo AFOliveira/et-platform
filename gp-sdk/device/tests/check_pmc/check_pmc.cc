@@ -7,7 +7,7 @@
 #include "entryPoint.h"
 #include <cstdlib>
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 
 #include "profiling.h"
 

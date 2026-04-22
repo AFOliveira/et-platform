@@ -5,7 +5,7 @@
  */
 
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <stddef.h>
 #include <stdint.h>
 

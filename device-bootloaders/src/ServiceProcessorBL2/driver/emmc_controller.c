@@ -11,7 +11,7 @@
 
 #include <string.h>
 #include "hwinc/hal_device.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "hwinc/sp_cru_reset.h"
 
 #include "bl2_emmc_controller_impl.h"

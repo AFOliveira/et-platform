@@ -15,7 +15,7 @@
 #include <inttypes.h>
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/cacheops-umode.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/tensors.h>
 #include <system/abi.h>
 
 static inline uint8_t readByte(uint8_t * addr);

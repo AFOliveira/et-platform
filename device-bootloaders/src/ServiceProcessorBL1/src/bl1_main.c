@@ -16,7 +16,7 @@
 #include "bl1_crypto.h"
 #include "bl1_build_configuration.h"
 #include "sp_otp.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl1_spi_controller.h"
 #include "bl1_pll.h"
 

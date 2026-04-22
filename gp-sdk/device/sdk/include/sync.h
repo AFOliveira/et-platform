@@ -13,14 +13,14 @@
 // Device common
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/fcc.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/hart.h>
+#include <isa/common/tensors.h>
 #include <isa/etsoc/utils.h>
-#include <isa/etsoc/atomic.h>
+#include <isa/common/atomic.h>
 
 
 // FW syscall IDs
-#include <isa/etsoc/syscall.h>
+#include <isa/common/syscall.h>
 #include "system/abi.h"
 
 #include <profiling.h>

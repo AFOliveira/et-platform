@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "delays.h"
 #include "log.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "system/layout.h"
 #include "drivers/etsoc/pcie/pcie_int.h"
 #include "pcie_configuration.h"

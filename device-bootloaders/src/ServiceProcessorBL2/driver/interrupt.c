@@ -15,7 +15,7 @@
 /***********************************************************************/
 
 #include "interrupt.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "FreeRTOS.h"
 
 #include "task.h"

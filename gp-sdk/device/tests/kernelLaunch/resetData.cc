@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include <common/etsoc/utils.h>
 #include <isa/etsoc/fcc.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/tensors.h>
+#include <isa/common/hart.h>
+#include <isa/common/tensors.h>
 #include <isa/etsoc/utils.h>
 
 

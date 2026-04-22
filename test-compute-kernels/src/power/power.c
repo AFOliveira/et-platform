@@ -4,7 +4,7 @@
 
 #include "isa/etsoc/fcc.h"
 #include "isa/etsoc/flb.h"
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 
 static void prefetch_thread(uint64_t cycles);
 static void compute_thread(uint64_t cycles);

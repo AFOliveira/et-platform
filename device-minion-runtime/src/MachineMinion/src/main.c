@@ -23,7 +23,7 @@
 #include <drivers/etsoc/pmu/pmu.h>
 #include <isa/etsoc/esr_defines.h>
 #include <isa/etsoc/fcc.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/sync.h>
 #include <system/layout.h>
 

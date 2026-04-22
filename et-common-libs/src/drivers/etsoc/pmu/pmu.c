@@ -5,7 +5,7 @@
 */
 
 #include "isa/etsoc/esr_defines.h"
-#include "isa/etsoc/hart.h"
+#include "isa/common/hart.h"
 #include "drivers/etsoc/pmu/pmu.h"
 
 // Must be called by only one hart in a neighborhood

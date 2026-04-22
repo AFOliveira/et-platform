@@ -19,9 +19,9 @@
 ***********************************************************************/
 /* mm_rt_svcs */
 #include <common/etsoc/common_defs.h>
-#include <isa/etsoc/hart.h>
-#include <isa/etsoc/atomic.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/hart.h>
+#include <isa/common/atomic.h>
+#include <isa/common/riscv_encoding.h>
 
 /* mm specific headers */
 #include "dispatcher/dispatcher.h"

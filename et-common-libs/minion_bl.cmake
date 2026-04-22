@@ -16,20 +16,20 @@ set(MINION_BL_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX}/minion-bl)
 #Listing of header only public interfaces
 set(MINION_BL_HDRS
     include/drivers/etsoc/pmu/pmu.h
-    include/isa/etsoc/atomic.h
-    include/isa/etsoc/atomic-impl.h
+    include/isa/common/atomic.h
+    include/isa/common/atomic-impl.h
     include/isa/etsoc/etsoc_memory.h
     include/isa/etsoc/esr_defines.h
-    include/isa/etsoc/macros.h
+    include/isa/common/macros.h
     include/isa/etsoc/fcc.h
     include/isa/etsoc/flb.h
-    include/isa/etsoc/hart.h
-    include/isa/etsoc/io.h
+    include/isa/common/hart.h
+    include/isa/common/io.h
     include/isa/etsoc/sync.h
     include/isa/etsoc/cacheops.h
-    include/isa/etsoc/cacheops_common.h
-    include/isa/etsoc/syscall.h
-    include/isa/etsoc/riscv_encoding.h
+    include/isa/common/cacheops_common.h
+    include/isa/common/syscall.h
+    include/isa/common/riscv_encoding.h
     include/isa/etsoc/utils.h
     include/system/etsoc_ddr_region_map.h
     include/system/layout.h

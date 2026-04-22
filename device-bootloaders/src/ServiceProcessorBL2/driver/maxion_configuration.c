@@ -27,7 +27,7 @@
 #include "thermal_pwr_mgmt.h"
 #include "bl_error_code.h"
 #include "bl2_flash_fs.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "bl2_main.h"
 
 #include "delays.h"

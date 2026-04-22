@@ -18,8 +18,8 @@ extern "C" {
 #endif
 
 #include "isa/etsoc/utils.h"
-#include "isa/etsoc/syscall.h"
-#include "cacheops_common.h"
+#include "isa/common/syscall.h"
+#include "isa/common/cacheops_common.h"
 
 //-------------------------------------------------------------------------------------------------
 //   Privledged U-Mode cache operations

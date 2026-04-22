@@ -11,7 +11,7 @@
 #include <string.h>
 
 #include "bl_error_code.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include "sp_otp.h"
 
 #include "hwinc/sp_cru_reset.h"

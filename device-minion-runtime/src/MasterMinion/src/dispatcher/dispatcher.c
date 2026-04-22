@@ -48,7 +48,7 @@
 /* mm-rt-svcs (shared across minion rt) */
 #include <isa/etsoc/sync.h>
 #include <isa/etsoc/fcc.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 #include <transports/mm_cm_iface/message_types.h>
 #include <drivers/etsoc/serial/serial.h>
 #include <drivers/etsoc/pmu/pmu.h>

@@ -17,15 +17,15 @@
 #include <isa/etsoc/cacheops.h>
 #include <isa/etsoc/fcc.h>
 #include <isa/etsoc/flb.h>
-#include <isa/etsoc/hart.h>
+#include <isa/common/hart.h>
 #include <isa/etsoc/sync.h>
 #include <isa/etsoc/etsoc_memory.h>
-#include <isa/etsoc/macros.h>
-#include <isa/etsoc/syscall.h>
+#include <isa/common/macros.h>
+#include <isa/common/syscall.h>
 #include <drivers/etsoc/pmu/pmu.h>
 #include <system/layout.h>
 #include <transports/mm_cm_iface/message_types.h>
-#include <isa/etsoc/riscv_encoding.h>
+#include <isa/common/riscv_encoding.h>
 
 #include "syscall_internal.h"
 #include "cm_mm_defines.h"

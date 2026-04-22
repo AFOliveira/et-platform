@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <math.h>
 #include "log.h"
-#include "isa/etsoc/io.h"
+#include "isa/common/io.h"
 #include <bl2_watchdog.h>
 #include <interrupt.h>
 #include <bl2_pmic_controller.h>
