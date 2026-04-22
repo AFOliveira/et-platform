@@ -26,6 +26,10 @@ set(CM_UMODE_HDRS
     include/isa/common/syscall.h
     include/isa/common/tensors.h
     include/isa/etsoc/utils.h
+    # Erbium platform slice
+    include/isa/erbium/esr_defines.h
+    include/isa/erbium/flb.h
+    include/isa/erbium/fcc.h
     include/trace/trace_umode.h
     include/trace/trace_umode_cb.h
     include/system/abi.h
@@ -63,6 +67,9 @@ target_include_directories(cm-umode
 
 target_compile_features(cm-umode PUBLIC c_std_11)
 
+if (ET_PLATFORM STREQUAL "erbium")
+    target_compile_definitions(cm-umode PUBLIC ET_PLATFORM_ERBIUM=1)
+endif()
 
 target_compile_options(cm-umode
     PRIVATE

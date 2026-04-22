@@ -10,6 +10,12 @@ project(et-common-libs VERSION 0.25.0 LANGUAGES C DESCRIPTION "ET Accelerator AP
 option(ENABLE_WARNINGS_AS_ERRORS "Treat warnings as errors" ON)
 option(BUILD_DOC "Build documentation" ON)
 
+set(ET_PLATFORM "etsoc" CACHE STRING "Target SoC platform (etsoc, erbium)")
+set_property(CACHE ET_PLATFORM PROPERTY STRINGS etsoc erbium)
+if (NOT ET_PLATFORM STREQUAL "etsoc" AND NOT ET_PLATFORM STREQUAL "erbium")
+    message(FATAL_ERROR "ET_PLATFORM must be 'etsoc' or 'erbium' (got '${ET_PLATFORM}')")
+endif()
+
 # Find the required packages
 find_package(esperantoTrace REQUIRED)
 
