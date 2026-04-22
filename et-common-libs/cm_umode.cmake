@@ -14,7 +14,7 @@ set(CM_UMODE_HDRS
     # ETSOC ISA headers
     include/isa/common/atomic.h
     include/isa/common/atomic-impl.h
-    include/isa/etsoc/barriers.h
+    include/isa/common/barriers.h
     include/isa/etsoc/cacheops.h
     include/isa/common/cacheops_common.h
     include/isa/etsoc/cacheops-umode.h    
@@ -26,10 +26,13 @@ set(CM_UMODE_HDRS
     include/isa/common/syscall.h
     include/isa/common/tensors.h
     include/isa/etsoc/utils.h
+    include/isa/common/utils.h
     # Erbium platform slice
     include/isa/erbium/esr_defines.h
     include/isa/erbium/flb.h
     include/isa/erbium/fcc.h
+    include/isa/erbium/utils.h
+    include/isa/erbium/barriers.h
     include/trace/trace_umode.h
     include/trace/trace_umode_cb.h
     include/system/abi.h

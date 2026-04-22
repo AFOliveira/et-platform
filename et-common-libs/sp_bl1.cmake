@@ -29,6 +29,7 @@ set(SP_BL1_HDRS
     include/isa/common/cacheops_common.h
     include/isa/common/riscv_encoding.h
     include/isa/etsoc/utils.h
+    include/isa/common/utils.h
     include/system/layout.h
     include/system/etsoc_ddr_region_map.h
 )

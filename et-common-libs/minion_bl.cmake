@@ -31,6 +31,7 @@ set(MINION_BL_HDRS
     include/isa/common/syscall.h
     include/isa/common/riscv_encoding.h
     include/isa/etsoc/utils.h
+    include/isa/common/utils.h
     include/system/etsoc_ddr_region_map.h
     include/system/layout.h
 )

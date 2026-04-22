@@ -28,6 +28,7 @@ set(SP_BL2_HDRS
     include/isa/etsoc/esr_defines.h
     include/isa/etsoc/fcc.h
     include/isa/etsoc/utils.h
+    include/isa/common/utils.h
     include/transports/vq/vq.h
     include/transports/circbuff/circbuff.h
     include/transports/sp_mm_iface/sp_mm_comms_spec.h
