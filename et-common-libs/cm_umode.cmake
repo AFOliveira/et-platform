@@ -29,6 +29,15 @@ set(CM_UMODE_HDRS
     include/isa/common/tensors.h
     include/isa/etsoc/utils.h
     include/isa/common/utils.h
+    # Register-access + ESR + memory-map foundation
+    include/isa/common/mmio.h
+    include/isa/common/csr.h
+    include/isa/common/esr.h
+    include/isa/common/memmap.h
+    include/isa/etsoc/esr_platform.h
+    include/isa/etsoc/memmap_platform.h
+    include/isa/erbium/esr_platform.h
+    include/isa/erbium/memmap_platform.h
     # Erbium platform slice
     include/isa/erbium/esr_defines.h
     include/isa/erbium/flb.h
