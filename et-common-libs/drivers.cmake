@@ -26,6 +26,9 @@ set(DRIVERS_HDRS
     include/drivers/common/mprot.h
     include/drivers/etsoc/mprot_platform.h
     include/drivers/erbium/mprot_platform.h
+    include/drivers/common/plic.h
+    include/drivers/etsoc/plic_platform.h
+    include/drivers/erbium/plic_platform.h
 )
 
 add_library(drivers INTERFACE)
