@@ -17,6 +17,15 @@ set(DRIVERS_HDRS
     include/drivers/common/timer.h
     include/drivers/etsoc/timer_platform.h
     include/drivers/erbium/timer_platform.h
+    include/drivers/common/ipi.h
+    include/drivers/etsoc/ipi_platform.h
+    include/drivers/erbium/ipi_platform.h
+    include/drivers/common/thread.h
+    include/drivers/etsoc/thread_platform.h
+    include/drivers/erbium/thread_platform.h
+    include/drivers/common/mprot.h
+    include/drivers/etsoc/mprot_platform.h
+    include/drivers/erbium/mprot_platform.h
 )
 
 add_library(drivers INTERFACE)
