@@ -33,7 +33,19 @@
  * syscall_internal.h. */
 #include <isa/common/syscall.h>
 
-int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2, uint64_t arg3);
+/* syscall_handler_umode takes an optional 5th argument: a pointer to the
+ * saved x0..x31 array in the trap frame (trap_handler.S now passes sp as
+ * a4 for every U-mode syscall).  The existing cm-umode 1..11 handlers
+ * ignore it; the new OSKERN handlers (50..57) need it so IRQ_COMPLETE
+ * can mutate the frame. */
+int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2,
+                              uint64_t arg3, uint64_t *regs);
+
+/* Defined in syscall_ext.c */
+extern int64_t oskern_syscall_dispatch(uint64_t number, uint64_t a1,
+                                       uint64_t a2, uint64_t a3,
+                                       uint64_t *regs);
+extern void mext_interrupt_handler(uint64_t *regs);
 
 /* Global variable to cleanup threads in post kernel launch phase */
 static spinlock_t Kernel_Launch_Thread_Cleanup[NUM_SHIRES] = { 0 };
@@ -667,8 +679,17 @@ static int64_t set_l1_cache_control(uint64_t d1_split, uint64_t scp_en)
  * the S-mode kernel launcher to longjmp back to its caller.  Without S-mode
  * we just spin; the emulator's max_cycles cap ends the run.
  * ------------------------------------------------------------------------- */
-int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2, uint64_t arg3)
+int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2,
+                              uint64_t arg3, uint64_t *regs)
 {
+    /* OSKERN syscalls (50..127): forwarded to the dedicated dispatcher
+     * in syscall_ext.c.  The dispatcher needs the trap frame so
+     * IRQ_COMPLETE can splice the saved U-mode context back in. */
+    if (number >= 50U && number < 128U)
+    {
+        return oskern_syscall_dispatch(number, arg1, arg2, arg3, regs);
+    }
+
     switch (number)
     {
         case SYSCALL_CACHE_OPS_EVICT_SW:

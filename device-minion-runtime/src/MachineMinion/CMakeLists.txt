@@ -8,6 +8,7 @@ add_riscv_executable(MachineMinion
     src/boot.S
     src/trap_handler.S
     src/syscall.c
+    src/syscall_ext.c
     src/trap_routine.c
     src/main.c
     src/minion_cfg.c
@@ -27,6 +28,15 @@ target_compile_options(MachineMinion.elf
         -Wall
         $<$<BOOL:${ENABLE_WARNINGS_AS_ERRORS}>:-Werror>
 )
+
+# FW_U_ENTRY: M-mode landing pad for `mret` in main.c when launching the
+# U-mode compute kernel directly (feat/machineminion-umode-direct).  Default
+# matches the Zephyr-U etsoc1_minion_umode SRAM base (0x8006335000) + 0x8e2
+# offset where the emulator + gp-sdk crt0 expect to enter.
+if(NOT DEFINED FW_U_ENTRY)
+    set(FW_U_ENTRY "0x80063358e2ULL")
+endif()
+target_compile_definitions(MachineMinion.elf PRIVATE FW_U_ENTRY=${FW_U_ENTRY})
 
 target_link_libraries(MachineMinion.elf
     PRIVATE

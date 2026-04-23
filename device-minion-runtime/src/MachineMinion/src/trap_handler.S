@@ -154,6 +154,24 @@ slow_path:
     /* Load x1 with cause. a0-a3 contains syscall args */
     csrr  x1, mcause
 
+    /* Interrupts have bit 63 set.  If it's an interrupt and the cause
+     * low byte is MACHINE_EXTERNAL_INTERRUPT (11), route to the upcall
+     * path; everything else with bit 63 set falls through to
+     * trap_routine (some_other_exception path). */
+    bge   x1, x0, slow_path_exc  /* bit 63 clear -> not interrupt */
+
+    /* Interrupt path */
+    andi  x3, x1, 0xFF
+    li    x1, MACHINE_EXTERNAL_INTERRUPT
+    bne   x3, x1, some_other_exception
+    /* Machine external interrupt: forward to U-mode via upcall. */
+    mv    a0, sp
+    jal   mext_interrupt_handler
+    /* mext_interrupt_handler has rewritten mepc + trap frame as
+     * needed; skip the mepc+=4 bump used for syscalls. */
+    j     done_slow_path
+
+slow_path_exc:
     /* In slow path, we directly handle syscall here instead of going to trap_routine */
     li    x3, EXCEPTION_ENVIRONMENT_CALL_FROM_S_MODE
     beq   x3, x1, slow_path_s_syscall
@@ -166,11 +184,24 @@ slow_path_s_syscall:
     j     slow_path_syscall_done
 
 slow_path_u_syscall:
+    /* Pass trap frame pointer (sp here) as a4 so the handler can
+     * mutate it (IRQ_COMPLETE needs this). */
+    mv    a4, sp
     jal   syscall_handler_umode         /* Patched: cm-umode U-mode ABI dispatcher */
     /* fall through */
 
 slow_path_syscall_done:
     sd    a0, 10 * 8(sp)                /* Update a0 in saved context with environment call return value */
+
+    /* IRQ_COMPLETE writes mepc directly to the saved U PC (no +4).
+     * It sets g_u_skip_mepc_bump to tell us to skip the bump. */
+    la    x3, g_u_skip_mepc_bump
+    ld    x1, 0(x3)
+    beqz  x1, 1f
+    /* Clear the flag and skip mepc adjustment. */
+    sd    x0, 0(x3)
+    j     done_slow_path
+1:
     /* Return to the following instruction that caused the trap */
     csrr  x1, mepc
     /* TODO: Support compressed instructions? */
