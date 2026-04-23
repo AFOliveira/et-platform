@@ -18,7 +18,28 @@ extern "C" {
 
 #include <stddef.h>
 #include "drivers/etsoc/pmu/pmu.h"
+
+/*
+ * Trace backend selection.
+ *
+ * On ET-SoC1 (default): pull in the full et-trace umode surface. et_printf
+ * formats into the per-hart trace control block living in DDR.
+ *
+ * On Erbium (ET_PLATFORM_ERBIUM): there is no trace control block yet --
+ * neither the per-hart CB array nor the trace buffer is laid out in MRAM,
+ * and nothing in Zephyr-M mirrors them back to the host. Including
+ * trace/trace_umode.h on Erbium would drag in CM_UMODE_TRACE_CB whose
+ * hardcoded ET-SoC1 DDR base address (0x8004F23000) does not exist in
+ * Erbium's memory map, causing load-access-faults the moment any kernel
+ * calls et_printf / Trace_Format_String / trace_is_enabled.
+ *
+ * Until a real Erbium trace backend lands, compile et_printf and friends
+ * into no-ops. Kernels that use log/beef/trace helpers then still build
+ * and run -- they just produce no trace output.
+ */
+#ifndef ET_PLATFORM_ERBIUM
 #include "trace/trace_umode.h"
+#endif
 
 /*! \def et_printf(fmt, ...)
     \brief Write a log with va_list style args
@@ -29,9 +50,21 @@ extern "C" {
     \example et_printf.c
     This is an example of using et_printf api
 */
+#ifdef ET_PLATFORM_ERBIUM
+/* No trace backend on Erbium yet; route to a variadic no-op helper that
+ * both silences -Wunused-parameter on callers whose formals only exist
+ * to feed et_printf (e.g. __assert_func's file/line/function/expr) and
+ * gets optimized away entirely. */
+static inline void et_printf_noop(const char *fmt, ...)
+{
+    (void)fmt;
+}
+#define et_printf(fmt, ...) et_printf_noop((fmt), ##__VA_ARGS__)
+#else
 #define et_printf(fmt, ...)                          \
     Trace_Format_String(TRACE_EVENT_STRING_CRITICAL, \
         &CM_UMODE_TRACE_CB[GET_CB_INDEX(get_hart_id())].cb, fmt, ##__VA_ARGS__)
+#endif
 
 /*! \fn void *et_memset(void *s, int c, size_t n)
     \brief Copies the character c to the first n characters of the string pointed argument s.

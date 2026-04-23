@@ -16,8 +16,60 @@
 extern "C" {
 #endif
 
-#include "trace/trace_umode_cb.h"
 #include "isa/common/hart.h"
+
+/*
+ * On Erbium there is no trace control block yet (see common/etsoc/utils.h
+ * for the full rationale). Compile all et_trace_* macros into no-ops so
+ * kernels that use trace helpers still build and run. The flush entry
+ * point is also stubbed out in src/trace/trace_umode.c for Erbium.
+ */
+#ifdef ET_PLATFORM_ERBIUM
+
+/*
+ * Match the braced-block form of the ETSoC1 macros exactly (no trailing
+ * semicolon) so call sites that don't add their own `;` -- e.g. the
+ * etTraceUserProfileEvent wrappers in gp-sdk/device/sdk/include/profiling.h
+ * -- still parse. (void)(arg) casts keep -Wunused-parameter happy.
+ */
+#define et_trace_pmc_compute(hart_id) \
+    {                                 \
+        (void)(hart_id);              \
+    }
+
+#define et_trace_pmc_sc(hart_id) \
+    {                            \
+        (void)(hart_id);         \
+    }
+
+#define et_trace_pmc_ms(hart_id, ms_id) \
+    {                                   \
+        (void)(hart_id);                \
+        (void)(ms_id);                  \
+    }
+
+#define et_trace_memory(src_ptr, size) \
+    {                                  \
+        (void)(src_ptr);               \
+        (void)(size);                  \
+    }
+
+#define et_trace_user_profile_event(regionId, start, func, line, regionName) \
+    {                                                                        \
+        (void)(regionId);                                                    \
+        (void)(start);                                                       \
+        (void)(func);                                                        \
+        (void)(line);                                                        \
+        (void)(regionName);                                                  \
+    }
+
+#define et_trace_register() \
+    {                       \
+    }
+
+#else /* !ET_PLATFORM_ERBIUM */
+
+#include "trace/trace_umode_cb.h"
 
 /*! \def et_trace_pmc_compute(hart_id)
     \brief A macro used to dump Minion and Neighborhood PMCs in trace buffer.
@@ -132,9 +184,13 @@ extern "C" {
         asm volatile("addi  sp, sp, (35 * 8)\n"); /* Restore SP */                             \
     }
 
+#endif /* ET_PLATFORM_ERBIUM */
+
 /*! \fn void et_trace_flush_buffer(void)
     \brief This function is used to flush the trace buffer of the calling hart.
     \return None
+
+    On Erbium this is a no-op; there is no trace buffer to flush yet.
 */
 void et_trace_flush_buffer(void);
 

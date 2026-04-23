@@ -9,10 +9,28 @@
 */
 /***********************************************************************/
 
-#include "drivers/etsoc/pmu/pmu.h"
-#include "isa/etsoc/etsoc_memory.h"
 #include "isa/common/hart.h"
 #include "isa/common/syscall.h"
+#include "trace/trace_umode.h"
+
+/*
+ * On Erbium there is no per-hart trace control block or trace buffer yet,
+ * and the ET-SoC1 DDR base address for CM_UMODE_TRACE_CB does not exist
+ * in the Erbium memory map. Stub et_trace_flush_buffer to a no-op and
+ * skip pulling in the full et-trace encoder header -- it would otherwise
+ * drag in ETSOC_MEM_EVICT and the CM_UMODE_TRACE_CB dereference.
+ */
+#ifdef ET_PLATFORM_ERBIUM
+
+void et_trace_flush_buffer(void)
+{
+    /* Intentionally empty; no trace backend on Erbium yet. */
+}
+
+#else /* !ET_PLATFORM_ERBIUM */
+
+#include "drivers/etsoc/pmu/pmu.h"
+#include "isa/etsoc/etsoc_memory.h"
 
 #include "common/printf.h"
 
@@ -94,3 +112,5 @@ void et_trace_flush_buffer(void)
         ETSOC_MEM_EVICT((uint64_t *)cb->base_per_hart, cb->offset_per_hart, to_L3)
     }
 }
+
+#endif /* ET_PLATFORM_ERBIUM */
