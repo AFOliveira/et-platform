@@ -72,7 +72,12 @@ trap_handler:
     j     done_fast_path
 
 handle_exception:
-    /* Check for Environment call from S-mode (syscall) */
+    /* Patched: ecall-from-U is routed straight to slow_path (C handler)
+     * because U-mode cm-umode ABI IDs collide with the fast-path's S-mode
+     * _INT IDs (BROADCAST_INT=1 vs cm-umode EVICT_SW=1, etc.).  S-mode
+     * ecalls take the existing fast path for IPI_TRIGGER/BROADCAST. */
+    li    x3, EXCEPTION_ENVIRONMENT_CALL_FROM_U_MODE
+    beq   x1, x3, slow_path
     li    x3, EXCEPTION_ENVIRONMENT_CALL_FROM_S_MODE
     bne   x1, x3, slow_path
 
@@ -151,9 +156,20 @@ slow_path:
 
     /* In slow path, we directly handle syscall here instead of going to trap_routine */
     li    x3, EXCEPTION_ENVIRONMENT_CALL_FROM_S_MODE
-    bne   x3, x1, some_other_exception  /* Not an environment call in slow path, so some other exception. */
+    beq   x3, x1, slow_path_s_syscall
+    li    x3, EXCEPTION_ENVIRONMENT_CALL_FROM_U_MODE
+    beq   x3, x1, slow_path_u_syscall
+    j     some_other_exception          /* Not an environment call in slow path, so some other exception. */
 
-    jal   syscall_handler               /* Environment call */
+slow_path_s_syscall:
+    jal   syscall_handler               /* S-mode environment call (existing dispatcher) */
+    j     slow_path_syscall_done
+
+slow_path_u_syscall:
+    jal   syscall_handler_umode         /* Patched: cm-umode U-mode ABI dispatcher */
+    /* fall through */
+
+slow_path_syscall_done:
     sd    a0, 10 * 8(sp)                /* Update a0 in saved context with environment call return value */
     /* Return to the following instruction that caused the trap */
     csrr  x1, mepc

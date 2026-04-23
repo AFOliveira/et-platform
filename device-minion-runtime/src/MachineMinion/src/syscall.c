@@ -27,6 +27,14 @@
 #include "shire_cache.h"
 #include "minion_cfg.h"
 
+/* cm-umode ABI — used by the patched syscall_handler_umode defined at the
+ * bottom of this file.  Pulls in SYSCALL_CACHE_OPS_* / SYSCALL_RETURN_FROM_KERNEL /
+ * etc. from the U-mode ID space (0..127), distinct from the _INT IDs in
+ * syscall_internal.h. */
+#include <isa/common/syscall.h>
+
+int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2, uint64_t arg3);
+
 /* Global variable to cleanup threads in post kernel launch phase */
 static spinlock_t Kernel_Launch_Thread_Cleanup[NUM_SHIRES] = { 0 };
 
@@ -637,4 +645,63 @@ static int64_t set_l1_cache_control(uint64_t d1_split, uint64_t scp_en)
     excl_mode(0);
 
     return SYSCALL_INTERNAL_SUCCESS;
+}
+
+/* -------------------------------------------------------------------------
+ * Patched-in U-mode dispatcher.
+ *
+ * The production ET-SoC1 stack routes ecall-from-U -> S-mode (WorkerMinion),
+ * which then re-ecalls into this file with _INT ID space.  In the single-
+ * minion demo build we've removed the S-mode layer (see main.c patch) so
+ * ecall-from-U lands here directly.  The U-mode ABI (cm-umode, defined in
+ * et-common-libs/include/isa/common/syscall.h) uses IDs 0..127 whose
+ * numeric values collide with the _INT space — hence we dispatch from this
+ * dedicated handler instead of reusing syscall_handler.
+ *
+ * Each case maps the cm-umode ID to the matching _INT helper so the actual
+ * cache/PMC operations are identical to what WorkerMinion would have
+ * triggered in production.  Helpers were already defined earlier in this
+ * file as file-local statics.
+ *
+ * SYSCALL_RETURN_FROM_KERNEL is a no-op here: the production path expects
+ * the S-mode kernel launcher to longjmp back to its caller.  Without S-mode
+ * we just spin; the emulator's max_cycles cap ends the run.
+ * ------------------------------------------------------------------------- */
+int64_t syscall_handler_umode(uint64_t number, uint64_t arg1, uint64_t arg2, uint64_t arg3)
+{
+    switch (number)
+    {
+        case SYSCALL_CACHE_OPS_EVICT_SW:
+            cache_ops_evict_sw(arg1);
+            return SYSCALL_INTERNAL_SUCCESS;
+        case SYSCALL_CACHE_OPS_FLUSH_SW:
+            cache_ops_flush_sw(arg1);
+            return SYSCALL_INTERNAL_SUCCESS;
+        case SYSCALL_CACHE_OPS_LOCK_SW:
+            cache_ops_lock_sw(arg1);
+            return SYSCALL_INTERNAL_SUCCESS;
+        case SYSCALL_CACHE_OPS_UNLOCK_SW:
+            cache_ops_unlock_sw(arg1);
+            return SYSCALL_INTERNAL_SUCCESS;
+        case SYSCALL_CACHE_OPS_INVALIDATE:
+            cache_ops_cache_invalidate(arg1);
+            return SYSCALL_INTERNAL_SUCCESS;
+        case SYSCALL_CACHE_OPS_EVICT_L1:
+            return evict_l1(arg1, arg2);
+        case SYSCALL_SHIRE_CACHE_BANK_OP:
+            return shire_cache_bank_op_with_params(arg1, arg2, arg3);
+        case SYSCALL_RETURN_FROM_KERNEL:
+            /* No S-mode launcher in this build to unwind to; halt. */
+            for (;;) {
+                __asm__ __volatile__("wfi");
+            }
+        case SYSCALL_PMC_SC_SAMPLE:
+            return (int64_t)sample_sc_pmcs(arg1, arg2, arg3);
+        case SYSCALL_PMC_MS_SAMPLE:
+            return (int64_t)sample_ms_pmcs(arg1, arg2);
+        case SYSCALL_CACHE_OPS_EVICT_WHOLE_L1_L2:
+            return evict_l1_l2_all();
+        default:
+            return SYSCALL_INTERNAL_INVALID_ID;
+    }
 }

@@ -126,7 +126,10 @@ int main(void)
         "csrw  mtvec, %0            \n"
         "li    %0, 0x800333         \n" // Delegate supervisor and user software, timer, bus error and external interrupts to supervisor mode
         "csrs  mideleg, %0          \n"
-        "li    %0, 0x5C00B1F7       \n" // Delegate all RISC-V and ET specific relevant exceptions to supervisor mode
+        /* Patched: bit 8 (ecall-from-U) cleared -> 0x5C00B0F7.  With no
+         * S-mode firmware in this build, ecalls from Zephyr-U trap
+         * directly to M and are serviced by trap_handler.S. */
+        "li    %0, 0x5C00B0F7       \n" // Delegate all RISC-V and ET specific relevant exceptions to supervisor mode (sans ecall-from-U)
         "csrs  medeleg, %0          \n"
         "csrwi menable_shadows, 0x3 \n" // Enable shadow registers for hartid and sleep txfma
         "li    %0, 0x800008         \n" // Enable machine software interrupts, ET Bus Error Interrupt[23]
@@ -135,10 +138,10 @@ int main(void)
         : "=&r"(temp));
 
     asm volatile(
-        "li    %0, 0x1020  \n" // Setup for mret into S-mode: bitmask for mstatus MPP[1] and SPIE
-        "csrc  mstatus, %0 \n" // clear mstatus MPP[1] = supervisor mode, SPIE = interrupts disabled
-        "li    %0, 0x800   \n" // bitmask for mstatus MPP[0]
-        "csrs  mstatus, %0 \n" // set mstatus MPP[0] = supervisor mode
+        /* Patched: mret directly into U-mode (MPP = 00).  We clear both
+         * MPP bits and SPIE; no bit to set. */
+        "li    %0, 0x1820  \n" // MPP[1], MPP[0], SPIE mask
+        "csrc  mstatus, %0 \n" // clear all of them -> MPP = 00 (U-mode)
         : "=&r"(temp));
 
     // Enable all available PMU counters to be sampled in S-mode
@@ -159,27 +162,27 @@ int main(void)
         initialize_scp(shire_id);
     }
 
-    /* Master shire non-sync minions (lower 16) */
-    if ((shire_id == MM_SHIRE_ID) && ((get_minion_id() & 0x1F) < 16))
+    /* Patched: jump directly to the U-mode entry (MPP = 00 was set above).
+     * FW_U_ENTRY is supplied at build time via -DFW_U_ENTRY=0x...  Also
+     * set up a U-mode stack: gp-sdk kernels' crt0 pushes ra onto whatever
+     * sp it's handed, so we point sp at a known-writable address in DDR
+     * well above the typical kernel load area.  FW_U_STACK_TOP defaults to
+     * 0x8010000000 (64 GiB mark) if the build doesn't override it. */
+#ifndef FW_U_ENTRY
+#error "FW_U_ENTRY not defined; pass -DFW_U_ENTRY=0x... at compile time"
+#endif
+#ifndef FW_U_STACK_TOP
+#define FW_U_STACK_TOP 0x8010000000ULL
+#endif
     {
-        const uint64_t *const master_entry = (uint64_t *)FW_MASTER_SMODE_ENTRY;
-
-        // Jump to master firmware in supervisor mode
+        const uint64_t u_entry = (uint64_t)FW_U_ENTRY;
+        const uint64_t u_sp    = (uint64_t)FW_U_STACK_TOP;
         asm volatile("csrw  mepc, %0 \n" // write return address
-                     "mret           \n" // return in S-mode
+                     "mv    sp,   %1 \n" // U-mode sp (16-byte aligned)
+                     "mret           \n" // return in U-mode
                      :
-                     : "r"(master_entry));
-    }
-    else
-    {
-        // Worker shire and Master shire sync-minions (upper 16)
-        const uint64_t *const worker_entry = (uint64_t *)FW_WORKER_SMODE_ENTRY;
-
-        // Jump to worker firmware in supervisor mode
-        asm volatile("csrw  mepc, %0 \n" // write return address
-                     "mret           \n" // return in S-mode
-                     :
-                     : "r"(worker_entry));
+                     : "r"(u_entry), "r"(u_sp)
+                     : "sp");
     }
 
     while (1)
