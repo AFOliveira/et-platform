@@ -177,12 +177,21 @@ int main(void)
     {
         const uint64_t u_entry = (uint64_t)FW_U_ENTRY;
         const uint64_t u_sp    = (uint64_t)FW_U_STACK_TOP;
+        /* Zero a0-a3 so the U-mode entry point doesn't inherit M-mode
+         * leftovers as function arguments.  In particular, deviceGpSdkEntry
+         * takes (args, env) in (a0, a1); if a1 holds a stale M-mode pointer,
+         * the kernel tries to dereference it as kernel_environment_t* and
+         * load-faults. */
         asm volatile("csrw  mepc, %0 \n" // write return address
                      "mv    sp,   %1 \n" // U-mode sp (16-byte aligned)
+                     "mv    a0,   zero \n"
+                     "mv    a1,   zero \n"
+                     "mv    a2,   zero \n"
+                     "mv    a3,   zero \n"
                      "mret           \n" // return in U-mode
                      :
                      : "r"(u_entry), "r"(u_sp)
-                     : "sp");
+                     : "sp", "a0", "a1", "a2", "a3");
     }
 
     while (1)
