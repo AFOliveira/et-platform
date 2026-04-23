@@ -18,6 +18,14 @@ if (TESTKERNELS_USE_GPSDK_RUNTIME)
     add_subdirectory(empty)
     add_subdirectory(log)
     add_subdirectory(error)
+    # Extended set: kernels whose entry_point takes `const Parameters*`.
+    # Each kernel ships a hand-written shim .cc that synthesizes a default
+    # Parameters instance (via static storage) and registers the shim with
+    # gp-sdk's DeviceConfig through DECLARE_KERNEL_ENTRY_POINTS.
+    add_subdirectory(memset)
+    add_subdirectory(random_data)
+    add_subdirectory(crc32)
+    add_subdirectory(jump_loop)
 else()
     add_subdirectory(abort)
     add_subdirectory(add_vector)

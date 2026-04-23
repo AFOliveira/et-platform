@@ -90,6 +90,90 @@ macro(test_kernel)
 endmacro()
 
 
+# Extension of test_kernel() that also wraps kernels whose entry_point takes
+# a single struct pointer argument (typically `const Parameters*`). The caller
+# supplies a hand-written shim .cc that:
+#   - Redeclares the kernel's `Parameters` struct (or equivalent)
+#   - Allocates a sensible default instance + any backing buffers
+#   - Forward-declares the kernel's `entry_point(const Parameters*)`
+#   - Exposes a gp-sdk entry wrapper: `int gpsdk_entry_shim_<name>(void*)`
+#     that calls `entry_point(&default_params)` and returns its value,
+#     cast to int.
+#   - Registers via `DECLARE_KERNEL_ENTRY_POINTS(gpsdk_entry_shim_<name>, nullptr);`
+#
+# When TESTKERNELS_USE_GPSDK_RUNTIME=OFF the SHIM_SOURCE is ignored and the
+# kernel builds exactly like the legacy test_kernel() path.
+#
+# Arguments:
+# NAME: Name of the test
+# SOURCES: Input compile sources (just the kernel .c files, NOT the shim)
+# SHIM_SOURCE: Hand-written .cc with the Parameters default + shim entry
+# INCLUDES: Include directories
+macro(test_kernel_with_params)
+    set(options)
+    set(oneValueArgs NAME SHIM_SOURCE)
+    set(multiValueArgs SOURCES INCLUDES)
+    cmake_parse_arguments(TEST_KERNEL_WP "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if (NOT TEST_KERNEL_WP_NAME)
+        message(SEND_ERROR "Error: test_kernel_with_params() called without NAME argument!")
+    endif()
+    if (NOT TEST_KERNEL_WP_SOURCES)
+        message(SEND_ERROR "Error: test_kernel_with_params() called without SOURCES argument!")
+    endif()
+    if (NOT TEST_KERNEL_WP_SHIM_SOURCE)
+        message(SEND_ERROR "Error: test_kernel_with_params() called without SHIM_SOURCE argument!")
+    endif()
+
+    set(TARGET_NAME ${TEST_KERNEL_WP_NAME})
+
+    if (TESTKERNELS_USE_GPSDK_RUNTIME)
+        # The shim .cc is compiled alongside the kernel .c sources. The shim
+        # is responsible for registering the DeviceConfig entry point (via
+        # DECLARE_KERNEL_ENTRY_POINTS) and for constructing a default
+        # Parameters instance to pass to the kernel.
+        add_etsoc_riscv_executable(${TARGET_NAME}.elf
+            ${TEST_KERNEL_WP_SOURCES}
+            ${TEST_KERNEL_WP_SHIM_SOURCE})
+        target_link_libraries(${TARGET_NAME}.elf etsoc_crt0)
+        target_include_directories(${TARGET_NAME}.elf PRIVATE ${TEST_KERNEL_WP_INCLUDES})
+
+        install(TARGETS ${TARGET_NAME}.elf
+            RUNTIME DESTINATION ${LIB_INSTALL_DIR}/esperanto-fw/kernels
+            COMPONENT kernels
+        )
+    else()
+        # Legacy self-contained flow: SHIM_SOURCE is ignored. Reuse the same
+        # plumbing as test_kernel().
+        if (NOT LINKER_SCRIPT)
+            set(LINKER_SCRIPT ${PROJECT_SOURCE_DIR}/src/shared/sections.ld)
+        endif()
+        set(ZEBU_TARGET DDR_NEW)
+        set(ZEBU_FILENAME memImage)
+
+        add_riscv_executable(${TARGET_NAME})
+        target_sources(${TARGET_NAME}.elf PRIVATE ${TEST_KERNEL_WP_SOURCES})
+        target_include_directories(${TARGET_NAME}.elf PRIVATE ${TEST_KERNEL_WP_INCLUDES})
+        target_link_libraries(${TARGET_NAME}.elf
+            PRIVATE
+                test-compute-kernels::shared_kernel
+                et-common-libs::cm-umode
+                esperantoTrace::et_trace
+        )
+        set_target_properties(${TARGET_NAME}.elf
+            PROPERTIES
+                INTERPROCEDURAL_OPTIMIZATION TRUE  # fPIC
+        )
+
+        install(TARGETS ${TARGET_NAME}.elf
+            EXPORT EsperantoTestKernelsTargets
+            RUNTIME DESTINATION ${LIB_INSTALL_DIR}/esperanto-fw/kernels
+            COMPONENT kernels
+        )
+    endif()
+endmacro()
+
+
 # Helper function for creating different instances of randomized tests
 # In this case we expect that a different instance of an elf file will be compiled
 # based on an auto-generated header
