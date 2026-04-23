@@ -15,6 +15,7 @@ set(CM_UMODE_HDRS
     include/isa/common/atomic.h
     include/isa/common/atomic-impl.h
     include/isa/common/barriers.h
+    include/isa/etsoc/barriers.h
     include/isa/etsoc/cacheops.h
     include/isa/common/cacheops.h
     include/isa/common/cacheops_common.h
@@ -87,6 +88,21 @@ target_compile_features(cm-umode PUBLIC c_std_11)
 
 if (ET_PLATFORM STREQUAL "erbium")
     target_compile_definitions(cm-umode PUBLIC ET_PLATFORM_ERBIUM=1)
+    # The Erbium ISA headers (isa/erbium/*.h) reference hwinc/top.h and
+    # hwinc/esr.h, which are produced by the Erbium HAL RDL generator and
+    # live outside et-common-libs. Make those headers visible to cm-umode
+    # users (gp-sdk kernels etc.) by bundling them into the install tree.
+    set(ERBIUM_HWINC_SRC_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../hal/platform/erbium/include/hwinc")
+    if (EXISTS "${ERBIUM_HWINC_SRC_DIR}/top.h")
+        target_include_directories(cm-umode PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../hal/platform/erbium/include>
+            $<INSTALL_INTERFACE:${CM_UMODE_INSTALL_PREFIX}/include>)
+        install(DIRECTORY "${ERBIUM_HWINC_SRC_DIR}"
+                DESTINATION ${CM_UMODE_INSTALL_PREFIX}/include)
+    else()
+        message(FATAL_ERROR "Erbium hwinc not found at ${ERBIUM_HWINC_SRC_DIR}. "
+                "Build ET_PLATFORM=erbium requires the Erbium HAL sources.")
+    endif()
 endif()
 
 target_compile_options(cm-umode
