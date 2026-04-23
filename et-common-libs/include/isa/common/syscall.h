@@ -25,6 +25,31 @@ extern "C" {
 #define SYSCALL_PMC_SC_SAMPLE               (SYSCALL_UMODE_THRESHOLD + 9)
 #define SYSCALL_PMC_MS_SAMPLE               (SYSCALL_UMODE_THRESHOLD + 10)
 #define SYSCALL_CACHE_OPS_EVICT_WHOLE_L1_L2 (SYSCALL_UMODE_THRESHOLD + 11)
+
+/* OS-kernel syscalls (50..127): provided to U-mode kernels that need a
+ * minimal privileged surface (IRQ mux, timer arming, console I/O).  These
+ * are distinct from the compute-kernel IDs 1..11 above so a U-mode OS can
+ * coexist with compute kernels.  Implemented by MachineMinion in the
+ * direct-M-from-U build (feat/machineminion-irq-upcall).
+ *
+ *   IRQ_ENABLE          a1=irq_num, a2=priority
+ *   IRQ_DISABLE         a1=irq_num
+ *   IRQ_MASK_GLOBAL     no args; returns previous mstatus.MIE state
+ *   IRQ_UNMASK_GLOBAL   a1=saved state
+ *   REGISTER_IRQ_HANDLER a1=u_fn_ptr (U-mode entry for IRQ upcall)
+ *   IRQ_COMPLETE        a1=irq_num; returns from IRQ upcall to interrupted U ctx
+ *   SET_TIMEOUT         a1=absolute mtimecmp value
+ *   CONSOLE_WRITE       a1=ptr, a2=len (byte buffer, host UART)
+ */
+#define SYSCALL_OSKERN_IRQ_ENABLE           (SYSCALL_UMODE_THRESHOLD + 50)
+#define SYSCALL_OSKERN_IRQ_DISABLE          (SYSCALL_UMODE_THRESHOLD + 51)
+#define SYSCALL_OSKERN_IRQ_MASK_GLOBAL      (SYSCALL_UMODE_THRESHOLD + 52)
+#define SYSCALL_OSKERN_IRQ_UNMASK_GLOBAL    (SYSCALL_UMODE_THRESHOLD + 53)
+#define SYSCALL_OSKERN_REGISTER_IRQ_HANDLER (SYSCALL_UMODE_THRESHOLD + 54)
+#define SYSCALL_OSKERN_IRQ_COMPLETE         (SYSCALL_UMODE_THRESHOLD + 55)
+#define SYSCALL_OSKERN_SET_TIMEOUT          (SYSCALL_UMODE_THRESHOLD + 56)
+#define SYSCALL_OSKERN_CONSOLE_WRITE        (SYSCALL_UMODE_THRESHOLD + 57)
+
 #define SYSCALL_UMODE_THRESHOLD_LIMIT       127
 
 /* SYSCALL IDs for syscalls from U-Mode */
