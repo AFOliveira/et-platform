@@ -20,6 +20,7 @@ set(MM_RT_SVCS_HDRS
     include/isa/common/atomic.h
     include/isa/common/atomic-impl.h
     include/isa/etsoc/cacheops.h
+    include/isa/common/cacheops.h
     include/isa/common/cacheops_common.h
     include/isa/etsoc/esr_defines.h
     include/isa/etsoc/etsoc_memory.h
