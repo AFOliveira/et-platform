@@ -3,10 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  *
  * Erbium MPROT backend — memory protection via ESR (Machine_neigh).
- *
- * hwinc/esr.h reports the MPROT register at offset 0x38, but emulator
- * and RTL place it at 0x20. Using the hardware-verified offset until
- * the RDL is corrected.
  */
 
 #ifndef _DRIVERS_ERBIUM_MPROT_PLATFORM_H_
