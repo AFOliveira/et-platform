@@ -47,7 +47,15 @@ macro(test_kernel)
         # and was brought in via add_subdirectory(gp-sdk/device) in the parent
         # CMakeLists.txt. It wires the linker script, etsoc_crt0, libm, etc.
         add_etsoc_riscv_executable(${TARGET_NAME}.elf ${TEST_KERNEL_SOURCES} ${_gpsdk_shim_src})
-        target_link_libraries(${TARGET_NAME}.elf etsoc_crt0)
+        # Match the legacy flow's link surface: cm-umode for the ABI
+        # wrappers, et-trace for Trace_Format_String (referenced by
+        # et_printf on ETSoC; no-op'd on Erbium by the platform guards
+        # in common/etsoc/utils.h).
+        target_link_libraries(${TARGET_NAME}.elf
+            etsoc_crt0
+            et-common-libs::cm-umode
+            esperantoTrace::et_trace
+        )
         target_include_directories(${TARGET_NAME}.elf PRIVATE ${TEST_KERNEL_INCLUDES})
     else()
         # --- legacy self-contained flow -------------------------------------
@@ -135,7 +143,13 @@ macro(test_kernel_with_params)
         add_etsoc_riscv_executable(${TARGET_NAME}.elf
             ${TEST_KERNEL_WP_SOURCES}
             ${TEST_KERNEL_WP_SHIM_SOURCE})
-        target_link_libraries(${TARGET_NAME}.elf etsoc_crt0)
+        # See note in test_kernel(): match legacy link surface so ETSoC
+        # builds resolve Trace_Format_String via esperantoTrace.
+        target_link_libraries(${TARGET_NAME}.elf
+            etsoc_crt0
+            et-common-libs::cm-umode
+            esperantoTrace::et_trace
+        )
         target_include_directories(${TARGET_NAME}.elf PRIVATE ${TEST_KERNEL_WP_INCLUDES})
 
         install(TARGETS ${TARGET_NAME}.elf
