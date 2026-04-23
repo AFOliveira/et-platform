@@ -36,7 +36,14 @@ static inline void evictCacheLine(uint64_t dst, uint8_t * addr);
  * number of bytes to copy
  */
 static inline int global_memcpy(void * dst, const void * src, size_t num_bytes) {
-  
+#if defined(ET_PLATFORM_ERBIUM)
+  /* Erbium does not implement ETSoC1 vector load/store (flwg.ps/fswg.ps).
+   * Fall back to the scalar byte-copy in et-common-libs.  The 32-byte
+   * alignment contract still applies by API, but we do not need to enforce
+   * it here because the scalar path handles arbitrary alignment. */
+  et_memcpy(dst, src, num_bytes);
+  return 0;
+#else
   constexpr size_t stride = 32; // vector width is 32 bytes
   /* cast to 1-byte ptr type, needed for pointer arithmetic */
   uint8_t *d = static_cast<uint8_t *>(dst);
@@ -62,11 +69,12 @@ static inline int global_memcpy(void * dst, const void * src, size_t num_bytes) 
                          : [ src ] "r" (s + i),
                            [ dst ] "r"(d + i)
                        #ifdef __clang__
-                         , [ mask ] "M"(mask) 
+                         , [ mask ] "M"(mask)
                        #endif
                          :);
   }
   return 0;
+#endif
 }
 
 /**
@@ -78,7 +86,12 @@ static inline int global_memcpy(void * dst, const void * src, size_t num_bytes) 
  *  \param num_bytes  bytes to copy
  */
 static inline int local_memcpy(void * dst, const void * src, size_t num_bytes) {
-  
+#if defined(ET_PLATFORM_ERBIUM)
+  /* Erbium: no ETSoC1 vector load/store (flw.ps/fsw.ps).  Use the scalar
+   * fallback unconditionally.  Called from initializeTLS() among others. */
+  et_memcpy(dst, src, num_bytes);
+  return 0;
+#else
   constexpr size_t stride = 32; // vector width is 32 bytes
   /* cast to 1-byte ptr type, needed for pointer arithmetic */
   uint8_t *d = static_cast<uint8_t *>(dst);
@@ -107,11 +120,12 @@ static inline int local_memcpy(void * dst, const void * src, size_t num_bytes) {
                          : [ src ] "r" (s + i),
                            [ dst ] "r"(d + i)
                        #ifdef __clang__
-                         , [ mask ] "M"(mask) 
+                         , [ mask ] "M"(mask)
                        #endif
                          :);
   }
   return 0;
+#endif
 }
 
 
@@ -126,6 +140,18 @@ static inline int local_memcpy(void * dst, const void * src, size_t num_bytes) {
  * \param num_bytes number of bytes to write
  */
 static inline int global_memset(void * ptr, const int value, size_t num_bytes) {
+#if defined(ET_PLATFORM_ERBIUM)
+  /* Erbium: no ETSoC1 vector instructions (fbcx.ps/fswg.ps) nor cache_ops
+   * for eviction.  Fall back to a scalar byte loop.  This is called from
+   * resetBSS() when the kernel has a non-empty .bss; it is NOT called on
+   * the current single-hart halify probes (which have empty .bss). */
+  uint8_t *p = static_cast<uint8_t *>(ptr);
+  const uint8_t byte = static_cast<uint8_t>(value & 0xFF);
+  for (size_t i = 0; i < num_bytes; ++i) {
+    p[i] = byte;
+  }
+  return 0;
+#else
   /* vector width is 32 bytes (256-bit) */
   constexpr int64_t stride = 32;
 
@@ -172,6 +198,7 @@ static inline int global_memset(void * ptr, const int value, size_t num_bytes) {
   evictCacheLine(0x3, evict_addr);
 
   return 0;
+#endif
 }
 /*! \endcond */
 
