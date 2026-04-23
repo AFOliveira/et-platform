@@ -53,8 +53,19 @@ macro(add_etsoc_riscv_executable TARGET_NAME TARGET_SOURCES_LIST)
   endif() 
 
   set(ELF_EXE_LINKER_FLAGS_BASE "-Wl,--no-relax -nostdlib -nostartfiles -Wl,--gc-sections  -e _start ${EXTRA_LINKER_OPTIONS} ${WRAPPED_FUNC} -Wl,--start-group  -lm -lgcc")
-  
-  set(ELF_EXE_LINKER_FLAGS "${ELF_EXE_LINKER_FLAGS_BASE} -T ${LINKER_SCRIPT_ABS_PATH} -Wl,--defsym=BASE_ADDRESS=0")
+
+  # On ET-SoC1, MachineMinion relocates the kernel to the target PC at launch,
+  # so the ELF is linked at BASE_ADDRESS=0 (PC-relative code only matters).
+  # On Erbium, Zephyr-M's U-mode launcher loads the kernel's .bin raw at
+  # ADDRESS via `-file_load` and mret's to that PC -> the ELF must be linked
+  # at that absolute address.
+  if (ET_PLATFORM STREQUAL "erbium")
+    set(BASE_ADDRESS_RELEASE ${ADDRESS})
+  else()
+    set(BASE_ADDRESS_RELEASE 0)
+  endif()
+
+  set(ELF_EXE_LINKER_FLAGS "${ELF_EXE_LINKER_FLAGS_BASE} -T ${LINKER_SCRIPT_ABS_PATH} -Wl,--defsym=BASE_ADDRESS=${BASE_ADDRESS_RELEASE}")
   set(ELF_EXE_LINKER_FLAGS_DBG "${ELF_EXE_LINKER_FLAGS_BASE} -T ${LINKER_SCRIPT_ABS_PATH} -Wl,--defsym=BASE_ADDRESS=${DEBUG_ADDRESS}")
   
   target_compile_options(${TARGET_NAME} PRIVATE -falign-functions=64 -fno-jump-tables  -O3 -g3 $<$<C_COMPILER_ID:GNU>:-Wstack-usage=4096>)
@@ -88,6 +99,18 @@ macro(add_etsoc_riscv_executable TARGET_NAME TARGET_SOURCES_LIST)
     POST_BUILD
     COMMAND ${GP_SDK_TOOLS_PATH}/scripts/check_unimplemented_instructions.sh ${DEBUG_TARGET}
   )
+
+  # For Erbium: also emit a raw .bin that the Zephyr-M launcher feeds to
+  # erbium_emu via `-file_load`. Harmless on ET-SoC1 but only used by Erbium.
+  if (ET_PLATFORM STREQUAL "erbium")
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+      COMMAND ${CMAKE_OBJCOPY} -O binary
+              "$<TARGET_FILE:${TARGET_NAME}>"
+              "$<TARGET_FILE:${TARGET_NAME}>.bin"
+      COMMENT "Generating raw .bin for ${TARGET_NAME}"
+      VERBATIM
+    )
+  endif()
 
 
 endmacro(add_etsoc_riscv_executable)

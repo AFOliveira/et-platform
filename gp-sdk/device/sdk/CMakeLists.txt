@@ -5,7 +5,10 @@
 
 
 find_package(et-common-libs REQUIRED COMPONENTS cm-umode)
-find_package(dnnLibrary REQUIRED)
+# dnnLibrary is only needed by the libautogen/matmul kernel; make it optional
+# so gp-sdk can be built standalone (and on Erbium where dnnLibrary has not
+# been ported).
+find_package(dnnLibrary)
 
 add_library(etsoc_crt0 STATIC
   lib/deviceGpSdk.cc
@@ -96,7 +99,10 @@ target_link_libraries(libcpp_throw_stub
 
 add_library(libc_stub STATIC libc_stub/et_errno.cc libc_stub/et_atexit.cc)
 
-add_subdirectory(libautogen)
+# libautogen depends on dnnLibrary, so only include it when available.
+if (TARGET dnnLibrary::dnn_lib)
+    add_subdirectory(libautogen)
+endif()
 
 
 

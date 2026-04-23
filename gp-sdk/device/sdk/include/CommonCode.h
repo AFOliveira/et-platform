@@ -14,7 +14,11 @@
 // Global
 #include <inttypes.h>
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/cacheops-umode.h>
+#if defined(ET_PLATFORM_ERBIUM)
+#  include <isa/erbium/cacheops-umode.h>
+#else
+#  include <isa/etsoc/cacheops-umode.h>
+#endif
 #include <isa/common/tensors.h>
 #include <system/abi.h>
 

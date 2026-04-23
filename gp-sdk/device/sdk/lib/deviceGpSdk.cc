@@ -12,8 +12,15 @@
 #include "sync.h"
 #include "flbLock.h"
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/barriers.h>
-#include <isa/etsoc/cacheops-umode.h>
+#if defined(ET_PLATFORM_ERBIUM)
+#  include <isa/erbium/barriers.h>
+#  include <isa/erbium/cacheops-umode.h>
+#else
+#  include <isa/etsoc/barriers.h>
+#  include <isa/etsoc/cacheops-umode.h>
+#  include <isa/etsoc/esr_defines.h>   /* ESR_SHIRE_BROADCAST0/1, FCC_CREDINC_*, THIS_SHIRE */
+#  include <isa/etsoc/fcc.h>           /* fcc_send / THREAD_0..1 / FCC_0 */
+#endif
 #include <isa/common/hart.h>
 #include <system/abi.h>
 
@@ -62,6 +69,7 @@ extern "C" int deviceGpSdkEntry(void* args, kernel_environment_t* env);
 
 /* wake up all threads on the shire-Mask group system */
 static inline void wakeUpThreads(uint64_t shire_mask) {
+#if defined(ET_PLATFORM_ETSOC)
 
   /* uses ESR-broadcast extension to send credits to all shires simultaneously */
   volatile uint64_t* broadcast_data =
@@ -88,6 +96,19 @@ static inline void wakeUpThreads(uint64_t shire_mask) {
       fcc_send(32, THREAD_1, FCC_0, 0xFFFFFFFF);
     }
   }
+#elif defined(ET_PLATFORM_ERBIUM)
+  /* Erbium: single minion, single shire - no cross-shire fanout needed.
+   * Thread 0 reaches here after resetBSS/resetData/callInitArrayFunctions;
+   * it then falls through to the per-thread fcc_consume(FCC_0) path. Since
+   * there are no other threads to wake up, we skip the broadcast entirely.
+   * (The FCC consume on Erbium happens against the caller's USER_CPU CREDINC
+   *  which would need a self-send to release. For single-thread kernels the
+   *  threadsPerCore==1 / threadId==0 fast-path never executes fcc_consume
+   *  beyond the needSync branch.) */
+  (void)shire_mask;
+#else
+#  error "ET_PLATFORM not set (expected ET_PLATFORM_ETSOC or ET_PLATFORM_ERBIUM)"
+#endif
 }
 
 /// @brief Resets global memory region .bss to zero
@@ -209,16 +230,35 @@ extern "C" int deviceGpSdkEntry(void* args, kernel_environment_t* env) {
     // increase number of boots atomically
     const uint32_t increment = 1;
     uint32_t result;
+#if defined(ET_PLATFORM_ETSOC)
     __asm__ __volatile__("amoaddg.w %[result], %[increase], (%[dst])\n"
                          : [ result ] "=r"(result)
                          : [ increase ] "r"(increment), [ dst ] "r"(&numberOfBoots)
                          :);
+#else
+    // Erbium: single-minion, no cross-shire coherency; use plain amoadd.w.
+    // The default -march=rv64imfc lacks the A extension; enable it locally.
+    __asm__ __volatile__(".option push\n"
+                         ".option arch, +a\n"
+                         "amoadd.w %[result], %[increase], (%[dst])\n"
+                         ".option pop\n"
+                         : [ result ] "=r"(result)
+                         : [ increase ] "r"(increment), [ dst ] "r"(&numberOfBoots)
+                         : "memory");
+#endif
 
     // call init array (dynamic initializatoin) functions from thrad 0
     callInitArrayFunctions();
     wakeUpThreads(shireMask);
   }
 
+#if defined(ET_PLATFORM_ERBIUM)
+  // Erbium single-hart: no cross-hart wakeup required. Thread 0 has already
+  // completed init above and is the only thread, so skip the fcc_consume
+  // barrier and jump straight to the user entry point.
+  initializeTLS(env);
+  return device_config::config.entryPoint_0(args);
+#else
   // Wait initialization to complete and forward to user-code.
   if (device_config::config.threadsPerCore == 1) {
     if (threadId == 0) {
@@ -238,6 +278,7 @@ extern "C" int deviceGpSdkEntry(void* args, kernel_environment_t* env) {
     }
   }
   return 0;
+#endif /* ET_PLATFORM_ERBIUM */
 }
 
 /// @brief Obtains the number of threads assigned to a kernel

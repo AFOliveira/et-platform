@@ -12,10 +12,15 @@
 
 // Device common
 #include <common/etsoc/utils.h>
-#include <isa/etsoc/fcc.h>
+#if defined(ET_PLATFORM_ERBIUM)
+#  include <isa/erbium/fcc.h>
+#  include <isa/erbium/utils.h>
+#else
+#  include <isa/etsoc/fcc.h>
+#  include <isa/etsoc/utils.h>
+#endif
 #include <isa/common/hart.h>
 #include <isa/common/tensors.h>
-#include <isa/etsoc/utils.h>
 #include <isa/common/atomic.h>
 
 

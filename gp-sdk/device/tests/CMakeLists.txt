@@ -101,8 +101,10 @@ add_etsoc_test_kernel(profiling_stress.elf profiling/profiling_stress.cc)
 
 add_etsoc_test_kernel(cacheops_flush.elf cacheops/flush.cc)
 
-add_etsoc_test_kernel(autogen_matmul.elf autogenMatmul/autogen_matmul.cpp)
-target_link_libraries(autogen_matmul.elf matmul_f32_1024_512_512)
+if (TARGET matmul_f32_1024_512_512)
+  add_etsoc_test_kernel(autogen_matmul.elf autogenMatmul/autogen_matmul.cpp)
+  target_link_libraries(autogen_matmul.elf matmul_f32_1024_512_512)
+endif()
 
 add_etsoc_test_kernel(fail_abort.elf fail/fail_abort.cc)
 
