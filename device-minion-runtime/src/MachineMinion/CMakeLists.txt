@@ -28,6 +28,11 @@ target_compile_options(MachineMinion.elf
         $<$<BOOL:${ENABLE_WARNINGS_AS_ERRORS}>:-Werror>
 )
 
+if(NOT DEFINED FW_U_ENTRY)
+    set(FW_U_ENTRY "0x80063358caULL")
+endif()
+target_compile_definitions(MachineMinion.elf PRIVATE FW_U_ENTRY=${FW_U_ENTRY})
+
 target_link_libraries(MachineMinion.elf
     PRIVATE
         et-common-libs::minion-bl
