@@ -263,7 +263,8 @@ LoadCodeResult RuntimeImp::doLoadCode(StreamId stream, const std::byte* data, si
 
   std::vector<EventId> events;
   for (auto&& segment : elf.segments) {
-    if (segment->get_type() & PT_LOAD) {
+    /* See note in getELFBaseAddr() — must be `==`, not bitwise AND. */
+    if (segment->get_type() == PT_LOAD) {
       auto offset = segment->get_offset();
       auto loadAddress = segment->get_physical_address();
       auto fileSize = segment->get_file_size();
@@ -997,7 +998,12 @@ std::tuple<ELFIO::Elf64_Addr, size_t> getELFBaseAddr(const ELFIO::elfio& elf) {
   ELFIO::Elf64_Addr elfBaseAddr = std::numeric_limits<ELFIO::Elf64_Addr>::max();
   auto extraSize = 0UL;
   for (auto& segment : elf.segments) {
-    if (segment->get_type() & PT_LOAD) {
+    /* Was: `if (segment->get_type() & PT_LOAD)`.  PT_LOAD == 1 and
+     * bitwise-AND falsely matches any segment type whose low bit is
+     * set — notably PT_RISCV_ATTRIBUTES (0x70000003), which Zephyr
+     * (and any RISC-V toolchain emitting attributes) includes.  That
+     * segment has p_paddr=0 and was dragging elfBaseAddr to 0. */
+    if (segment->get_type() == PT_LOAD) {
       if (segment->get_physical_address() < elfBaseAddr) {
         elfBaseAddr = segment->get_physical_address();
       }
