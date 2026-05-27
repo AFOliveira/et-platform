@@ -17,6 +17,27 @@
 namespace bemu {
 
 
+void insn_aif_felix(Hart& cpu)
+{
+    (void)cpu;
+    /* AgentWS dry-run NOP: decode only, no architectural effect. */
+}
+
+
+void insn_aif_add(Hart& cpu)
+{
+    DISASM_RD_RS1_RS2("aif.add");
+    WRITE_RD(RS1 + RS2);
+}
+
+
+void insn_aif_mul(Hart& cpu)
+{
+    DISASM_RD_RS1_RS2("aif.mul");
+    WRITE_RD(RS1 * RS2);
+}
+
+
 void insn_fbc_ps(Hart& cpu)
 {
     require_fp_active();

@@ -174,7 +174,11 @@ static insn_exec_funct_t dec_custom0(uint32_t bits,
               default  : return insn_reserved;
               }
     case 0x6: return insn_fsw_ps;
-    case 0x7: flags |= Instruction::flag_CMO;
+    case 0x7:
+              if (funct7 == 0x2a) return insn_aif_felix;
+              if (funct7 == 0x2b) return insn_aif_add;
+              if (funct7 == 0x2c) return insn_aif_mul;
+              flags |= Instruction::flag_CMO;
               switch (funct7) {
               case 0x08: return (bits & 0x01f00000) ? insn_reserved : insn_flwl_ps; // rs2==0
               case 0x09: return (bits & 0x01f00000) ? insn_reserved : insn_flwg_ps; // rs2==0
