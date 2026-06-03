@@ -1,0 +1,5 @@
+#ifndef ISYSEMUEXPORT_H
+#define ISYSEMUEXPORT_H
+#define SYS_EMU_EXPORT
+#define SW_SYSEMU_EXPORT
+#endif

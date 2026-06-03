@@ -413,6 +413,7 @@ void insn_sbg          (Hart&);
 void insn_shl          (Hart&);
 void insn_shg          (Hart&);
 
+void insn_aif_europeriscvsummit(Hart&);
 
 } // namespace bemu
 

@@ -28,7 +28,8 @@ sysemu_cpp_srcs := \
     sys_emu/sys_emu_main.cpp \
     sys_emu/sys_emu_parse_args.cpp \
     sys_emu/testLog.cpp \
-    sys_emu/utils.cpp
+    sys_emu/utils.cpp \
+    sys_emu/preload_stub.cpp
 
 ifneq ($(PROFILING),0)
   sysemu_hdrs     += sys_emu/profiling.h
