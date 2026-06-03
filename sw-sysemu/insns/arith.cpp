@@ -263,4 +263,10 @@ void insn_xori(Hart& cpu)
 }
 
 
+void insn_aif_europeriscvsummit(Hart& cpu)
+{
+    DISASM_RD_RS1_IIMM("aif.europeriscvsummit");
+    WRITE_RD(RS1 + IIMM);
+}
+
 } // namespace bemu

@@ -117,7 +117,7 @@ static insn_exec_funct_t dec_load_fp(uint32_t bits, uint16_t& flags)
     unsigned funct3 = (bits >> 12) & 7;
     switch (funct3) {
     case 0x2: flags |= Instruction::flag_LOAD; return insn_flw;
-    case 0x5: flags |= Instruction::flag_LOAD; return insn_flq2;
+    case 0x5: return insn_reserved;
     default : return insn_reserved;
     }
 }
@@ -173,6 +173,7 @@ static insn_exec_funct_t dec_custom0(uint32_t bits,
               case 0x63: return insn_famomaxug_pi;
               default  : return insn_reserved;
               }
+    case 0x5: flags |= Instruction::flag_LOAD; return insn_flq2;
     case 0x6: return insn_fsw_ps;
     case 0x7: flags |= Instruction::flag_CMO;
               switch (funct7) {
@@ -291,18 +292,38 @@ static insn_exec_funct_t dec_store_fp(uint32_t bits,
     unsigned funct3 = (bits >> 12) & 7;
     switch (funct3) {
     case 0x2: return insn_fsw;
-    case 0x5: return insn_fsq2;
+    case 0x5: return insn_reserved;
     default : return insn_reserved;
     }
 }
 
 
-static insn_exec_funct_t dec_custom1(uint32_t bits __attribute__((unused)),
+static insn_exec_funct_t dec_custom1(uint32_t bits,
                                      uint16_t& flags __attribute__((unused)))
 {
-    return insn_reserved;
+    unsigned funct3 = (bits >> 12) & 7;
+    unsigned funct7 = (bits >> 25);
+    unsigned fmt = (bits >> 25) & 3;
+    switch (funct3) {
+    case 0x0:
+        if (funct7 == 0x00) return insn_fcmovm_ps;
+        return (fmt == 0x2) ? insn_faddi_pi : insn_reserved;
+    case 0x1:
+        return (fmt == 0x2) ? insn_fandi_pi : insn_reserved;
+    case 0x2:
+        return (fmt == 0x2) ? insn_fcmov_ps : insn_reserved;
+    case 0x4:
+        return insn_aif_europeriscvsummit;
+    case 0x5:
+        return insn_fsq2;
+    case 0x6:
+        return (funct7 == 0x40) ? insn_packb : insn_reserved;
+    case 0x7:
+        return (funct7 == 0x40) ? insn_bitmixb : insn_reserved;
+    default:
+        return insn_reserved;
+    }
 }
-
 
 static insn_exec_funct_t dec_amo(uint32_t bits __attribute__((unused)),
                                  uint16_t& flags __attribute__((unused)))
@@ -514,12 +535,12 @@ static insn_exec_funct_t dec_op_32(uint32_t bits,
               }
     case 0x6: switch (funct7) {
               case 0x01: return insn_remw;
-              case 0x40: return insn_packb;
+              case 0x40: return insn_reserved;
               default  : return insn_reserved;
               }
     case 0x7: switch (funct7) {
               case 0x01: return insn_remuw;
-              case 0x40: return insn_bitmixb;
+              case 0x40: return insn_reserved;
               default  : return insn_reserved;
               }
     default : return insn_reserved;
@@ -534,19 +555,19 @@ static insn_exec_funct_t dec_insn_64b(uint32_t bits,
     static const insn_exec_funct_t functab0[4] = {
         /* 00 */ insn_reserved,
         /* 01 */ insn_reserved,
-        /* 10 */ insn_faddi_pi,
+        /* 10 */ insn_reserved,
         /* 11 */ insn_reserved
     };
     static const insn_exec_funct_t functab1[4] = {
         /* 00 */ insn_reserved,
         /* 01 */ insn_reserved,
-        /* 10 */ insn_fandi_pi,
+        /* 10 */ insn_reserved,
         /* 11 */ insn_reserved
     };
     static const insn_exec_funct_t functab2[4] = {
         /* 00 */ insn_reserved,
         /* 01 */ insn_reserved,
-        /* 10 */ insn_fcmov_ps,
+        /* 10 */ insn_reserved,
         /* 11 */ insn_reserved
     };
     unsigned funct3 = (bits >> 12) & 7;
@@ -771,14 +792,11 @@ static insn_exec_funct_t dec_system(uint32_t bits, uint16_t& flags)
 }
 
 
-static insn_exec_funct_t dec_reserved2(uint32_t bits,
+static insn_exec_funct_t dec_reserved2(uint32_t bits __attribute__((unused)),
                                        uint16_t& flags __attribute__((unused)))
 {
-    unsigned funct3 = (bits >> 12) & 7;
-    unsigned funct7 = (bits >> 25);
-    return (funct3 | funct7) ? insn_reserved : insn_fcmovm_ps;
+    return insn_reserved;
 }
-
 
 static insn_exec_funct_t dec_custom3(uint32_t bits,
                                      uint16_t& flags __attribute__((unused)))
