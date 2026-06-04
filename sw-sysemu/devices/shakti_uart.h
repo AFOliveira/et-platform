@@ -249,7 +249,8 @@ private:
         uint8_t byte = tx_fifo[tx_fifo_head];
         tx_fifo_head = (tx_fifo_head + 1) % FIFO_DEPTH;
         --tx_fifo_count;
-        (void)::write(tx_fd, &byte, 1);
+        ssize_t n = ::write(tx_fd, &byte, 1);
+        (void)n;
     }
 
     bool rx_fifo_push(uint8_t value) {
