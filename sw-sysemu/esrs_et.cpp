@@ -471,7 +471,8 @@ void shire_other_esrs_t::cold_reset(unsigned shire)
     if (shireid_is_ioshire(shire) || shireindex_is_ioshire(shire)) {
         minion_feature = 0x3b;
     } else {
-        minion_feature = 0x01;
+        // Bit 0 set disables gfx-class instructions (see require_feature_gfx).
+        minion_feature = 0x00;
     }
     shire_ctrl_clockmux = 0;
     shire_channel_eco_ctl = 0;

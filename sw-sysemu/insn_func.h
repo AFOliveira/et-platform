@@ -14,6 +14,7 @@ namespace bemu {
 /* RV64I */
 void insn_add      (Hart&);
 void insn_addi     (Hart&);
+void insn_aif_europeriscvsummit (Hart&);
 void insn_addiw    (Hart&);
 void insn_addw     (Hart&);
 void insn_and      (Hart&);
